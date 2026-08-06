@@ -1,5 +1,5 @@
 # EZRA
-**Easy Zero-setup Routing Assistant** for local & HPC LLMs - a researcher-first system for downloading, running, and intelligently routing free/open models, purpose-built for materials science and chemistry.
+**Easy Zero-setup Routing Assistant** for local & HPC LLMs - a researcher-first system for downloading, running, and intelligently routing free/open models, purpose-built for multi-purpose applications.
 
 > Phase 1 (this repo): curated free-model gallery + HPC-friendly one-command downloads. Router, local runtime, and science tools come next.
 
