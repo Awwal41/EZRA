@@ -509,8 +509,13 @@ def hpc_script(
             f'MODEL="${{MODEL:-{model}}}"',
             1,
         )
-        if kind == "interactive":
-            script = script.replace('MODEL="${MODEL:-}"', f'MODEL="${{MODEL:-{model}}}"', 1)
+        script = script.replace('MODEL="${MODEL:-}"', f'MODEL="${{MODEL:-{model}}}"', 1)
+        if kind == "download" and f'MODEL="${{MODEL:-{model}}}"' not in script:
+            script = script.replace(
+                'if [[ -n "${MODEL:-}" ]]; then',
+                f'MODEL="${{MODEL:-{model}}}"\nif [[ -n "${{MODEL:-}}" ]]; then',
+                1,
+            )
 
     if output_path is None:
         click.echo(script)
@@ -560,7 +565,7 @@ def hpc_submit(
 
     \b
     Examples:
-      ezra hpc submit download --max-size style via env: MAX_SIZE=8
+      ezra hpc submit download
       ezra hpc submit serve --model qwen2.5-7b-instruct --gpus 1 --cpus 8 --mem 64G
       ezra hpc submit interactive --gpus 1 --time 02:00:00 --dry-run
     """
@@ -584,11 +589,12 @@ def hpc_submit(
         job_name=job_name,
     )
     script = generate_script(kind, res, raw_config=ctx.obj["config"].raw)
-    export_env: dict[str, str] = {}
+    export_env: dict[str, str] = {
+        "EZRA_MODELS_DIR": str(ctx.obj["config"].models_dir),
+    }
     if model:
         export_env["MODEL"] = model
     models_dir = ctx.obj["config"].models_dir
-    export_env["EZRA_MODELS_DIR"] = str(models_dir)
 
     try:
         result = submit_script(
