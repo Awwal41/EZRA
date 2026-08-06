@@ -151,6 +151,10 @@ Add a model by appending an entry (name, `repo_id`, format, tags) and reinstall 
 
 **One sentence:** EZRA lets materials and chemistry researchers download free LLMs, run them locally, and intelligently route between local models and HPC — without cloud lock-in.
 
+## Contributing
+
+Fork, setup, coding style, gallery additions, and PR checklist: see [CONTRIBUTING.md](CONTRIBUTING.md). Shared backlog: [TODO.md](TODO.md).
+
 ## License
 
 GPL-3.0-or-later — see [LICENSE](LICENSE).
