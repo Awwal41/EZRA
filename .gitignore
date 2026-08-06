@@ -1,16 +1,77 @@
+# ── Python / packaging ──────────────────────────────────────────────────────
 .venv/
+venv/
+env/
 __pycache__/
 *.py[cod]
+*$py.class
 *.egg-info/
 .eggs/
 dist/
 build/
+*.egg
+pip-wheel-metadata/
+
+# ── Test / lint / type caches ───────────────────────────────────────────────
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+
+# ── Local config & secrets (copy from *.example; do not commit) ─────────────
+# Repo-root personal override (use: cp ezra.yaml.example ezra.yaml)
+/ezra.yaml
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+secrets.yaml
+secrets.yml
+
+# Personal-only site folder (optional; shareable sites/<name>/ stay tracked)
+sites/local/
+sites/_local/
+
+# Site-local secrets if someone drops them in a profile
+sites/**/.env
+sites/**/secrets.*
+
+# ── EZRA runtime / model weights ────────────────────────────────────────────
+.ezra/
 *.gguf
 *.safetensors
-.ezra/
-.env
+*.bin
+*.pt
+*.pth
+*.onnx
+*.ggml
+models/
+!src/ezra/gallery/
+
+# Hugging Face / download scratch
+.cache/
+huggingface/
+
+# ── SLURM / job logs ────────────────────────────────────────────────────────
 *.out
 *.err
+slurm-*.out
+ezra-*-*.out
+ezra-*-*.err
+
+# ── Editors / OS ────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini

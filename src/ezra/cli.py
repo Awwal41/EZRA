@@ -351,6 +351,77 @@ def models_remove(ctx: click.Context, names: tuple[str, ...], dry_run: bool) -> 
             sys.exit(1)
 
 
+@main.command("init-config")
+@click.option(
+    "--home",
+    "target",
+    flag_value="home",
+    default=True,
+    help="Write ~/.ezra/ezra.yaml (default).",
+)
+@click.option(
+    "--cwd",
+    "target",
+    flag_value="cwd",
+    help="Write ./ezra.yaml in the current directory (gitignored at repo root).",
+)
+@click.option("--force", is_flag=True, help="Overwrite an existing ezra.yaml.")
+@click.option(
+    "--env",
+    "with_env",
+    is_flag=True,
+    help="Also copy .env.example to .env in the current directory if missing.",
+)
+def init_config(target: str, force: bool, with_env: bool) -> None:
+    """Copy the example config so you can customize paths and preferences.
+
+    \b
+    Examples:
+      ezra init-config                 # ~/.ezra/ezra.yaml
+      ezra init-config --cwd           # ./ezra.yaml (local; gitignored)
+      ezra init-config --cwd --env     # also .env from .env.example
+      ezra hpc init-site my-cluster    # HPC: partition / modules (commit & push)
+    """
+    import shutil
+
+    from ezra.config import default_home
+    from ezra.hpc.sites import repo_root
+
+    root = repo_root()
+    example = root / "ezra.yaml.example"
+    if not example.is_file():
+        example = Path(__file__).resolve().parent / "defaults" / "ezra.yaml"
+    if not example.is_file():
+        raise click.ClickException("Could not find ezra.yaml.example or packaged defaults.")
+
+    if target == "cwd":
+        dest = Path.cwd() / "ezra.yaml"
+    else:
+        dest = default_home() / "ezra.yaml"
+        dest.parent.mkdir(parents=True, exist_ok=True)
+
+    if dest.exists() and not force:
+        raise click.ClickException(f"Already exists: {dest} (use --force to overwrite)")
+    shutil.copyfile(example, dest)
+    console.print(f"Wrote [bold]{dest}[/bold]")
+    console.print("Edit it (search for EDIT ME), or set [green]EZRA_MODELS_DIR[/green].")
+    console.print(
+        "HPC clusters: [green]ezra hpc init-site my-cluster[/green] "
+        "then [green]export EZRA_SITE=my-cluster[/green] (see sites/README.md)"
+    )
+
+    if with_env:
+        env_ex = root / ".env.example"
+        env_dest = Path.cwd() / ".env"
+        if not env_ex.is_file():
+            console.print("[yellow].env.example not found; skipped --env[/yellow]")
+        elif env_dest.exists() and not force:
+            console.print(f"[yellow]Skipped .env (already exists): {env_dest}[/yellow]")
+        else:
+            shutil.copyfile(env_ex, env_dest)
+            console.print(f"Wrote [bold]{env_dest}[/bold] (gitignored - fill in tokens locally)")
+
+
 @main.command("doctor")
 @click.pass_context
 def doctor(ctx: click.Context) -> None:
@@ -371,8 +442,9 @@ def doctor(ctx: click.Context) -> None:
     console.print(f"Max workers:      {config.max_workers}")
     if site == "<none>":
         console.print(
-            "Tip: [green]ezra hpc init-site my-cluster[/green] then "
-            "[green]export EZRA_SITE=my-cluster[/green] (see sites/README.md)"
+            "Tip: [green]ezra init-config[/green] (local) or "
+            "[green]ezra hpc init-site my-cluster[/green] then "
+            "[green]export EZRA_SITE=my-cluster[/green] (HPC - see sites/README.md)"
         )
     try:
         config.models_dir.mkdir(parents=True, exist_ok=True)

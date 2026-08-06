@@ -1,18 +1,21 @@
 # Default EZRA configuration - SITE PROFILE
 #
-# EDIT ME: copy this folder via `ezra hpc init-site <name>`, then fill in
-# partition / account / resources for YOUR cluster. Commit the result under
-# sites/<name>/ (no secrets) so others on the same HPC can reuse it.
+# Created by:  ezra hpc init-site <name>
+# Activate:    export EZRA_SITE=<name>
 #
-# Activate with:
-#   export EZRA_SITE=<name>
-#   export EZRA_MODELS_DIR=/scratch/$USER/ezra/models   # EDIT ME: your scratch path
-#
+# ── CUSTOMIZE (search EDIT ME) ──────────────────────────────────────────────
+# 1. Uncomment and set hpc.slurm.partition / account (and qos / constraint if needed)
+# 2. Tweak download / serve / interactive CPUs, mem, gpus, time for your site
+# 3. Set local.models_dir OR pass --models-dir to init-site / export EZRA_MODELS_DIR
+# 4. Edit modules.sh (module load …) and fill NOTES.md
+# 5. Commit & push this folder (no secrets) so others on the same HPC benefit
+# ────────────────────────────────────────────────────────────────────────────
+
 version: 1
 
 local:
   backend: auto
-  # Prefer EZRA_MODELS_DIR or: ezra hpc init-site NAME --models-dir /scratch/$USER/ezra/models
+  # EDIT ME: scratch / project path for weights (or use EZRA_MODELS_DIR)
   models_dir: ~/.ezra/models
   prefer_quant: auto
   max_workers: 2
@@ -26,7 +29,7 @@ hpc:
   enabled: true
   endpoints: []
   slurm:
-    # ── EDIT ME: site-wide SLURM knobs ────────────────────────────────
+    # ── EDIT ME: site-wide SLURM knobs (uncomment what your cluster needs) ──
     # partition: gpu              # e.g. gpu, gpu-shared, a100, batch
     # account: mylab              # allocation / project account
     # qos: normal
@@ -42,7 +45,7 @@ hpc:
       cpus: 8
       mem: "64G"
       gpus: 1
-      # gres: "gpu:a100:1"        # EDIT ME if plain gpu:N is wrong for your site
+      # gres: "gpu:a100:1"        # EDIT ME if plain --gres=gpu:N is wrong here
     interactive:
       time: "02:00:00"
       cpus: 4

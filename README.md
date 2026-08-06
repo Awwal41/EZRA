@@ -15,6 +15,10 @@ source .venv/bin/activate   # Linux / macOS / HPC
 
 pip install -e .
 
+# optional: local config / env (both gitignored — copy from *.example)
+ezra init-config                  # ~/.ezra/ezra.yaml
+# ezra init-config --cwd --env    # ./ezra.yaml + .env
+
 ezra doctor
 ezra models list
 ```
@@ -111,6 +115,7 @@ sbatch scripts/hpc_interactive.sh
 
 ```text
 ezra doctor
+ezra init-config [--home|--cwd] [--env] [--force]
 ezra models list [--query TEXT] [--tag TAG] [--science] [--format gguf|safetensors]
 ezra models download NAME [NAME ...]
 ezra models download --all [--tag TAG] [--science] [--max-size N] [--no-gated]

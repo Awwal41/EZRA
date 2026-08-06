@@ -82,7 +82,7 @@ ruff check src tests
 ruff format src tests
 ```
 
-Do **not** commit model weights (`.gguf`, `.safetensors`), `.venv/`, `.env`, or secrets. See [.gitignore](.gitignore).
+Do **not** commit model weights (`.gguf`, `.safetensors`), `.venv/`, `.env`, repo-root `ezra.yaml`, or secrets. Copy from `ezra.yaml.example` / `.env.example` (or `ezra init-config`). See [.gitignore](.gitignore).
 
 ---
 
@@ -93,6 +93,7 @@ Do **not** commit model weights (`.gguf`, `.safetensors`), `.venv/`, `.env`, or 
 | `src/ezra/` | Package source (`src` layout) |
 | `src/ezra/gallery/models.yaml` | Curated free/open model gallery |
 | `src/ezra/defaults/ezra.yaml` | Packaged default config |
+| `ezra.yaml.example` / `.env.example` | User-copy templates (local files are gitignored) |
 | `src/ezra/cli.py` | Click CLI (`ezra` entrypoint) |
 | `src/ezra/hpc/` | SLURM / SBATCH helpers |
 | `scripts/hpc_*.sh` | Example HPC job scripts (honor `EZRA_SITE`) |

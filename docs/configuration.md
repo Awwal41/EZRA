@@ -1,11 +1,23 @@
 # Configuration
 
+## Customize in two minutes
+
+| What | Easy path |
+|------|-----------|
+| Local paths / prefs | `ezra init-config` → edit `~/.ezra/ezra.yaml` (or `ezra init-config --cwd`) |
+| Env vars / HF token | `cp .env.example .env` (or `ezra init-config --cwd --env`) — `.env` is gitignored |
+| HPC partition / modules | `ezra hpc init-site my-cluster` → edit `EDIT ME` → commit & push |
+
+Do **not** commit secrets. Shareable cluster settings belong under `sites/<name>/`.
+
+## Load order
+
 EZRA loads settings from (first match wins for file path):
 
 1. `--config PATH` on the CLI
 2. `EZRA_CONFIG` environment variable
 3. `sites/$EZRA_SITE/ezra.yaml` when `EZRA_SITE` is set (per-cluster profile)
-4. `./ezra.yaml` in the current working directory
+4. `./ezra.yaml` in the current working directory (gitignored at repo root — copy from `ezra.yaml.example`)
 5. `~/.ezra/ezra.yaml` (or `$EZRA_HOME/ezra.yaml`)
 6. Packaged defaults: [`src/ezra/defaults/ezra.yaml`](../src/ezra/defaults/ezra.yaml)
 
@@ -61,7 +73,7 @@ Edit `sites/my-cluster/ezra.yaml` and `modules.sh` (search for **EDIT ME**), the
 
 ## Example `ezra.yaml`
 
-Copy or extend the packaged defaults / site template. Minimal HPC-oriented example:
+Start from [`ezra.yaml.example`](../ezra.yaml.example) (`ezra init-config`) or the site template. Minimal HPC-oriented example:
 
 ```yaml
 version: 1

@@ -16,6 +16,19 @@ Global options:
 
 Environment check: version, models dir, HF token, gallery size, write test.
 
+## `ezra init-config`
+
+Copy `ezra.yaml.example` (or packaged defaults) so you can customize paths locally:
+
+| Flag | Effect |
+|------|--------|
+| (default) / `--home` | Write `~/.ezra/ezra.yaml` |
+| `--cwd` | Write `./ezra.yaml` (gitignored at repo root) |
+| `--env` | Also copy `.env.example` → `.env` |
+| `--force` | Overwrite if the target already exists |
+
+For HPC partition / modules, use `ezra hpc init-site` instead. See [Configuration](configuration.md).
+
 ## `ezra models`
 
 | Command | Description |

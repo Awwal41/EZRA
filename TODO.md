@@ -30,7 +30,7 @@ Collaborative task list for contributors. **Anyone can add items** - keep entrie
 Track what already landed so we do not re-open finished work.
 
 - [x] Package skeleton (`pyproject.toml`, `src/ezra`, GPL license)
-- [x] Default config loader (`config.py` + `defaults/ezra.yaml` + example `ezra.yaml`)
+- [x] Default config loader (`config.py` + `defaults/ezra.yaml` + `ezra.yaml.example` / `ezra init-config`)
 - [x] Curated free-model gallery (`gallery/__init__.py` + `gallery/models.yaml`)
 - [x] Hugging Face downloader (`downloader.py`)
 - [x] CLI entrypoint (`cli.py`: `ezra models list|download`, `ezra doctor`, `ezra hpc`)

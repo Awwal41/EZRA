@@ -1,0 +1,31 @@
+# EZRA local config example
+#
+# Customize (pick one):
+#   1) cp ezra.yaml.example ezra.yaml          # repo-local (gitignored)
+#   2) mkdir -p ~/.ezra && cp ezra.yaml.example ~/.ezra/ezra.yaml
+#   3) On HPC, prefer a shareable site profile instead:
+#        ezra hpc init-site my-cluster --models-dir /scratch/$USER/ezra/models
+#        export EZRA_SITE=my-cluster
+#      See sites/README.md
+#
+# Search for EDIT ME below. Do not put HF_TOKEN or passwords in this file.
+
+version: 1
+
+local:
+  backend: auto
+  # EDIT ME: where weights live (HPC: use scratch / project FS)
+  # Or skip this and: export EZRA_MODELS_DIR=/scratch/$USER/ezra/models
+  models_dir: ~/.ezra/models
+  prefer_quant: auto          # auto | Q4_K_M | Q5_K_M | Q8_0 | fp16 | bf16
+  max_workers: 2
+  resume: true
+  hf_token_env: HF_TOKEN      # export HF_TOKEN=… separately (.env is gitignored)
+
+router:
+  mode: auto
+
+hpc:
+  enabled: false
+  endpoints: []
+  # For cluster defaults, use sites/<name>/ezra.yaml (init-site), not this file.

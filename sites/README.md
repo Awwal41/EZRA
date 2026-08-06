@@ -1,6 +1,8 @@
 # Site profiles (per-HPC customization)
 
-Every cluster is different: partition names, accounts, `module load` lines, GPU GRES strings, and scratch paths. **EZRA expects you to customize for your machine** - do not assume the generic `scripts/hpc_*.sh` defaults match your site.
+Every cluster is different: partition names, accounts, `module load` lines, GPU GRES strings, and scratch paths. **EZRA expects you to customize for your machine** — do not assume the generic `scripts/hpc_*.sh` defaults match your site.
+
+For laptop-only prefs (no SLURM), use `ezra init-config` / `.env.example` instead — see [docs/configuration.md](../docs/configuration.md).
 
 ## Quick start (your cluster)
 
@@ -8,10 +10,13 @@ Every cluster is different: partition names, accounts, `module load` lines, GPU 
 # from the repo root, after pip install -e .
 ezra hpc init-site my-cluster --models-dir /scratch/$USER/ezra/models
 
-# edit the generated files (look for "EDIT ME")
+# edit the generated files (search for "EDIT ME" / "CUSTOMIZE")
 $EDITOR sites/my-cluster/ezra.yaml
 $EDITOR sites/my-cluster/modules.sh
 $EDITOR sites/my-cluster/NOTES.md
+
+# optional local secrets (gitignored):
+# cp .env.example .env   # set HF_TOKEN, EZRA_SITE, …
 ```
 
 Then use the profile:
@@ -67,9 +72,9 @@ git push -u origin sites/my-cluster
 
 - `HF_TOKEN`, passwords, or private account numbers you are not allowed to share
 - Absolute paths to your personal home if they contain usernames you want private (prefer `$SCRATCH` / `$USER` in NOTES instead)
-- Model weights
+- Model weights, `.env`, or a repo-root `ezra.yaml` (those are gitignored — use `ezra.yaml.example` / `.env.example`)
 
-Personal-only overrides can live in `~/.ezra/ezra.yaml` or `export EZRA_CONFIG=…` and stay untracked.
+Personal-only overrides: `ezra init-config`, `~/.ezra/ezra.yaml`, `sites/local/` (gitignored), or `export EZRA_CONFIG=…`.
 
 ## Layout
 

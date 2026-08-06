@@ -35,6 +35,15 @@ ezra models list
 
 `ezra doctor` prints the models directory, whether a Hugging Face token is set, gallery size, and whether the models path is writable.
 
+## Optional: local config
+
+```bash
+ezra init-config                 # ~/.ezra/ezra.yaml — edit EDIT ME fields
+# or: ezra init-config --cwd --env   # ./ezra.yaml + .env (both gitignored)
+```
+
+On HPC, create a site profile instead: `ezra hpc init-site my-cluster` — see [HPC](hpc.md).
+
 ## Where models are stored
 
 Default: `~/.ezra/models/<name>/` (or `$EZRA_HOME/models`).

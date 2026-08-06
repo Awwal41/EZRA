@@ -1,4 +1,9 @@
 # Default EZRA configuration (Phase 1 - local download & gallery + HPC SBATCH)
+#
+# Prefer customizing via:
+#   ezra init-config                  # ~/.ezra/ezra.yaml
+#   ezra hpc init-site <name>         # sites/<name>/ (HPC; commit & push)
+# Or copy ezra.yaml.example / .env.example at the repo root.
 version: 1
 
 local:

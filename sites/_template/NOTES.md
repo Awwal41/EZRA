@@ -1,6 +1,7 @@
-# Site notes - EDIT ME
+# Site notes — CUSTOMIZE ME
 
 Fill this in when you add a profile so the next person on the same HPC knows what works.
+Then commit this folder and open a PR (no tokens / private secrets).
 
 | Field | Your notes |
 |-------|------------|
@@ -14,15 +15,20 @@ Fill this in when you add a profile so the next person on the same HPC knows wha
 | Modules that work | python / cuda versions |
 | Docs link | center user guide URL |
 
-## Smoke test
+## Quick start on this cluster
 
 ```bash
 export EZRA_SITE=<this-folder-name>
-export EZRA_MODELS_DIR=…   # your scratch
+export EZRA_MODELS_DIR=…   # your scratch (or set models_dir in ezra.yaml)
+# optional: cp .env.example .env && edit HF_TOKEN / EZRA_SITE
 ezra doctor
 ezra hpc submit download --model qwen2.5-7b-instruct --dry-run
 ```
 
 ## Sharing
 
-Commit this folder (yaml + modules.sh + NOTES) and open a PR. Omit tokens and private paths.
+```bash
+git add sites/<this-folder-name>
+git commit -m "Add <cluster> SLURM site profile"
+git push
+```
