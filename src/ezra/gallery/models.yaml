@@ -1,0 +1,263 @@
+# EZRA curated free/open model gallery
+# Only include models that are downloadable without payment.
+# Gated Meta/Google models still need a free HF account + license accept.
+#
+# Fields:
+#   name            short alias used by `ezra models download <name>`
+#   repo_id         Hugging Face repo
+#   revision        optional git revision / branch
+#   format          gguf | safetensors | mlx
+#   quant           preferred quant filename pattern / tag
+#   size_b          approximate parameter count (billions)
+#   params          human size label
+#   license         SPDX-ish short name
+#   gated           true if HF license gate required
+#   science_tags    chemistry / materials relevance tags
+#   tags            general capability tags
+#   description     one-line summary
+#   files           optional explicit file list (GGUF); if omitted, snapshot
+#   file_pattern    optional allow_patterns for snapshot_download
+#   recommended_ram_gb  rough RAM/VRAM guidance
+
+models:
+  # ── Fast / laptop-friendly ──────────────────────────────────────────
+  - name: qwen2.5-3b-instruct
+    repo_id: Qwen/Qwen2.5-3B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 3.0
+    params: 3B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly]
+    tags: [fast, local, instruct]
+    description: Strong small instruct model; good default for quick chem Q&A.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 4
+
+  - name: qwen2.5-7b-instruct
+    repo_id: Qwen/Qwen2.5-7B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 7.0
+    params: 7B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly, materials-friendly]
+    tags: [balanced, local, instruct]
+    description: Balanced quality/speed for literature extraction and reasoning.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 6
+
+  - name: llama3.2-3b-instruct
+    repo_id: bartowski/Llama-3.2-3B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 3.0
+    params: 3B
+    license: Llama-3.2
+    gated: false
+    science_tags: [general]
+    tags: [fast, local, instruct]
+    description: Compact Llama 3.2 instruct GGUF for light interactive work.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 4
+
+  - name: gemma-2-2b-it
+    repo_id: bartowski/gemma-2-2b-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 2.0
+    params: 2B
+    license: Gemma
+    gated: false
+    science_tags: [general]
+    tags: [fast, local, instruct]
+    description: Tiny Gemma 2 instruct model for smoke tests and routing.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 3
+
+  - name: phi-3.5-mini-instruct
+    repo_id: bartowski/Phi-3.5-mini-instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 3.8
+    params: 3.8B
+    license: MIT
+    gated: false
+    science_tags: [general, code]
+    tags: [fast, local, instruct, code]
+    description: Efficient Microsoft Phi-3.5 mini; solid for code + short tasks.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 4
+
+  # ── Mid-size / quality ──────────────────────────────────────────────
+  - name: mistral-7b-instruct
+    repo_id: TheBloke/Mistral-7B-Instruct-v0.2-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 7.0
+    params: 7B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [balanced, local, instruct]
+    description: Classic Mistral 7B instruct GGUF; reliable general assistant.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 6
+
+  - name: llama3.1-8b-instruct
+    repo_id: bartowski/Meta-Llama-3.1-8B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 8.0
+    params: 8B
+    license: Llama-3.1
+    gated: false
+    science_tags: [general, materials-friendly]
+    tags: [balanced, local, instruct, long-context]
+    description: Llama 3.1 8B instruct; strong all-rounder with long context.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 8
+
+  - name: deepseek-r1-distill-qwen-7b
+    repo_id: bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 7.0
+    params: 7B
+    license: MIT
+    gated: false
+    science_tags: [reasoning, chemistry-friendly]
+    tags: [reasoning, local, instruct]
+    description: Distilled R1 reasoning model; useful for multi-step science tasks.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 6
+
+  - name: deepseek-r1-distill-llama-8b
+    repo_id: bartowski/DeepSeek-R1-Distill-Llama-8B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 8.0
+    params: 8B
+    license: MIT
+    gated: false
+    science_tags: [reasoning, chemistry-friendly, materials-friendly]
+    tags: [reasoning, local, instruct]
+    description: Llama-based R1 distill for heavier scientific reasoning.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 8
+
+  # ── Science / chemistry specialized ─────────────────────────────────
+  - name: chemllm-7b
+    repo_id: AI4Chem/ChemLLM-7B-Chat
+    format: safetensors
+    quant: bf16
+    size_b: 7.0
+    params: 7B
+    license: Apache-2.0
+    gated: false
+    science_tags: [chemistry, molecules, reactions]
+    tags: [science, instruct, chemistry]
+    description: ChemLLM chat model tuned for chemistry dialogue and Q&A.
+    file_pattern: "*"
+    recommended_ram_gb: 16
+
+  - name: chembert-uncased
+    repo_id: seyonec/ChemBERTa-zinc-base-v1
+    format: safetensors
+    quant: fp32
+    size_b: 0.1
+    params: ~110M
+    license: MIT
+    gated: false
+    science_tags: [chemistry, smiles, molecules]
+    tags: [encoder, science, chemistry]
+    description: ChemBERTa encoder for SMILES embeddings / property tasks.
+    file_pattern: "*"
+    recommended_ram_gb: 2
+
+  - name: matscibert
+    repo_id: m3rg-iitd/matscibert
+    format: safetensors
+    quant: fp32
+    size_b: 0.1
+    params: ~110M
+    license: Apache-2.0
+    gated: false
+    science_tags: [materials, nlp, literature]
+    tags: [encoder, science, materials]
+    description: MatSciBERT for materials science literature NLP.
+    file_pattern: "*"
+    recommended_ram_gb: 2
+
+  - name: materialsbert
+    repo_id: Pranav-s-n/MaterialsBERT
+    format: safetensors
+    quant: fp32
+    size_b: 0.1
+    params: ~110M
+    license: Apache-2.0
+    gated: false
+    science_tags: [materials, nlp, literature]
+    tags: [encoder, science, materials]
+    description: MaterialsBERT checkpoint for domain text understanding.
+    file_pattern: "*"
+    recommended_ram_gb: 2
+
+  # ── Larger / HPC-oriented (safetensors for vLLM etc.) ───────────────
+  - name: qwen2.5-14b-instruct
+    repo_id: Qwen/Qwen2.5-14B-Instruct
+    format: safetensors
+    quant: bf16
+    size_b: 14.0
+    params: 14B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly, materials-friendly]
+    tags: [quality, hpc, instruct]
+    description: Mid-large Qwen instruct; good HPC interactive / batch model.
+    file_pattern: "*.safetensors|*.json|*.txt|*.model|tokenizer*"
+    recommended_ram_gb: 32
+
+  - name: qwen2.5-32b-instruct
+    repo_id: Qwen/Qwen2.5-32B-Instruct
+    format: safetensors
+    quant: bf16
+    size_b: 32.0
+    params: 32B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly, materials-friendly, reasoning]
+    tags: [quality, hpc, instruct, heavy]
+    description: High-quality Qwen for complex chem/materials reasoning on GPU nodes.
+    file_pattern: "*.safetensors|*.json|*.txt|*.model|tokenizer*"
+    recommended_ram_gb: 72
+
+  - name: llama3.1-70b-instruct
+    repo_id: meta-llama/Meta-Llama-3.1-70B-Instruct
+    format: safetensors
+    quant: bf16
+    size_b: 70.0
+    params: 70B
+    license: Llama-3.1
+    gated: true
+    science_tags: [general, materials-friendly, long-context]
+    tags: [quality, hpc, instruct, heavy, gated]
+    description: Llama 3.1 70B instruct (gated). Accept Meta license on HF first.
+    file_pattern: "*.safetensors|*.json|*.txt|*.model|tokenizer*"
+    recommended_ram_gb: 160
+
+  - name: mistral-nemo-instruct
+    repo_id: bartowski/Mistral-Nemo-Instruct-2407-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 12.0
+    params: 12B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly]
+    tags: [balanced, local, instruct, long-context]
+    description: Mistral Nemo 12B instruct GGUF; strong mid-size local option.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 10
