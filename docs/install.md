@@ -37,13 +37,18 @@ ezra models list
 
 ## Where models are stored
 
-By default: `~/.ezra/models/<name>/`.
+Default: `~/.ezra/models/<name>/` (or `$EZRA_HOME/models`).
 
-On HPC, point at scratch or a shared filesystem before downloading:
+Pick a location any of these ways (highest priority first):
 
-```bash
-export EZRA_MODELS_DIR=/scratch/$USER/ezra/models
-```
+| Method | Example |
+|--------|---------|
+| CLI flag | `ezra --models-dir /data/ezra/models models download --all` |
+| Environment | `export EZRA_MODELS_DIR=/scratch/$USER/ezra/models` |
+| Config file | `local.models_dir: /scratch/$USER/ezra/models` in `ezra.yaml` |
+| Site profile | `ezra hpc init-site my-cluster --models-dir /scratch/$USER/ezra/models` |
+
+On HPC, use scratch or a shared project filesystem before downloading large galleries. Confirm with `ezra doctor`.
 
 See [Configuration](configuration.md) for all env vars and `ezra.yaml`.
 

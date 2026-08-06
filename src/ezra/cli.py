@@ -12,7 +12,7 @@ from rich.console import Console
 from rich.table import Table
 
 from ezra import __version__
-from ezra.config import load_config
+from ezra.config import load_config, resolve_models_dir
 from ezra.downloader import ModelDownloader, disk_usage
 from ezra.gallery import ModelGallery
 
@@ -52,7 +52,7 @@ def _downloader(ctx: click.Context) -> ModelDownloader:
     "--models-dir",
     type=click.Path(path_type=Path),
     default=None,
-    help="Override model storage directory (also: EZRA_MODELS_DIR).",
+    help="Where to store model weights (also: EZRA_MODELS_DIR or local.models_dir in ezra.yaml).",
 )
 @click.pass_context
 def main(ctx: click.Context, config_path: Path | None, models_dir: Path | None) -> None:
@@ -60,7 +60,7 @@ def main(ctx: click.Context, config_path: Path | None, models_dir: Path | None) 
     ctx.ensure_object(dict)
     config = load_config(config_path)
     if models_dir is not None:
-        config.models_dir = models_dir.expanduser().resolve()
+        config.models_dir = resolve_models_dir(cli_override=models_dir)
     ctx.obj["config"] = config
     ctx.obj["gallery"] = ModelGallery()
 
@@ -143,8 +143,10 @@ def models_list(
         )
     console.print(table)
     console.print(
-        f"\nModels dir: [bold]{ctx.obj['config'].models_dir}[/bold]"
+        f"\nModels dir: [bold]{ctx.obj['config'].models_dir}[/bold]\n"
         "  (* = gated HF license)\n"
+        "Choose storage: [green]ezra --models-dir /path …[/green] "
+        "or [green]export EZRA_MODELS_DIR=/path[/green]\n"
         "Download one:  [green]ezra models download <name>[/green]\n"
         "Download all:  [green]ezra models download --all[/green]"
     )
@@ -359,6 +361,9 @@ def doctor(ctx: click.Context) -> None:
     console.print(f"EZRA version:     {__version__}")
     console.print(f"EZRA_SITE:        {site}")
     console.print(f"Models dir:       {config.models_dir}")
+    console.print(
+        "  (set with --models-dir PATH, EZRA_MODELS_DIR, or local.models_dir in ezra.yaml)"
+    )
     console.print(f"Prefer quant:     {config.prefer_quant}")
     console.print(f"HF token env:     {config.hf_token_env}")
     console.print(f"HF token set:     {'yes' if config.hf_token else 'no'}")
@@ -457,12 +462,18 @@ def hpc_sites() -> None:
 @hpc_group.command("init-site")
 @click.argument("name")
 @click.option("--force", is_flag=True, help="Overwrite an existing sites/<name> folder.")
-def hpc_init_site(name: str, force: bool) -> None:
+@click.option(
+    "--models-dir",
+    type=click.Path(path_type=Path),
+    default=None,
+    help="Write this path into sites/<name>/ezra.yaml as local.models_dir.",
+)
+def hpc_init_site(name: str, force: bool, models_dir: Path | None) -> None:
     """Create sites/<name> from the editable template (then commit & push).
 
     \b
     Workflow:
-      ezra hpc init-site frontier
+      ezra hpc init-site frontier --models-dir /scratch/$USER/ezra/models
       $EDITOR sites/frontier/ezra.yaml      # EDIT ME: partition, account, gpus
       $EDITOR sites/frontier/modules.sh     # EDIT ME: module load …
       export EZRA_SITE=frontier
@@ -471,16 +482,30 @@ def hpc_init_site(name: str, force: bool) -> None:
     from ezra.hpc.sites import init_site
 
     try:
-        profile = init_site(name, force=force)
+        profile = init_site(
+            name,
+            force=force,
+            models_dir=str(models_dir.expanduser()) if models_dir is not None else None,
+        )
     except (ValueError, FileExistsError, FileNotFoundError) as exc:
         raise click.ClickException(str(exc)) from exc
 
     console.print(f"Created site profile: [bold]{profile.path}[/bold]")
+    if models_dir is not None:
+        console.print(f"models_dir set to: [bold]{models_dir.expanduser()}[/bold]")
     console.print("1. Edit [cyan]ezra.yaml[/cyan] and [cyan]modules.sh[/cyan] (search for EDIT ME)")
     console.print("2. Fill in [cyan]NOTES.md[/cyan] for the next person on this cluster")
     console.print(f"3. [green]export EZRA_SITE={profile.name}[/green]")
+    if models_dir is None:
+        console.print(
+            "4. Choose model storage, e.g. "
+            "[green]export EZRA_MODELS_DIR=/scratch/$USER/ezra/models[/green]"
+        )
+        step = 5
+    else:
+        step = 4
     console.print(
-        f"4. Commit & push (no secrets):\n"
+        f"{step}. Commit & push (no secrets):\n"
         f"   [green]git checkout -b sites/{profile.name}[/green]\n"
         f"   [green]git add sites/{profile.name} && git commit -m "
         f"\"Add {profile.name} HPC site profile\"[/green]\n"
@@ -492,6 +517,12 @@ def hpc_init_site(name: str, force: bool) -> None:
 def _hpc_resources_options(fn):
     """Shared Click options for script / submit resource overrides."""
     opts = [
+        click.option(
+            "--models-dir",
+            type=click.Path(path_type=Path),
+            default=None,
+            help="Directory for model weights (baked into script; also EZRA_MODELS_DIR).",
+        ),
         click.option("--time", "walltime", default=None, help="Walltime, e.g. 08:00:00."),
         click.option("--cpus", type=int, default=None, help="CPUs per task."),
         click.option("--mem", default=None, help="Memory, e.g. 64G."),
@@ -506,6 +537,15 @@ def _hpc_resources_options(fn):
     for opt in reversed(opts):
         fn = opt(fn)
     return fn
+
+
+def _resolve_job_models_dir(ctx: click.Context, models_dir: Path | None) -> Path:
+    """Resolve storage path for an HPC job (CLI flag > global config)."""
+    if models_dir is not None:
+        resolved = resolve_models_dir(cli_override=models_dir)
+        ctx.obj["config"].models_dir = resolved
+        return resolved
+    return Path(ctx.obj["config"].models_dir)
 
 
 def _apply_resource_overrides(ctx, kind, **kwargs):
@@ -545,6 +585,7 @@ def hpc_script(
     kind: str,
     output_path: Path | None,
     model: str | None,
+    models_dir: Path | None,
     walltime: str | None,
     cpus: int | None,
     mem: str | None,
@@ -561,6 +602,7 @@ def hpc_script(
     \b
     Examples:
       ezra hpc script download -o /tmp/ezra-dl.sh
+      ezra hpc script download --models-dir /scratch/$USER/ezra/models -o /tmp/ezra-dl.sh
       ezra hpc script serve --model chemllm-7b --gpus 1 --mem 64G
       ezra hpc script interactive --gpus 1 --time 02:00:00
     """
@@ -569,6 +611,7 @@ def hpc_script(
     if kind == "serve" and not model:
         raise click.UsageError("serve requires --model <gallery-name>")
 
+    job_models_dir = _resolve_job_models_dir(ctx, models_dir)
     res = _apply_resource_overrides(
         ctx,
         kind,
@@ -583,7 +626,12 @@ def hpc_script(
         constraint=constraint,
         job_name=job_name,
     )
-    script = generate_script(kind, res, raw_config=ctx.obj["config"].raw)
+    script = generate_script(
+        kind,
+        res,
+        raw_config=ctx.obj["config"].raw,
+        models_dir=job_models_dir,
+    )
 
     if model:
         # Embed MODEL default so the script is self-contained when written to disk
@@ -605,6 +653,7 @@ def hpc_script(
     else:
         path = write_script(output_path, script)
         console.print(f"Wrote [bold]{path}[/bold]")
+        console.print(f"Models dir: {job_models_dir}")
         if model:
             console.print(f"Submit: [green]MODEL={model} sbatch {path}[/green]")
         else:
@@ -633,6 +682,7 @@ def hpc_submit(
     model: str | None,
     dry_run: bool,
     sbatch_args: tuple[str, ...],
+    models_dir: Path | None,
     walltime: str | None,
     cpus: int | None,
     mem: str | None,
@@ -648,7 +698,7 @@ def hpc_submit(
 
     \b
     Examples:
-      ezra hpc submit download
+      ezra hpc submit download --models-dir /scratch/$USER/ezra/models
       ezra hpc submit serve --model qwen2.5-7b-instruct --gpus 1 --cpus 8 --mem 64G
       ezra hpc submit interactive --gpus 1 --time 02:00:00 --dry-run
     """
@@ -657,6 +707,7 @@ def hpc_submit(
     if kind == "serve" and not model:
         raise click.UsageError("serve requires --model <gallery-name>")
 
+    job_models_dir = _resolve_job_models_dir(ctx, models_dir)
     res = _apply_resource_overrides(
         ctx,
         kind,
@@ -671,16 +722,20 @@ def hpc_submit(
         constraint=constraint,
         job_name=job_name,
     )
-    script = generate_script(kind, res, raw_config=ctx.obj["config"].raw)
+    script = generate_script(
+        kind,
+        res,
+        raw_config=ctx.obj["config"].raw,
+        models_dir=job_models_dir,
+    )
     export_env: dict[str, str] = {
-        "EZRA_MODELS_DIR": str(ctx.obj["config"].models_dir),
+        "EZRA_MODELS_DIR": str(job_models_dir),
     }
     if model:
         export_env["MODEL"] = model
     site = os.environ.get("EZRA_SITE", "").strip()
     if site:
         export_env["EZRA_SITE"] = site
-    models_dir = ctx.obj["config"].models_dir
 
     try:
         result = submit_script(
@@ -696,11 +751,12 @@ def hpc_submit(
 
     if dry_run:
         console.print(f"[yellow]dry-run[/yellow] {result}")
+        console.print(f"Models dir: {job_models_dir}")
         console.print("Script preview (first lines):")
         console.print("\n".join(script.splitlines()[:16]))
     else:
         console.print(f"Submitted batch job [bold green]{result}[/bold green]")
-        console.print(f"Models dir: {models_dir}")
+        console.print(f"Models dir: {job_models_dir}")
         if model:
             console.print(f"MODEL={model}")
 

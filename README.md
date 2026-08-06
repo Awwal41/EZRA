@@ -42,7 +42,7 @@ ezra models download --all --format gguf --max-size 4 --no-gated
 ezra models download --all --dry-run
 ```
 
-Installed weights land under `~/.ezra/models/<name>/` (or `EZRA_MODELS_DIR`).
+Installed weights land under `~/.ezra/models/<name>/`. Choose a path with `--models-dir`, `EZRA_MODELS_DIR`, or `local.models_dir` in config.
 
 ```bash
 ezra models status
@@ -54,13 +54,12 @@ ezra models info chemllm-7b
 EZRA runs on login nodes or batch jobs with no GUI. **Customize for your cluster** with a site profile (partition, account, `module load`), then commit and push so others on the same HPC benefit — see [`sites/README.md`](sites/README.md) and [docs/hpc.md](docs/hpc.md).
 
 ```bash
-ezra hpc init-site my-cluster
+ezra hpc init-site my-cluster --models-dir ${SCRATCH:-$HOME}/ezra/models
 # edit sites/my-cluster/ezra.yaml + modules.sh (look for EDIT ME)
 export EZRA_SITE=my-cluster
-export EZRA_MODELS_DIR=${SCRATCH:-$HOME}/ezra/models
 
 ezra hpc submit download --dry-run
-ezra hpc submit download
+ezra hpc submit download --models-dir ${SCRATCH:-$HOME}/ezra/models
 ```
 
 ### One-command submit

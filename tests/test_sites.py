@@ -62,6 +62,29 @@ def test_load_config_respects_ezra_site(
     assert cfg.max_workers == 1
 
 
+def test_init_site_models_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    sites = tmp_path / "sites"
+    template = sites / "_template"
+    template.mkdir(parents=True)
+    (template / "ezra.yaml").write_text(
+        "version: 1\nlocal:\n  models_dir: ~/.ezra/models\n",
+        encoding="utf-8",
+    )
+    (template / "modules.sh").write_text("# modules\n", encoding="utf-8")
+    (tmp_path / "pyproject.toml").write_text("[project]\nname='ezra'\n", encoding="utf-8")
+    monkeypatch.setenv("EZRA_ROOT", str(tmp_path))
+
+    profile = init_site("lab", root=tmp_path, models_dir="/scratch/u/ezra/models")
+    text = profile.config_path.read_text(encoding="utf-8")
+    assert "models_dir: /scratch/u/ezra/models" in text
+
+
+def test_generated_script_embeds_models_dir() -> None:
+    script = generate_script("download", models_dir="/scratch/u/ezra/models")
+    assert "/scratch/u/ezra/models" in script
+    assert "EZRA_MODELS_DIR=" in script
+
+
 def test_generated_script_mentions_site_profile() -> None:
     script = generate_script("download")
     assert "EZRA_SITE" in script

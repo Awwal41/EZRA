@@ -47,21 +47,23 @@ Environment check: version, models dir, HF token, gallery size, write test.
 
 `KIND` is one of: `download`, `serve`, `interactive`.
 
-Shared resource flags: `--time`, `--cpus`, `--mem`, `--gpus`, `--gres`, `--partition`, `--account`, `--qos`, `--constraint`, `--job-name`.
+Shared resource flags: `--models-dir`, `--time`, `--cpus`, `--mem`, `--gpus`, `--gres`, `--partition`, `--account`, `--qos`, `--constraint`, `--job-name`.
 
 `submit` also accepts `--model`, `--dry-run`, and repeatable `--sbatch-arg`.
+
+`init-site` accepts `--models-dir PATH` to write `local.models_dir` into the new profile.
 
 Set `EZRA_SITE=<name>` after `init-site` so config/modules match your cluster. See [sites/README.md](../sites/README.md).
 
 Examples:
 
 ```bash
-ezra hpc init-site my-cluster
+ezra hpc init-site my-cluster --models-dir /scratch/$USER/ezra/models
 export EZRA_SITE=my-cluster
 ezra hpc templates
 ezra hpc sites
-ezra hpc script download -o /tmp/ezra-dl.sh
-ezra hpc submit download --dry-run
+ezra hpc script download --models-dir /scratch/$USER/ezra/models -o /tmp/ezra-dl.sh
+ezra hpc submit download --models-dir /scratch/$USER/ezra/models --dry-run
 ezra hpc submit serve --model chemllm-7b --gpus 1 --mem 64G
 ```
 

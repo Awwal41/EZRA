@@ -12,7 +12,7 @@ version: 1
 
 local:
   backend: auto
-  # Prefer EZRA_MODELS_DIR in the environment over this path on HPC.
+  # Prefer EZRA_MODELS_DIR or: ezra hpc init-site NAME --models-dir /scratch/$USER/ezra/models
   models_dir: ~/.ezra/models
   prefer_quant: auto
   max_workers: 2

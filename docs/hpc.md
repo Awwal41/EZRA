@@ -10,13 +10,14 @@ EZRA is meant to run on login nodes or batch jobs with no GUI. Use **SBATCH** so
 cd /path/to/EZRA
 source .venv/bin/activate
 
-ezra hpc init-site my-cluster          # copies sites/_template → sites/my-cluster
+ezra hpc init-site my-cluster --models-dir /scratch/$USER/ezra/models
 $EDITOR sites/my-cluster/ezra.yaml     # EDIT ME: partition, account, gpus, mem
 $EDITOR sites/my-cluster/modules.sh    # EDIT ME: module load python/cuda/…
 $EDITOR sites/my-cluster/NOTES.md      # scratch path, docs link for the next person
 
 export EZRA_SITE=my-cluster
-export EZRA_MODELS_DIR=/scratch/$USER/ezra/models   # your site's scratch
+# Or skip --models-dir above and set:
+# export EZRA_MODELS_DIR=/scratch/$USER/ezra/models
 ezra doctor
 ezra hpc submit download --dry-run     # confirm resources before submitting
 ```
@@ -65,7 +66,7 @@ Prefer a batch job for large galleries or slow networks.
 
 ```bash
 ezra hpc templates
-ezra hpc submit download
+ezra hpc submit download --models-dir /scratch/$USER/ezra/models
 ezra hpc submit download --model qwen2.5-7b-instruct
 ezra hpc submit download --dry-run
 ```

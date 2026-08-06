@@ -46,6 +46,18 @@ def test_gres_override_wins() -> None:
     assert "#SBATCH --gres=gpu:2" not in header
 
 
+def test_script_embeds_custom_models_dir() -> None:
+    script = generate_script("download", models_dir="/data/ezra/models")
+    assert "EZRA_MODELS_DIR=" in script
+    assert "/data/ezra/models" in script
+    assert "${SCRATCH:-$HOME}/ezra/models" not in script
+
+
+def test_script_default_models_dir_uses_scratch_fallback() -> None:
+    script = generate_script("download")
+    assert "${SCRATCH:-$HOME}/ezra/models" in script
+
+
 def test_download_has_no_gpu() -> None:
     script = generate_script("download")
     assert "#SBATCH --gres" not in script

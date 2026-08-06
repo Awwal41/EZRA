@@ -6,7 +6,7 @@ Every cluster is different: partition names, accounts, `module load` lines, GPU 
 
 ```bash
 # from the repo root, after pip install -e .
-ezra hpc init-site my-cluster
+ezra hpc init-site my-cluster --models-dir /scratch/$USER/ezra/models
 
 # edit the generated files (look for "EDIT ME")
 $EDITOR sites/my-cluster/ezra.yaml
@@ -18,10 +18,11 @@ Then use the profile:
 
 ```bash
 export EZRA_SITE=my-cluster
-export EZRA_MODELS_DIR=/scratch/$USER/ezra/models   # or your site's scratch
+# EZRA_MODELS_DIR still overrides yaml if you set it:
+# export EZRA_MODELS_DIR=/scratch/$USER/ezra/models
 
 ezra doctor
-ezra hpc submit download --dry-run   # confirm partition / resources
+ezra hpc submit download --models-dir /scratch/$USER/ezra/models --dry-run
 ezra hpc submit download
 ```
 
@@ -38,7 +39,7 @@ In **`ezra.yaml`** (search for `EDIT ME`):
 
 - `hpc.slurm.partition` / `account` / `qos` / `constraint`
 - Per-job `cpus`, `mem`, `gpus`, `time`, optional `gres` (e.g. `gpu:a100:1`)
-- `local.models_dir` only if you are not using `EZRA_MODELS_DIR`
+- `local.models_dir` (or pass `--models-dir` to `init-site` / use `EZRA_MODELS_DIR`)
 
 In **`modules.sh`** (search for `EDIT ME`):
 

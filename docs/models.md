@@ -56,7 +56,14 @@ Useful flags:
 | `--force` | Re-download even if already present |
 | `--dry-run` | Print what would be fetched |
 
-Weights land under `$EZRA_MODELS_DIR/<name>/` (or `~/.ezra/models/<name>/`).
+Weights land under your chosen models directory (see [Install — Where models are stored](install.md)):
+
+```bash
+ezra --models-dir /data/ezra/models models download qwen2.5-7b-instruct
+# or: export EZRA_MODELS_DIR=/data/ezra/models
+```
+
+Default without overrides: `~/.ezra/models/<name>/`.
 
 ### Gated models
 

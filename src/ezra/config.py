@@ -21,11 +21,35 @@ def default_home() -> Path:
 
 
 def default_models_dir() -> Path:
-    """Return model cache directory (override with EZRA_MODELS_DIR)."""
-    env = os.environ.get("EZRA_MODELS_DIR")
+    """Return default model cache directory (``~/.ezra/models``).
+
+    Prefer :func:`resolve_models_dir` when applying CLI / env / yaml overrides.
+    """
+    return default_home() / "models"
+
+
+def resolve_models_dir(
+    *,
+    cli_override: Path | str | None = None,
+    yaml_value: Path | str | None = None,
+) -> Path:
+    """Resolve where model weights are stored.
+
+    Precedence (highest first):
+
+    1. ``cli_override`` (``--models-dir``)
+    2. ``EZRA_MODELS_DIR`` environment variable
+    3. ``yaml_value`` (``local.models_dir`` in ezra.yaml)
+    4. ``~/.ezra/models`` (or ``$EZRA_HOME/models``)
+    """
+    if cli_override is not None and str(cli_override).strip():
+        return Path(cli_override).expanduser().resolve()
+    env = os.environ.get("EZRA_MODELS_DIR", "").strip()
     if env:
         return Path(env).expanduser().resolve()
-    return default_home() / "models"
+    if yaml_value is not None and str(yaml_value).strip():
+        return Path(yaml_value).expanduser().resolve()
+    return default_models_dir().resolve()
 
 
 @dataclass
@@ -81,11 +105,7 @@ def load_config(path: Path | None = None) -> EzraConfig:
             break
 
     local = data.get("local") or {}
-    models_dir = Path(
-        local.get("models_dir")
-        or os.environ.get("EZRA_MODELS_DIR")
-        or default_models_dir()
-    ).expanduser()
+    models_dir = resolve_models_dir(yaml_value=local.get("models_dir"))
 
     return EzraConfig(
         models_dir=models_dir,

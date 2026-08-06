@@ -183,28 +183,43 @@ def render_sbatch_header(res: SlurmResources) -> str:
     return "\n".join(lines)
 
 
-def _repo_bootstrap() -> str:
-    return r"""
+def _bash_single_quote(value: str) -> str:
+    """Quote a string for safe use inside a bash single-quoted default."""
+    return "'" + value.replace("'", "'\"'\"'") + "'"
+
+
+def _repo_bootstrap(models_dir: str | Path | None = None) -> str:
+    if models_dir is not None and str(models_dir).strip():
+        # Always emit POSIX paths — scripts run on Linux HPC, not Windows
+        resolved = Path(str(models_dir).strip()).expanduser().as_posix()
+        models_export = (
+            f'export EZRA_MODELS_DIR="${{EZRA_MODELS_DIR:-{_bash_single_quote(resolved)}}}"'
+        )
+    else:
+        models_export = (
+            'export EZRA_MODELS_DIR="${EZRA_MODELS_DIR:-${SCRATCH:-$HOME}/ezra/models}"'
+        )
+    return f"""
 set -euo pipefail
 
-# Prefer project/scratch storage on HPC
-export EZRA_MODELS_DIR="${EZRA_MODELS_DIR:-${SCRATCH:-$HOME}/ezra/models}"
-export EZRA_HOME="${EZRA_HOME:-${SCRATCH:-$HOME}/ezra}"
+# Prefer project/scratch storage on HPC (override with --models-dir / EZRA_MODELS_DIR)
+{models_export}
+export EZRA_HOME="${{EZRA_HOME:-${{SCRATCH:-$HOME}}/ezra}}"
 mkdir -p "$EZRA_MODELS_DIR" "$EZRA_HOME"
 
 # Resolve repo root when submitted from a git checkout; else use EZRA_ROOT
-if [[ -n "${EZRA_ROOT:-}" ]]; then
+if [[ -n "${{EZRA_ROOT:-}}" ]]; then
   ROOT="$EZRA_ROOT"
-elif [[ -n "${SLURM_SUBMIT_DIR:-}" && -f "${SLURM_SUBMIT_DIR}/pyproject.toml" ]]; then
+elif [[ -n "${{SLURM_SUBMIT_DIR:-}}" && -f "${{SLURM_SUBMIT_DIR}}/pyproject.toml" ]]; then
   ROOT="$SLURM_SUBMIT_DIR"
 else
-  ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  ROOT="$(cd "$(dirname "${{BASH_SOURCE[0]}}")/.." && pwd)"
 fi
 cd "$ROOT"
 
 # ── Site profile (EDIT / create with: ezra hpc init-site <name>) ─────────
 # export EZRA_SITE=my-cluster
-if [[ -n "${EZRA_SITE:-}" ]]; then
+if [[ -n "${{EZRA_SITE:-}}" ]]; then
   SITE_DIR="$ROOT/sites/$EZRA_SITE"
   if [[ ! -d "$SITE_DIR" ]]; then
     echo "EZRA_SITE=$EZRA_SITE but missing directory: $SITE_DIR" >&2
@@ -212,7 +227,7 @@ if [[ -n "${EZRA_SITE:-}" ]]; then
     exit 1
   fi
   if [[ -f "$SITE_DIR/ezra.yaml" ]]; then
-    export EZRA_CONFIG="${EZRA_CONFIG:-$SITE_DIR/ezra.yaml}"
+    export EZRA_CONFIG="${{EZRA_CONFIG:-$SITE_DIR/ezra.yaml}}"
     echo "Using site config: $EZRA_CONFIG"
   fi
   if [[ -f "$SITE_DIR/modules.sh" ]]; then
@@ -236,9 +251,10 @@ pip install -q -U pip
 pip install -q -e .
 
 echo "=== EZRA job on $(hostname) ==="
-echo "CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-<unset>}"
-echo "SLURM_JOB_ID=${SLURM_JOB_ID:-<none>}  GPUS=${SLURM_GPUS:-${SLURM_GPUS_ON_NODE:-0}}"
-echo "EZRA_SITE=${EZRA_SITE:-<none>}"
+echo "CUDA_VISIBLE_DEVICES=${{CUDA_VISIBLE_DEVICES:-<unset>}}"
+echo "SLURM_JOB_ID=${{SLURM_JOB_ID:-<none>}}  GPUS=${{SLURM_GPUS:-${{SLURM_GPUS_ON_NODE:-0}}}}"
+echo "EZRA_SITE=${{EZRA_SITE:-<none>}}"
+echo "EZRA_MODELS_DIR=$EZRA_MODELS_DIR"
 ezra doctor
 command -v nvidia-smi >/dev/null 2>&1 && nvidia-smi || true
 """.strip()
@@ -325,8 +341,13 @@ def generate_script(
     *,
     raw_config: dict[str, Any] | None = None,
     header_comment: str | None = None,
+    models_dir: str | Path | None = None,
 ) -> str:
-    """Return a complete SBATCH script for ``kind``."""
+    """Return a complete SBATCH script for ``kind``.
+
+    When ``models_dir`` is set, it becomes the default ``EZRA_MODELS_DIR`` baked
+    into the script (still overridable at submit time via the environment).
+    """
     if kind not in JOB_KINDS:
         raise ValueError(f"Unknown job kind {kind!r}; choose from {JOB_KINDS}")
     res = resources or resources_from_config(kind, raw_config)
@@ -340,7 +361,7 @@ def generate_script(
             "# Usage:\n"
             "#   sbatch scripts/hpc_download_all.sh\n"
             "#   MODEL=qwen2.5-7b-instruct sbatch <this-script>\n"
-            "#   ezra hpc submit download\n"
+            "#   ezra hpc submit download --models-dir /scratch/$USER/ezra/models\n"
         ),
         "serve": (
             "# Usage:\n"
@@ -359,7 +380,7 @@ def generate_script(
         f"# {comment}",
         usage.rstrip(),
         "",
-        _repo_bootstrap(),
+        _repo_bootstrap(models_dir),
         "",
         _BODIES[kind](),
         "",

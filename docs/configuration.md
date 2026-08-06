@@ -9,7 +9,28 @@ EZRA loads settings from (first match wins for file path):
 5. `~/.ezra/ezra.yaml` (or `$EZRA_HOME/ezra.yaml`)
 6. Packaged defaults: [`src/ezra/defaults/ezra.yaml`](../src/ezra/defaults/ezra.yaml)
 
-CLI `--models-dir` and `EZRA_MODELS_DIR` override `local.models_dir`.
+CLI `--models-dir` and `EZRA_MODELS_DIR` override `local.models_dir` in yaml.
+
+## Model storage location
+
+Weights are stored under one directory (each model in a subdirectory). Choose it with:
+
+1. **CLI** (highest priority): `ezra --models-dir /path …` or `ezra hpc submit download --models-dir /path`
+2. **Environment**: `export EZRA_MODELS_DIR=/path`
+3. **Config**: `local.models_dir` in `ezra.yaml` / site profile
+4. **Default**: `~/.ezra/models` (or `$EZRA_HOME/models`)
+
+```bash
+# one-off download to a custom path
+ezra --models-dir /data/shared/ezra/models models download qwen2.5-7b-instruct
+
+# session-wide on HPC
+export EZRA_MODELS_DIR=/scratch/$USER/ezra/models
+ezra doctor
+
+# bake into a site profile
+ezra hpc init-site my-cluster --models-dir /scratch/$USER/ezra/models
+```
 
 ## Site profiles (recommended on HPC)
 

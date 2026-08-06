@@ -94,7 +94,32 @@ def current_site(root: Path | None = None) -> SiteProfile | None:
     return get_site(name, root)
 
 
-def init_site(name: str, root: Path | None = None, *, force: bool = False) -> SiteProfile:
+def patch_models_dir(config_path: Path, models_dir: str | Path) -> None:
+    """Set ``local.models_dir`` in an ezra.yaml while preserving comments when possible."""
+    path = Path(config_path)
+    value = str(Path(models_dir).as_posix() if isinstance(models_dir, Path) else models_dir)
+    text = path.read_text(encoding="utf-8")
+    pattern = re.compile(r"^([ \t]*models_dir:[ \t]*).*$", re.MULTILINE)
+    if pattern.search(text):
+        updated = pattern.sub(rf"\g<1>{value}", text, count=1)
+    else:
+        # No models_dir key yet — append under local: if present, else create a stub
+        local_match = re.search(r"^local:\s*$", text, re.MULTILINE)
+        if local_match:
+            insert_at = local_match.end()
+            updated = text[:insert_at] + f"\n  models_dir: {value}" + text[insert_at:]
+        else:
+            updated = text.rstrip() + f"\n\nlocal:\n  models_dir: {value}\n"
+    path.write_text(updated, encoding="utf-8", newline="\n")
+
+
+def init_site(
+    name: str,
+    root: Path | None = None,
+    *,
+    force: bool = False,
+    models_dir: str | Path | None = None,
+) -> SiteProfile:
     """Copy ``sites/_template`` to ``sites/<name>``."""
     name = validate_site_name(name)
     root = root or repo_root()
@@ -109,7 +134,10 @@ def init_site(name: str, root: Path | None = None, *, force: bool = False) -> Si
             )
         shutil.rmtree(dest)
     shutil.copytree(src, dest)
-    return SiteProfile(name=name, path=dest)
+    profile = SiteProfile(name=name, path=dest)
+    if models_dir is not None:
+        patch_models_dir(profile.config_path, models_dir)
+    return profile
 
 
 def site_config_path_from_env(root: Path | None = None) -> Path | None:
