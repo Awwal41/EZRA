@@ -1,4 +1,9 @@
 # EZRA example config — copy to ~/.ezra/ezra.yaml or set EZRA_CONFIG
+#
+# On HPC, prefer a shareable site profile instead of only editing this file:
+#   ezra hpc init-site my-cluster
+#   export EZRA_SITE=my-cluster
+# See sites/README.md
 version: 1
 
 local:

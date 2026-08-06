@@ -3,6 +3,8 @@
 
 > Phase 1 (this repo): curated free-model gallery + HPC-friendly one-command downloads. Router, local runtime, and science tools come next.
 
+**Full guides:** [docs/](docs/README.md) — [install](docs/install.md) · [models](docs/models.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
+
 ## Quick start
 
 ```bash
@@ -49,28 +51,29 @@ ezra models info chemllm-7b
 
 ## HPC (SLURM / SBATCH)
 
-EZRA is designed to run on login nodes or batch jobs with no GUI. Use SBATCH so jobs get **GPUs, CPUs, memory, and time limits** on compute nodes (not the login node).
+EZRA runs on login nodes or batch jobs with no GUI. **Customize for your cluster** with a site profile (partition, account, `module load`), then commit and push so others on the same HPC benefit — see [`sites/README.md`](sites/README.md) and [docs/hpc.md](docs/hpc.md).
+
+```bash
+ezra hpc init-site my-cluster
+# edit sites/my-cluster/ezra.yaml + modules.sh (look for EDIT ME)
+export EZRA_SITE=my-cluster
+export EZRA_MODELS_DIR=${SCRATCH:-$HOME}/ezra/models
+
+ezra hpc submit download --dry-run
+ezra hpc submit download
+```
 
 ### One-command submit
 
 ```bash
-# list built-in job kinds + default resources
 ezra hpc templates
-
-# CPU job: stage free models onto scratch
 ezra hpc submit download
-
-# GPU job: reserve a node and serve a model (OpenAI-compatible API when backends land)
 ezra hpc submit serve --model qwen2.5-7b-instruct --gpus 1 --cpus 8 --mem 64G
-
-# GPU hold for interactive work (then: srun --jobid=… --pty bash)
 ezra hpc submit interactive --gpus 1 --time 02:00:00
-
-# preview without calling sbatch (works on laptops too)
 ezra hpc submit serve --model chemllm-7b --gpus 1 --dry-run
 ```
 
-### Generate a script (edit partition / account, then sbatch)
+### Generate a script
 
 ```bash
 ezra hpc script serve --model qwen2.5-7b-instruct --gpus 1 --partition gpu -o /tmp/ezra-serve.sh
@@ -79,34 +82,21 @@ sbatch /tmp/ezra-serve.sh
 
 ### Example scripts in `scripts/`
 
+Prefer a site profile over hand-editing these every time.
+
 ```bash
-# CPU download (no GPU)
+export EZRA_SITE=my-cluster
 sbatch scripts/hpc_download_all.sh
 MODEL=qwen2.5-7b-instruct sbatch scripts/hpc_download_all.sh
-
-# GPU serve
 MODEL=qwen2.5-7b-instruct sbatch scripts/hpc_serve_gpu.sh
-
-# GPU interactive allocation
 sbatch scripts/hpc_interactive.sh
-```
-
-Tune defaults in `ezra.yaml` under `hpc.slurm` (partition, account, per-kind cpus/mem/gpus/time).
-
-### Inline download (login node / shared FS)
-
-```bash
-export EZRA_MODELS_DIR=/scratch/$USER/ezra/models
-export HF_TOKEN=hf_xxx          # only needed for gated models (e.g. Llama 70B)
-
-pip install -e .
-ezra models download --all --no-gated --max-size 14 --workers 2
 ```
 
 ### Cluster environment variables
 
 | Variable | Purpose |
 |----------|---------|
+| `EZRA_SITE` | Site profile under `sites/<name>/` (config + modules) |
 | `EZRA_MODELS_DIR` | Where weights are stored (use shared / scratch FS on HPC) |
 | `EZRA_HOME` | Config / state home (default `~/.ezra`) |
 | `EZRA_CONFIG` | Path to `ezra.yaml` |
@@ -117,8 +107,6 @@ ezra models download --all --no-gated --max-size 14 --workers 2
 | `MODEL` | Gallery model name for serve / single-model download |
 | `HF_TOKEN` | Hugging Face token for gated repos |
 | `CUDA_VISIBLE_DEVICES` | Set by SLURM when `--gres=gpu:…` is granted |
-
-Site tips: uncomment `module load python/…` and `module load cuda/…` in the generated scripts, and set `hpc.slurm.partition` / `account` in config.
 
 ## CLI reference
 
@@ -131,6 +119,8 @@ ezra models info NAME
 ezra models status
 ezra models remove NAME
 ezra hpc templates
+ezra hpc sites
+ezra hpc init-site NAME
 ezra hpc script download|serve|interactive [--gpus N] [--cpus N] [--mem 64G] [-o PATH]
 ezra hpc submit download|serve|interactive [--model NAME] [--gpus N] [--dry-run]
 ```
@@ -150,6 +140,17 @@ Add a model by appending an entry (name, `repo_id`, format, tags) and reinstall 
 | **4 – Lab scale** | Shared configs, plugins, observability |
 
 **One sentence:** EZRA lets materials and chemistry researchers download free LLMs, run them locally, and intelligently route between local models and HPC — without cloud lock-in.
+
+## Documentation
+
+| Doc | Contents |
+|-----|----------|
+| [docs/install.md](docs/install.md) | Install, venv, `ezra doctor` |
+| [docs/models.md](docs/models.md) | List / download / status / remove |
+| [docs/hpc.md](docs/hpc.md) | Site profiles, scratch, `ezra hpc submit` |
+| [sites/README.md](sites/README.md) | Customize for your cluster, commit & push |
+| [docs/configuration.md](docs/configuration.md) | `ezra.yaml` and environment variables |
+| [docs/cli.md](docs/cli.md) | Command reference |
 
 ## Contributing
 

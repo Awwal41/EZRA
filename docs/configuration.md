@@ -1,0 +1,89 @@
+# Configuration
+
+EZRA loads settings from (first match wins for file path):
+
+1. `--config PATH` on the CLI
+2. `EZRA_CONFIG` environment variable
+3. `sites/$EZRA_SITE/ezra.yaml` when `EZRA_SITE` is set (per-cluster profile)
+4. `./ezra.yaml` in the current working directory
+5. `~/.ezra/ezra.yaml` (or `$EZRA_HOME/ezra.yaml`)
+6. Packaged defaults: [`src/ezra/defaults/ezra.yaml`](../src/ezra/defaults/ezra.yaml)
+
+CLI `--models-dir` and `EZRA_MODELS_DIR` override `local.models_dir`.
+
+## Site profiles (recommended on HPC)
+
+Create a shareable cluster config (partition, account, modules) with:
+
+```bash
+ezra hpc init-site my-cluster
+export EZRA_SITE=my-cluster
+```
+
+Edit `sites/my-cluster/ezra.yaml` and `modules.sh` (search for **EDIT ME**), then commit and push — see [`sites/README.md`](../sites/README.md).
+
+## Environment variables
+
+| Variable | Purpose |
+|----------|---------|
+| `EZRA_SITE` | Name of a folder under `sites/` (loads that profile’s config + modules) |
+| `EZRA_MODELS_DIR` | Where weights are stored (use scratch on HPC) |
+| `EZRA_HOME` | Config / state home (default `~/.ezra`) |
+| `EZRA_CONFIG` | Path to `ezra.yaml` |
+| `EZRA_ROOT` | Repo checkout path inside batch jobs (optional) |
+| `EZRA_HOST` / `EZRA_PORT` | Bind address for serve jobs (default `0.0.0.0:8000`) |
+| `EZRA_HOLD_SECONDS` | How long interactive/serve-placeholder jobs sleep |
+| `EZRA_WORKERS` | Parallel download workers inside SBATCH download jobs |
+| `MODEL` | Gallery model name for serve / single-model download |
+| `HF_TOKEN` | Hugging Face token for gated repos (name configurable) |
+| `CUDA_VISIBLE_DEVICES` | Usually set by SLURM when GPUs are granted |
+
+## Example `ezra.yaml`
+
+Copy or extend the packaged defaults / site template. Minimal HPC-oriented example:
+
+```yaml
+version: 1
+
+local:
+  models_dir: ~/.ezra/models   # prefer EZRA_MODELS_DIR on clusters
+  prefer_quant: auto
+  max_workers: 2
+  resume: true
+  hf_token_env: HF_TOKEN
+
+hpc:
+  enabled: true
+  slurm:
+    partition: gpu
+    # account: mylab
+    # qos: normal
+    download:
+      time: "04:00:00"
+      cpus: 4
+      mem: "8G"
+      gpus: 0
+    serve:
+      time: "08:00:00"
+      cpus: 8
+      mem: "64G"
+      gpus: 1
+    interactive:
+      time: "02:00:00"
+      cpus: 4
+      mem: "32G"
+      gpus: 1
+```
+
+`ezra hpc script` / `ezra hpc submit` read `hpc.slurm` for default walltime, CPUs, memory, and GPUs. Command-line flags (`--partition`, `--gpus`, …) override these values per job.
+
+## Hugging Face token
+
+Gated models need a token and an accepted license on the model page:
+
+```bash
+export HF_TOKEN=hf_xxx
+ezra doctor   # should show "HF token set: yes"
+```
+
+The env var name defaults to `HF_TOKEN` and can be changed via `local.hf_token_env` in config. Do **not** commit tokens into site profiles.

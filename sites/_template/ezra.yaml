@@ -1,0 +1,50 @@
+# Default EZRA configuration — SITE PROFILE
+#
+# EDIT ME: copy this folder via `ezra hpc init-site <name>`, then fill in
+# partition / account / resources for YOUR cluster. Commit the result under
+# sites/<name>/ (no secrets) so others on the same HPC can reuse it.
+#
+# Activate with:
+#   export EZRA_SITE=<name>
+#   export EZRA_MODELS_DIR=/scratch/$USER/ezra/models   # EDIT ME: your scratch path
+#
+version: 1
+
+local:
+  backend: auto
+  # Prefer EZRA_MODELS_DIR in the environment over this path on HPC.
+  models_dir: ~/.ezra/models
+  prefer_quant: auto
+  max_workers: 2
+  resume: true
+  hf_token_env: HF_TOKEN
+
+router:
+  mode: auto
+
+hpc:
+  enabled: true
+  endpoints: []
+  slurm:
+    # ── EDIT ME: site-wide SLURM knobs ────────────────────────────────
+    # partition: gpu              # e.g. gpu, gpu-shared, a100, batch
+    # account: mylab              # allocation / project account
+    # qos: normal
+    # constraint: a100            # if your site uses feature constraints
+    download:
+      time: "04:00:00"
+      cpus: 4
+      mem: "8G"
+      gpus: 0
+      # partition: download       # optional per-job override
+    serve:
+      time: "08:00:00"
+      cpus: 8
+      mem: "64G"
+      gpus: 1
+      # gres: "gpu:a100:1"        # EDIT ME if plain gpu:N is wrong for your site
+    interactive:
+      time: "02:00:00"
+      cpus: 4
+      mem: "32G"
+      gpus: 1

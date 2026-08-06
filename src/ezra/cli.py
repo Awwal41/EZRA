@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -354,13 +355,20 @@ def doctor(ctx: click.Context) -> None:
     """Quick environment check for HPC / local use."""
     config = ctx.obj["config"]
     gallery: ModelGallery = ctx.obj["gallery"]
+    site = os.environ.get("EZRA_SITE", "").strip() or "<none>"
     console.print(f"EZRA version:     {__version__}")
+    console.print(f"EZRA_SITE:        {site}")
     console.print(f"Models dir:       {config.models_dir}")
     console.print(f"Prefer quant:     {config.prefer_quant}")
     console.print(f"HF token env:     {config.hf_token_env}")
     console.print(f"HF token set:     {'yes' if config.hf_token else 'no'}")
     console.print(f"Gallery models:   {len(gallery.names())}")
     console.print(f"Max workers:      {config.max_workers}")
+    if site == "<none>":
+        console.print(
+            "Tip: [green]ezra hpc init-site my-cluster[/green] then "
+            "[green]export EZRA_SITE=my-cluster[/green] (see sites/README.md)"
+        )
     try:
         config.models_dir.mkdir(parents=True, exist_ok=True)
         test = config.models_dir / ".ezra_write_test"
@@ -401,9 +409,84 @@ def hpc_templates() -> None:
         )
     console.print(table)
     console.print(
-        "\nGenerate:  [green]ezra hpc script serve --model qwen2.5-7b-instruct[/green]\n"
+        "\nCustomize for your HPC: [green]ezra hpc init-site my-cluster[/green] "
+        "then [green]export EZRA_SITE=my-cluster[/green]\n"
+        "Generate:  [green]ezra hpc script serve --model qwen2.5-7b-instruct[/green]\n"
         "Submit:    [green]ezra hpc submit serve --model qwen2.5-7b-instruct --gpus 1[/green]"
     )
+
+
+@hpc_group.command("sites")
+def hpc_sites() -> None:
+    """List committed site profiles under sites/."""
+    from ezra.hpc.sites import current_site, list_sites
+
+    profiles = list_sites()
+    active = os.environ.get("EZRA_SITE", "").strip() or None
+    if not profiles:
+        console.print("No site profiles yet (only the template).")
+        console.print("Create one: [green]ezra hpc init-site my-cluster[/green]")
+        console.print("Docs: [bold]sites/README.md[/bold]")
+        return
+
+    table = Table(title="EZRA site profiles")
+    table.add_column("Name", style="cyan")
+    table.add_column("Active")
+    table.add_column("Config")
+    table.add_column("Modules")
+    table.add_column("Path")
+    for p in profiles:
+        table.add_row(
+            p.name,
+            "yes" if active == p.name else "—",
+            "yes" if p.config_path.is_file() else "missing",
+            "yes" if p.modules_path.is_file() else "missing",
+            str(p.path),
+        )
+    console.print(table)
+    if active:
+        try:
+            site = current_site()
+            console.print(f"EZRA_SITE=[bold]{site.name}[/bold] → {site.path}")
+        except (FileNotFoundError, ValueError) as exc:
+            console.print(f"[red]EZRA_SITE={active} invalid:[/red] {exc}")
+    else:
+        console.print("Set active profile: [green]export EZRA_SITE=<name>[/green]")
+
+
+@hpc_group.command("init-site")
+@click.argument("name")
+@click.option("--force", is_flag=True, help="Overwrite an existing sites/<name> folder.")
+def hpc_init_site(name: str, force: bool) -> None:
+    """Create sites/<name> from the editable template (then commit & push).
+
+    \b
+    Workflow:
+      ezra hpc init-site frontier
+      $EDITOR sites/frontier/ezra.yaml      # EDIT ME: partition, account, gpus
+      $EDITOR sites/frontier/modules.sh     # EDIT ME: module load …
+      export EZRA_SITE=frontier
+      git add sites/frontier && git commit && git push   # PR so others benefit
+    """
+    from ezra.hpc.sites import init_site
+
+    try:
+        profile = init_site(name, force=force)
+    except (ValueError, FileExistsError, FileNotFoundError) as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    console.print(f"Created site profile: [bold]{profile.path}[/bold]")
+    console.print("1. Edit [cyan]ezra.yaml[/cyan] and [cyan]modules.sh[/cyan] (search for EDIT ME)")
+    console.print("2. Fill in [cyan]NOTES.md[/cyan] for the next person on this cluster")
+    console.print(f"3. [green]export EZRA_SITE={profile.name}[/green]")
+    console.print(
+        f"4. Commit & push (no secrets):\n"
+        f"   [green]git checkout -b sites/{profile.name}[/green]\n"
+        f"   [green]git add sites/{profile.name} && git commit -m "
+        f"\"Add {profile.name} HPC site profile\"[/green]\n"
+        f"   [green]git push -u origin sites/{profile.name}[/green]"
+    )
+    console.print("Details: [bold]sites/README.md[/bold]")
 
 
 def _hpc_resources_options(fn):
@@ -594,6 +677,9 @@ def hpc_submit(
     }
     if model:
         export_env["MODEL"] = model
+    site = os.environ.get("EZRA_SITE", "").strip()
+    if site:
+        export_env["EZRA_SITE"] = site
     models_dir = ctx.obj["config"].models_dir
 
     try:

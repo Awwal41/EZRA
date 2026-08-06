@@ -202,10 +202,30 @@ else
 fi
 cd "$ROOT"
 
-# Site-specific modules (uncomment / edit for your cluster):
-# module load python/3.11
-# module load cuda/12.4
-# module load gcc/11
+# ── Site profile (EDIT / create with: ezra hpc init-site <name>) ─────────
+# export EZRA_SITE=my-cluster
+if [[ -n "${EZRA_SITE:-}" ]]; then
+  SITE_DIR="$ROOT/sites/$EZRA_SITE"
+  if [[ ! -d "$SITE_DIR" ]]; then
+    echo "EZRA_SITE=$EZRA_SITE but missing directory: $SITE_DIR" >&2
+    echo "Create one: ezra hpc init-site $EZRA_SITE" >&2
+    exit 1
+  fi
+  if [[ -f "$SITE_DIR/ezra.yaml" ]]; then
+    export EZRA_CONFIG="${EZRA_CONFIG:-$SITE_DIR/ezra.yaml}"
+    echo "Using site config: $EZRA_CONFIG"
+  fi
+  if [[ -f "$SITE_DIR/modules.sh" ]]; then
+    echo "Sourcing site modules: $SITE_DIR/modules.sh"
+    # shellcheck disable=SC1090
+    source "$SITE_DIR/modules.sh"
+  fi
+else
+  echo "Tip: set EZRA_SITE=<name> after 'ezra hpc init-site <name>' so partition/modules match your HPC."
+  # Fallback when no site profile — EDIT ME for a one-off, or use a site profile instead:
+  # module load python/3.11
+  # module load cuda/12.4
+fi
 
 if [[ ! -d .venv ]]; then
   python3 -m venv .venv
@@ -218,6 +238,7 @@ pip install -q -e .
 echo "=== EZRA job on $(hostname) ==="
 echo "CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-<unset>}"
 echo "SLURM_JOB_ID=${SLURM_JOB_ID:-<none>}  GPUS=${SLURM_GPUS:-${SLURM_GPUS_ON_NODE:-0}}"
+echo "EZRA_SITE=${EZRA_SITE:-<none>}"
 ezra doctor
 command -v nvidia-smi >/dev/null 2>&1 && nvidia-smi || true
 """.strip()

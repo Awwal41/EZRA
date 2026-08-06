@@ -95,7 +95,9 @@ Do **not** commit model weights (`.gguf`, `.safetensors`), `.venv/`, `.env`, or 
 | `src/ezra/defaults/ezra.yaml` | Packaged default config |
 | `src/ezra/cli.py` | Click CLI (`ezra` entrypoint) |
 | `src/ezra/hpc/` | SLURM / SBATCH helpers |
-| `scripts/hpc_*.sh` | Example HPC job scripts |
+| `scripts/hpc_*.sh` | Example HPC job scripts (honor `EZRA_SITE`) |
+| `sites/` | Per-cluster profiles (`init-site` → edit → commit & push) |
+| `docs/` | User guides (install, models, HPC, config, CLI) |
 | `tests/` | Pytest suite (prefer no network) |
 | `TODO.md` | Shared backlog — anyone can add items |
 
@@ -140,7 +142,8 @@ Follow patterns already used in the tree. Prefer consistency over personal prefe
 
 ### Docs and TODO
 
-- Keep README examples accurate when you change CLI flags or behavior.
+- Keep [README.md](README.md) examples and guides under [docs/](docs/README.md) accurate when you change CLI flags or behavior.
+- User-facing how-to (install, models, HPC, config, CLI) lives in `docs/` — update the matching page, not only the README.
 - Shared ideas go in [TODO.md](TODO.md) with priority tags (`P0` / `P1` / `P2` / `Idea`).
 
 ---
@@ -169,10 +172,19 @@ Follow patterns already used in the tree. Prefer consistency over personal prefe
 4. Run `pytest` and `ruff check` / `ruff format`.
 5. Update README / help text if user-facing behavior changes.
 
-### HPC / SBATCH
+### HPC / SBATCH / site profiles
 
-- Prefer extending `src/ezra/hpc/sbatch.py` and keeping `scripts/hpc_*.sh` as thin, documented examples.
-- Cover new template logic in `tests/test_sbatch.py` where practical.
+**Cluster-specific settings belong in `sites/<name>/`, not as one-off edits everyone has to rediscover.**
+
+1. `ezra hpc init-site <cluster-name>`
+2. Edit `EDIT ME` fields in `ezra.yaml` + `modules.sh`; fill `NOTES.md`
+3. `export EZRA_SITE=<cluster-name>` and smoke-test with `--dry-run`
+4. Commit `sites/<cluster-name>/` (no tokens) and open a PR
+
+Details: [`sites/README.md`](sites/README.md) and [docs/hpc.md](docs/hpc.md).
+
+- Prefer extending `src/ezra/hpc/sbatch.py` / `sites.py` and keeping `scripts/hpc_*.sh` as thin examples that honor `EZRA_SITE`.
+- Cover new template logic in `tests/test_sbatch.py` / `tests/test_sites.py` where practical.
 
 ---
 
@@ -221,12 +233,13 @@ pytest tests/test_gallery.py -q
 - [ ] `ruff check` / `ruff format` clean (or intentional, noted exceptions)
 - [ ] Gallery names unique; new models documented and free/open
 - [ ] No secrets, weights, or `.venv` in the diff
-- [ ] README / CLI help updated if behavior changed
+- [ ] README / `docs/` / CLI help updated if behavior changed
 
 ---
 
 ## 8. Questions and roadmap
 
+- User how-to: [docs/](docs/README.md)
 - Near-term work and ideas: [TODO.md](TODO.md)
 - Product vision / phases: [README.md](README.md) (Vision section)
 - Bugs and feature proposals: GitHub Issues on the upstream repo

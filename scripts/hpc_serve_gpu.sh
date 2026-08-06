@@ -7,18 +7,19 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
-# Optional site knobs (uncomment / edit):
+# ── EDIT ME (or use a site profile instead of editing this file) ──────────
 # #SBATCH --partition=gpu
-# #SBATCH --account=myaccount
+# #SBATCH --account=mylab
 # #SBATCH --constraint=a100
+#
+# Preferred: ezra hpc init-site my-cluster && export EZRA_SITE=my-cluster
+# See sites/README.md
 
 # EZRA SLURM job: serve a model with GPU/CPU allocation.
 # Usage:
+#   export EZRA_SITE=my-cluster
 #   MODEL=qwen2.5-7b-instruct sbatch scripts/hpc_serve_gpu.sh
 #   ezra hpc submit serve --model qwen2.5-7b-instruct --gpus 1
-#
-# Prefer generating a site-tuned script:
-#   ezra hpc script serve --model qwen2.5-7b-instruct --partition gpu -o /tmp/ezra-serve.sh
 
 set -euo pipefail
 
@@ -35,8 +36,24 @@ else
 fi
 cd "$ROOT"
 
-# module load python/3.11
-# module load cuda/12.4
+if [[ -n "${EZRA_SITE:-}" ]]; then
+  SITE_DIR="$ROOT/sites/$EZRA_SITE"
+  if [[ ! -d "$SITE_DIR" ]]; then
+    echo "EZRA_SITE=$EZRA_SITE but missing directory: $SITE_DIR" >&2
+    echo "Create one: ezra hpc init-site $EZRA_SITE" >&2
+    exit 1
+  fi
+  [[ -f "$SITE_DIR/ezra.yaml" ]] && export EZRA_CONFIG="${EZRA_CONFIG:-$SITE_DIR/ezra.yaml}"
+  if [[ -f "$SITE_DIR/modules.sh" ]]; then
+    # shellcheck disable=SC1090
+    source "$SITE_DIR/modules.sh"
+  fi
+else
+  echo "Tip: ezra hpc init-site <name> && export EZRA_SITE=<name>  (see sites/README.md)"
+  # EDIT ME only for a one-off without a site profile:
+  # module load python/3.11
+  # module load cuda/12.4
+fi
 
 if [[ ! -d .venv ]]; then
   python3 -m venv .venv
@@ -47,6 +64,7 @@ pip install -q -U pip
 pip install -q -e .
 
 echo "=== EZRA serve on $(hostname) ==="
+echo "EZRA_SITE=${EZRA_SITE:-<none>}"
 echo "CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-<unset>}"
 ezra doctor
 command -v nvidia-smi >/dev/null 2>&1 && nvidia-smi || true

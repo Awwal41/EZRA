@@ -6,18 +6,23 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=8G
-# Optional: request network / internet node partition if your site needs it
+# ── EDIT ME (or use a site profile instead of editing this file) ──────────
 # #SBATCH --partition=download
+# #SBATCH --account=mylab
+#
+# Preferred workflow (customize once, commit & push for your cluster):
+#   ezra hpc init-site my-cluster
+#   $EDITOR sites/my-cluster/ezra.yaml    # partition, account, resources
+#   $EDITOR sites/my-cluster/modules.sh   # module load …
+#   export EZRA_SITE=my-cluster
+#   ezra hpc submit download
+# See sites/README.md
 
 # EZRA SLURM job: stage curated free models onto shared storage (CPU, no GPU).
 # Usage:
+#   export EZRA_SITE=my-cluster   # optional but recommended
 #   sbatch scripts/hpc_download_all.sh
-#   sbatch --export=ALL,EZRA_MODELS_DIR=/scratch/$USER/ezra/models scripts/hpc_download_all.sh
 #   MODEL=qwen2.5-7b-instruct sbatch scripts/hpc_download_all.sh
-#   ezra hpc submit download
-#
-# Prefer generating a site-tuned script:
-#   ezra hpc script download --partition download -o /tmp/ezra-dl.sh
 
 set -euo pipefail
 
@@ -34,8 +39,23 @@ else
 fi
 cd "$ROOT"
 
-# Load your site's modules if needed, e.g.:
-# module load python/3.11
+if [[ -n "${EZRA_SITE:-}" ]]; then
+  SITE_DIR="$ROOT/sites/$EZRA_SITE"
+  if [[ ! -d "$SITE_DIR" ]]; then
+    echo "EZRA_SITE=$EZRA_SITE but missing directory: $SITE_DIR" >&2
+    echo "Create one: ezra hpc init-site $EZRA_SITE" >&2
+    exit 1
+  fi
+  [[ -f "$SITE_DIR/ezra.yaml" ]] && export EZRA_CONFIG="${EZRA_CONFIG:-$SITE_DIR/ezra.yaml}"
+  if [[ -f "$SITE_DIR/modules.sh" ]]; then
+    # shellcheck disable=SC1090
+    source "$SITE_DIR/modules.sh"
+  fi
+else
+  echo "Tip: ezra hpc init-site <name> && export EZRA_SITE=<name>  (see sites/README.md)"
+  # EDIT ME only for a one-off without a site profile:
+  # module load python/3.11
+fi
 
 if [[ ! -d .venv ]]; then
   python3 -m venv .venv
@@ -46,6 +66,7 @@ pip install -q -U pip
 pip install -q -e .
 
 echo "=== EZRA download on $(hostname) ==="
+echo "EZRA_SITE=${EZRA_SITE:-<none>}"
 ezra doctor
 
 if [[ -n "${MODEL:-}" ]]; then

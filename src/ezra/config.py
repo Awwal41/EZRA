@@ -47,7 +47,7 @@ def _package_default_config() -> Path:
 
 
 def load_config(path: Path | None = None) -> EzraConfig:
-    """Load ezra.yaml from explicit path, cwd, EZRA_HOME, or packaged default."""
+    """Load ezra.yaml from explicit path, cwd, EZRA_HOME, site profile, or packaged default."""
     candidates: list[Path] = []
     if path is not None:
         candidates.append(Path(path).expanduser())
@@ -55,6 +55,13 @@ def load_config(path: Path | None = None) -> EzraConfig:
         env_cfg = os.environ.get("EZRA_CONFIG")
         if env_cfg:
             candidates.append(Path(env_cfg).expanduser())
+        # Per-cluster profile: export EZRA_SITE=my-cluster → sites/my-cluster/ezra.yaml
+        site_name = os.environ.get("EZRA_SITE", "").strip()
+        if site_name and "/" not in site_name and "\\" not in site_name:
+            from ezra.hpc.sites import repo_root, sites_dir
+
+            site_cfg = sites_dir(repo_root()) / site_name / "ezra.yaml"
+            candidates.append(site_cfg)
         candidates.extend(
             [
                 Path.cwd() / DEFAULT_CONFIG_NAME,
