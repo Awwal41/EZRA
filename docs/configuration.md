@@ -41,7 +41,7 @@ ezra hpc init-site my-cluster
 export EZRA_SITE=my-cluster
 ```
 
-Edit `sites/my-cluster/ezra.yaml` and `modules.sh` (search for **EDIT ME**), then commit and push — see [`sites/README.md`](../sites/README.md).
+Edit `sites/my-cluster/ezra.yaml` and `modules.sh` (search for **EDIT ME**), then commit and push - see [`sites/README.md`](../sites/README.md).
 
 ## Environment variables
 

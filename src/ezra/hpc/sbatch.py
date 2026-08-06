@@ -190,7 +190,7 @@ def _bash_single_quote(value: str) -> str:
 
 def _repo_bootstrap(models_dir: str | Path | None = None) -> str:
     if models_dir is not None and str(models_dir).strip():
-        # Always emit POSIX paths — scripts run on Linux HPC, not Windows
+        # Always emit POSIX paths - scripts run on Linux HPC, not Windows
         resolved = Path(str(models_dir).strip()).expanduser().as_posix()
         models_export = (
             f'export EZRA_MODELS_DIR="${{EZRA_MODELS_DIR:-{_bash_single_quote(resolved)}}}"'
@@ -237,7 +237,7 @@ if [[ -n "${{EZRA_SITE:-}}" ]]; then
   fi
 else
   echo "Tip: set EZRA_SITE=<name> after 'ezra hpc init-site <name>' so partition/modules match your HPC."
-  # Fallback when no site profile — EDIT ME for a one-off, or use a site profile instead:
+  # Fallback when no site profile - EDIT ME for a one-off, or use a site profile instead:
   # module load python/3.11
   # module load cuda/12.4
 fi
@@ -293,7 +293,7 @@ if ezra serve --help >/dev/null 2>&1; then
   exec ezra serve --model "$MODEL" --host "$HOST" --port "$PORT"
 else
   echo "ezra serve is not available in this build yet."
-  echo "GPU/CPU allocation succeeded — install an inference backend, then re-submit."
+  echo "GPU/CPU allocation succeeded - install an inference backend, then re-submit."
   echo "Holding allocation briefly so you can attach / debug (CTRL+C or scancel to stop)."
   sleep "${EZRA_HOLD_SECONDS:-300}"
 fi

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ezra"
 version = "0.1.0"
-description = "EZRA — Easy Zero-setup Routing Assistant for local & HPC LLMs"
+description = "EZRA - Easy Zero-setup Routing Assistant for local & HPC LLMs"
 readme = "README.md"
 license = { text = "GPL-3.0-or-later" }
 requires-python = ">=3.10"

@@ -1,6 +1,6 @@
 # Contributing to EZRA
 
-Thanks for helping build **EZRA** — a researcher-first toolkit for downloading, running, and routing free/open LLMs for materials science and chemistry.
+Thanks for helping build **EZRA** - a researcher-first toolkit for downloading, running, and routing free/open LLMs for materials science and chemistry.
 
 This guide covers forking the repo, setting up a dev environment, coding style, common contribution types, and opening pull requests.
 
@@ -99,7 +99,7 @@ Do **not** commit model weights (`.gguf`, `.safetensors`), `.venv/`, `.env`, or 
 | `sites/` | Per-cluster profiles (`init-site` → edit → commit & push) |
 | `docs/` | User guides (install, models, HPC, config, CLI) |
 | `tests/` | Pytest suite (prefer no network) |
-| `TODO.md` | Shared backlog — anyone can add items |
+| `TODO.md` | Shared backlog - anyone can add items |
 
 Match existing module boundaries: gallery data in YAML, download logic in `downloader.py`, config in `config.py`, CLI thin wrappers in `cli.py`.
 
@@ -118,7 +118,7 @@ Follow patterns already used in the tree. Prefer consistency over personal prefe
 - Keep functions focused; private helpers may use a leading `_`.
 - CLI: **Click** groups/commands; user-facing tables/output via **Rich** where the rest of the CLI does.
 - Avoid broad `except:`; catch specific exceptions and fail with clear messages.
-- Do not add heavy dependencies without discussion — keep the core install lean for HPC/login nodes.
+- Do not add heavy dependencies without discussion - keep the core install lean for HPC/login nodes.
 
 ### Formatting and lint
 
@@ -143,7 +143,7 @@ Follow patterns already used in the tree. Prefer consistency over personal prefe
 ### Docs and TODO
 
 - Keep [README.md](README.md) examples and guides under [docs/](docs/README.md) accurate when you change CLI flags or behavior.
-- User-facing how-to (install, models, HPC, config, CLI) lives in `docs/` — update the matching page, not only the README.
+- User-facing how-to (install, models, HPC, config, CLI) lives in `docs/` - update the matching page, not only the README.
 - Shared ideas go in [TODO.md](TODO.md) with priority tags (`P0` / `P1` / `P2` / `Idea`).
 
 ---
@@ -152,7 +152,7 @@ Follow patterns already used in the tree. Prefer consistency over personal prefe
 
 ### Add a model to the gallery
 
-1. Edit `src/ezra/gallery/models.yaml` — append an entry with the fields documented at the top of that file.
+1. Edit `src/ezra/gallery/models.yaml` - append an entry with the fields documented at the top of that file.
 2. Confirm the HF `repo_id` exists and the license is acceptable for free/open use.
 3. Run:
 
@@ -244,4 +244,4 @@ pytest tests/test_gallery.py -q
 - Product vision / phases: [README.md](README.md) (Vision section)
 - Bugs and feature proposals: GitHub Issues on the upstream repo
 
-If you are unsure where a change belongs, open a short issue or draft PR first — especially for new dependencies, runtime backends, or Phase 2+ routing work.
+If you are unsure where a change belongs, open a short issue or draft PR first - especially for new dependencies, runtime backends, or Phase 2+ routing work.

@@ -1,4 +1,4 @@
-# Default EZRA configuration (Phase 1 — local download & gallery + HPC SBATCH)
+# Default EZRA configuration (Phase 1 - local download & gallery + HPC SBATCH)
 version: 1
 
 local:

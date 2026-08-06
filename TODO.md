@@ -1,6 +1,6 @@
-# EZRA — Shared TODO
+# EZRA - Shared TODO
 
-Collaborative task list for contributors. **Anyone can add items** — keep entries short, assign a priority, and leave your handle/date if useful.
+Collaborative task list for contributors. **Anyone can add items** - keep entries short, assign a priority, and leave your handle/date if useful.
 
 ## How to add an item
 
@@ -8,7 +8,7 @@ Collaborative task list for contributors. **Anyone can add items** — keep entr
 2. Copy a checkbox line and fill it in:
 
    ```markdown
-   - [ ] **Short title** — one-line why / notes. `(@you, YYYY-MM-DD)` `P0|P1|P2`
+   - [ ] **Short title** - one-line why / notes. `(@you, YYYY-MM-DD)` `P0|P1|P2`
    ```
 
 3. Open a PR, or edit this file on `main` if you have write access.
@@ -21,7 +21,7 @@ Collaborative task list for contributors. **Anyone can add items** — keep entr
 | `P0` | MVP / blocks core value |
 | `P1` | Important next |
 | `P2` | Nice to have / later |
-| `Idea` | Not committed — discuss first |
+| `Idea` | Not committed - discuss first |
 
 ---
 
@@ -39,7 +39,7 @@ Track what already landed so we do not re-open finished work.
 
 ---
 
-## P0 — MVP (must ship)
+## P0 - MVP (must ship)
 
 ### Install & DX
 
@@ -49,9 +49,9 @@ Track what already landed so we do not re-open finished work.
 
 ### Model gallery & download
 
-- [ ] `ezra models list` — show curated gallery (filters: size, tags, science) `P0`
-- [ ] `ezra models download <name>` — download one model by alias `P0`
-- [ ] `ezra models download --all` — download all gallery models (parallel + resume) `P0`
+- [ ] `ezra models list` - show curated gallery (filters: size, tags, science) `P0`
+- [ ] `ezra models download <name>` - download one model by alias `P0`
+- [ ] `ezra models download --all` - download all gallery models (parallel + resume) `P0`
 - [ ] Quant selection / auto-pick (GGUF Q4_K_M default; respect `prefer_quant`) `P0`
 - [ ] Clear progress + resume on interrupted HPC downloads `P0`
 
@@ -70,13 +70,13 @@ Track what already landed so we do not re-open finished work.
 ### HPC / SLURM
 
 - [x] Generate / run as **SBATCH script** so jobs get GPUs, CPUs, memory, time limits `P0`
-- [x] Example `#SBATCH` templates (GPU serve, CPU download, interactive) — `scripts/hpc_*.sh` + `ezra hpc` `P0`
+- [x] Example `#SBATCH` templates (GPU serve, CPU download, interactive) - `scripts/hpc_*.sh` + `ezra hpc` `P0`
 - [x] Document cluster env vars (`EZRA_HOME`, `EZRA_MODELS_DIR`, `HF_TOKEN`, modules/CUDA) `P0`
 - [x] `ezra hpc submit` that wraps download/serve/interactive in sbatch `P0`
 
 ---
 
-## P1 — Important next
+## P1 - Important next
 
 - [ ] HPC OpenAI-compatible remote endpoints in config + client `P1`
 - [ ] Chemistry / materials system prompt pack `P1`
@@ -87,7 +87,7 @@ Track what already landed so we do not re-open finished work.
 
 ---
 
-## P2 — Later / Phase 3–4
+## P2 - Later / Phase 3-4
 
 - [ ] Domain classifier (SMILES/CIF, chem terminology, long-context signals) `P2`
 - [ ] Full policy engine (privacy-first, long-context → HPC, tag matching) `P2`
@@ -103,7 +103,7 @@ Track what already landed so we do not re-open finished work.
 
 ## Backlog / Ideas
 
-_Drop anything here — no commitment required. Promote to P0/P1/P2 when agreed._
+_Drop anything here - no commitment required. Promote to P0/P1/P2 when agreed._
 
 - [ ] …
 - [ ] …

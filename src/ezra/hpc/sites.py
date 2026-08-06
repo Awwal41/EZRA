@@ -103,7 +103,7 @@ def patch_models_dir(config_path: Path, models_dir: str | Path) -> None:
     if pattern.search(text):
         updated = pattern.sub(rf"\g<1>{value}", text, count=1)
     else:
-        # No models_dir key yet — append under local: if present, else create a stub
+        # No models_dir key yet - append under local: if present, else create a stub
         local_match = re.search(r"^local:\s*$", text, re.MULTILINE)
         if local_match:
             insert_at = local_match.end()

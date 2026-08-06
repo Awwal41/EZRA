@@ -1,4 +1,4 @@
-# Default EZRA configuration — SITE PROFILE
+# Default EZRA configuration - SITE PROFILE
 #
 # EDIT ME: copy this folder via `ezra hpc init-site <name>`, then fill in
 # partition / account / resources for YOUR cluster. Commit the result under

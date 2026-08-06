@@ -1,9 +1,9 @@
 # EZRA
-**Easy Zero-setup Routing Assistant** for local & HPC LLMs — a researcher-first system for downloading, running, and intelligently routing free/open models, purpose-built for materials science and chemistry.
+**Easy Zero-setup Routing Assistant** for local & HPC LLMs - a researcher-first system for downloading, running, and intelligently routing free/open models, purpose-built for materials science and chemistry.
 
 > Phase 1 (this repo): curated free-model gallery + HPC-friendly one-command downloads. Router, local runtime, and science tools come next.
 
-**Full guides:** [docs/](docs/README.md) — [install](docs/install.md) · [models](docs/models.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
+**Full guides:** [docs/](docs/README.md) - [install](docs/install.md) · [models](docs/models.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
 
 ## Quick start
 
@@ -51,7 +51,7 @@ ezra models info chemllm-7b
 
 ## HPC (SLURM / SBATCH)
 
-EZRA runs on login nodes or batch jobs with no GUI. **Customize for your cluster** with a site profile (partition, account, `module load`), then commit and push so others on the same HPC benefit — see [`sites/README.md`](sites/README.md) and [docs/hpc.md](docs/hpc.md).
+EZRA runs on login nodes or batch jobs with no GUI. **Customize for your cluster** with a site profile (partition, account, `module load`), then commit and push so others on the same HPC benefit - see [`sites/README.md`](sites/README.md) and [docs/hpc.md](docs/hpc.md).
 
 ```bash
 ezra hpc init-site my-cluster --models-dir ${SCRATCH:-$HOME}/ezra/models
@@ -127,18 +127,18 @@ ezra hpc submit download|serve|interactive [--model NAME] [--gpus N] [--dry-run]
 
 Models live in [`src/ezra/gallery/models.yaml`](src/ezra/gallery/models.yaml): Qwen, Llama, Mistral, DeepSeek, Gemma/Phi GGUFs for local use, plus chemistry/materials checkpoints (ChemLLM, ChemBERTa, MatSciBERT, …) and larger safetensors for GPU/HPC.
 
-Add a model by appending an entry (name, `repo_id`, format, tags) and reinstall / re-run — no code change required.
+Add a model by appending an entry (name, `repo_id`, format, tags) and reinstall / re-run - no code change required.
 
 ## Vision (roadmap)
 
 | Phase | Focus |
 |-------|--------|
-| **1 – Core Local** (now) | Gallery, download-by-name / download-all, HPC staging, config |
-| **2 – Smart routing + HPC** | Domain classifier, policy engine, OpenAI-compatible API, remote adapters |
-| **3 – Scientific layer** | Chem/materials prompts, tool-calling, RAG helpers, eval harness |
-| **4 – Lab scale** | Shared configs, plugins, observability |
+| **1 - Core Local** (now) | Gallery, download-by-name / download-all, HPC staging, config |
+| **2 - Smart routing + HPC** | Domain classifier, policy engine, OpenAI-compatible API, remote adapters |
+| **3 - Scientific layer** | Chem/materials prompts, tool-calling, RAG helpers, eval harness |
+| **4 - Lab scale** | Shared configs, plugins, observability |
 
-**One sentence:** EZRA lets materials and chemistry researchers download free LLMs, run them locally, and intelligently route between local models and HPC — without cloud lock-in.
+**One sentence:** EZRA lets materials and chemistry researchers download free LLMs, run them locally, and intelligently route between local models and HPC - without cloud lock-in.
 
 ## Documentation
 
@@ -157,4 +157,4 @@ Fork, setup, coding style, gallery additions, and PR checklist: see [CONTRIBUTIN
 
 ## License
 
-GPL-3.0-or-later — see [LICENSE](LICENSE).
+GPL-3.0-or-later - see [LICENSE](LICENSE).

@@ -329,7 +329,7 @@ models:
     gated: false
     science_tags: [general, reasoning, chemistry-friendly, materials-friendly, long-context]
     tags: [kimi, moonshot, moe, instruct, hpc, heavy, agentic]
-    description: Kimi K2 Instruct 0905 — flagship MoE (1T / 32B act, 256k ctx). HPC multi-GPU only.
+    description: Kimi K2 Instruct 0905 - flagship MoE (1T / 32B act, 256k ctx). HPC multi-GPU only.
     file_pattern: "*.safetensors|*.json|*.txt|*.model|tokenizer*|*.py"
     recommended_ram_gb: 512
 
@@ -343,7 +343,7 @@ models:
     gated: false
     science_tags: [reasoning, chemistry-friendly, materials-friendly]
     tags: [kimi, moonshot, moe, reasoning, hpc, heavy]
-    description: Kimi K2 Thinking — long-form reasoning variant of K2 for hard science tasks.
+    description: Kimi K2 Thinking - long-form reasoning variant of K2 for hard science tasks.
     file_pattern: "*.safetensors|*.json|*.txt|*.model|tokenizer*|*.py"
     recommended_ram_gb: 512
 

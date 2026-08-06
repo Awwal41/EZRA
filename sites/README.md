@@ -1,6 +1,6 @@
 # Site profiles (per-HPC customization)
 
-Every cluster is different: partition names, accounts, `module load` lines, GPU GRES strings, and scratch paths. **EZRA expects you to customize for your machine** — do not assume the generic `scripts/hpc_*.sh` defaults match your site.
+Every cluster is different: partition names, accounts, `module load` lines, GPU GRES strings, and scratch paths. **EZRA expects you to customize for your machine** - do not assume the generic `scripts/hpc_*.sh` defaults match your site.
 
 ## Quick start (your cluster)
 

@@ -56,7 +56,7 @@ Useful flags:
 | `--force` | Re-download even if already present |
 | `--dry-run` | Print what would be fetched |
 
-Weights land under your chosen models directory (see [Install — Where models are stored](install.md)):
+Weights land under your chosen models directory (see [Install - Where models are stored](install.md)):
 
 ```bash
 ezra --models-dir /data/ezra/models models download qwen2.5-7b-instruct
@@ -87,4 +87,4 @@ ezra models remove chemllm-7b --dry-run
 
 - Prefer `--dry-run` first on HPC so you know size and count before a long job.
 - Use `--max-size` and `--format gguf` when disk or network is limited.
-- For bulk staging on a cluster, prefer a SLURM download job — see [HPC](hpc.md).
+- For bulk staging on a cluster, prefer a SLURM download job - see [HPC](hpc.md).

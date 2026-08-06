@@ -1,4 +1,4 @@
-# Site notes — EDIT ME
+# Site notes - EDIT ME
 
 Fill this in when you add a profile so the next person on the same HPC knows what works.
 

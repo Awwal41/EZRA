@@ -56,7 +56,7 @@ def _downloader(ctx: click.Context) -> ModelDownloader:
 )
 @click.pass_context
 def main(ctx: click.Context, config_path: Path | None, models_dir: Path | None) -> None:
-    """EZRA — Easy Zero-setup Routing Assistant for local & HPC LLMs."""
+    """EZRA - Easy Zero-setup Routing Assistant for local & HPC LLMs."""
     ctx.ensure_object(dict)
     config = load_config(config_path)
     if models_dir is not None:
@@ -132,7 +132,7 @@ def models_list(
     for s in specs:
         installed = "Y" if dl.is_installed(s) else ""
         gated = "*" if s.gated else ""
-        tags = ",".join(list(s.science_tags)[:2] or list(s.tags)[:2]) or "—"
+        tags = ",".join(list(s.science_tags)[:2] or list(s.tags)[:2]) or "-"
         table.add_row(
             f"{s.name}{gated}",
             s.params or f"{s.size_b}B",
@@ -443,7 +443,7 @@ def hpc_sites() -> None:
     for p in profiles:
         table.add_row(
             p.name,
-            "yes" if active == p.name else "—",
+            "yes" if active == p.name else "-",
             "yes" if p.config_path.is_file() else "missing",
             "yes" if p.modules_path.is_file() else "missing",
             str(p.path),

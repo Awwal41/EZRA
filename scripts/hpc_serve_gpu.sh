@@ -84,7 +84,7 @@ if ezra serve --help >/dev/null 2>&1; then
   exec ezra serve --model "$MODEL" --host "$HOST" --port "$PORT"
 else
   echo "ezra serve is not available in this build yet."
-  echo "GPU/CPU allocation succeeded — install an inference backend, then re-submit."
+  echo "GPU/CPU allocation succeeded - install an inference backend, then re-submit."
   echo "Holding allocation briefly so you can attach / debug (CTRL+C or scancel to stop)."
   sleep "${EZRA_HOLD_SECONDS:-300}"
 fi

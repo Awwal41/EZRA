@@ -29,7 +29,7 @@ git checkout -b sites/my-cluster
 git add sites/my-cluster
 git commit -m "Add my-cluster SLURM site profile"
 git push -u origin sites/my-cluster
-# open a PR — no tokens or private secrets
+# open a PR - no tokens or private secrets
 ```
 
 `export EZRA_SITE=…` makes `ezra hpc submit` and `scripts/hpc_*.sh` load that folder’s `ezra.yaml` + `modules.sh`.
@@ -51,7 +51,7 @@ ezra doctor
 ezra hpc sites
 ```
 
-## Option A — download on the login node
+## Option A - download on the login node
 
 Fine for a few small models if the login node allows outbound HTTPS and you have enough quota:
 
@@ -62,7 +62,7 @@ ezra models status
 
 Prefer a batch job for large galleries or slow networks.
 
-## Option B — one-command submit
+## Option B - one-command submit
 
 ```bash
 ezra hpc templates
@@ -80,14 +80,14 @@ ezra hpc submit interactive --gpus 1 --time 02:00:00
 
 CLI flags (`--partition`, `--account`, `--gpus`, …) override the site profile for a single job.
 
-## Option C — generate a script, then sbatch
+## Option C - generate a script, then sbatch
 
 ```bash
 ezra hpc script download -o /tmp/ezra-dl.sh
 sbatch /tmp/ezra-dl.sh
 ```
 
-## Option D — example scripts in `scripts/`
+## Option D - example scripts in `scripts/`
 
 These are generic fallbacks. Prefer a site profile so you do not re-edit `#SBATCH` lines every time.
 
