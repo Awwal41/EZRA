@@ -48,4 +48,4 @@ Repository = "https://github.com/awwalola/EZRA"
 where = ["src"]
 
 [tool.setuptools.package-data]
-ezra = ["gallery/*.yaml", "config/*.yaml"]
+ezra = ["gallery/*.yaml", "defaults/*.yaml"]

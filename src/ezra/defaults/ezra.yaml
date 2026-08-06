@@ -1,0 +1,26 @@
+# Default EZRA configuration (Phase 1 — local download & gallery)
+version: 1
+
+local:
+  backend: auto
+  # Overridden by EZRA_MODELS_DIR when set (recommended on HPC shared filesystems)
+  models_dir: ~/.ezra/models
+  prefer_quant: auto   # auto | Q4_K_M | Q5_K_M | Q8_0 | fp16 | bf16
+  max_workers: 2       # parallel model downloads (keep modest on shared HPC)
+  resume: true
+  hf_token_env: HF_TOKEN
+  keep_alive: 5m
+  max_loaded: 2
+
+router:
+  mode: auto           # auto | local_only | hpc_preferred | manual
+  complexity:
+    simple_threshold: 0.25
+    medium_threshold: 0.55
+  domain_boost:
+    chemistry: 1.3
+    materials: 1.3
+
+hpc:
+  enabled: false
+  endpoints: []
