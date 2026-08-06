@@ -261,3 +261,102 @@ models:
     description: Mistral Nemo 12B instruct GGUF; strong mid-size local option.
     file_pattern: "*Q4_K_M*"
     recommended_ram_gb: 10
+
+  # ── Kimi / Moonshot AI ──────────────────────────────────────────────
+  - name: moonlight-16b-instruct
+    repo_id: moonshotai/Moonlight-16B-A3B-Instruct
+    format: safetensors
+    quant: bf16
+    size_b: 16.0
+    params: 16B (3B act)
+    license: MIT
+    gated: false
+    science_tags: [general, chemistry-friendly, materials-friendly]
+    tags: [kimi, moonshot, moe, instruct, hpc, balanced]
+    description: Moonshot Moonlight MoE instruct (16B total / 3B active); practical Kimi-family starter.
+    file_pattern: "*.safetensors|*.json|*.txt|*.model|tokenizer*|*.py"
+    recommended_ram_gb: 24
+
+  - name: kimi-linear-48b-instruct
+    repo_id: moonshotai/Kimi-Linear-48B-A3B-Instruct
+    format: safetensors
+    quant: bf16
+    size_b: 48.0
+    params: 48B (3B act)
+    license: MIT
+    gated: false
+    science_tags: [general, long-context, chemistry-friendly]
+    tags: [kimi, moonshot, moe, instruct, hpc, long-context]
+    description: Kimi Linear MoE instruct; efficient long-context Moonshot model.
+    file_pattern: "*.safetensors|*.json|*.txt|*.model|tokenizer*|*.py"
+    recommended_ram_gb: 64
+
+  - name: kimi-vl-a3b-instruct
+    repo_id: moonshotai/Kimi-VL-A3B-Instruct
+    format: safetensors
+    quant: bf16
+    size_b: 16.0
+    params: ~16B (3B act)
+    license: MIT
+    gated: false
+    science_tags: [multimodal, materials-friendly, chemistry-friendly]
+    tags: [kimi, moonshot, vision, instruct, multimodal]
+    description: Kimi-VL instruct; vision-language model for figures, spectra, and lab images.
+    file_pattern: "*.safetensors|*.json|*.txt|*.model|tokenizer*|*.py"
+    recommended_ram_gb: 24
+
+  - name: kimi-dev-72b
+    repo_id: moonshotai/Kimi-Dev-72B
+    format: safetensors
+    quant: bf16
+    size_b: 72.0
+    params: 72B
+    license: MIT
+    gated: false
+    science_tags: [code, chemistry-friendly]
+    tags: [kimi, moonshot, code, instruct, hpc, heavy]
+    description: Kimi-Dev 72B (Qwen2.5-based); strong for scientific coding and agent workflows.
+    file_pattern: "*.safetensors|*.json|*.txt|*.model|tokenizer*"
+    recommended_ram_gb: 160
+
+  - name: kimi-k2-instruct
+    repo_id: moonshotai/Kimi-K2-Instruct-0905
+    format: safetensors
+    quant: fp8
+    size_b: 1000.0
+    params: 1T (32B act)
+    license: Modified-MIT
+    gated: false
+    science_tags: [general, reasoning, chemistry-friendly, materials-friendly, long-context]
+    tags: [kimi, moonshot, moe, instruct, hpc, heavy, agentic]
+    description: Kimi K2 Instruct 0905 — flagship MoE (1T / 32B act, 256k ctx). HPC multi-GPU only.
+    file_pattern: "*.safetensors|*.json|*.txt|*.model|tokenizer*|*.py"
+    recommended_ram_gb: 512
+
+  - name: kimi-k2-thinking
+    repo_id: moonshotai/Kimi-K2-Thinking
+    format: safetensors
+    quant: fp8
+    size_b: 1000.0
+    params: 1T (32B act)
+    license: Modified-MIT
+    gated: false
+    science_tags: [reasoning, chemistry-friendly, materials-friendly]
+    tags: [kimi, moonshot, moe, reasoning, hpc, heavy]
+    description: Kimi K2 Thinking — long-form reasoning variant of K2 for hard science tasks.
+    file_pattern: "*.safetensors|*.json|*.txt|*.model|tokenizer*|*.py"
+    recommended_ram_gb: 512
+
+  - name: kimi-k2-instruct-gguf
+    repo_id: unsloth/Kimi-K2-Instruct-0905-GGUF
+    format: gguf
+    quant: UD-Q2_K_XL
+    size_b: 1000.0
+    params: 1T (32B act)
+    license: Modified-MIT
+    gated: false
+    science_tags: [general, reasoning, chemistry-friendly]
+    tags: [kimi, moonshot, moe, instruct, local, heavy, gguf]
+    description: Unsloth GGUF of Kimi K2 Instruct 0905 (2-bit XL). Needs ~128GB+ RAM; not a laptop download.
+    file_pattern: "*UD-Q2_K_XL*"
+    recommended_ram_gb: 128
