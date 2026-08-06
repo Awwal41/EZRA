@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ezra"
+version = "0.1.0"
+description = "EZRA — Easy Zero-setup Routing Assistant for local & HPC LLMs"
+readme = "README.md"
+license = { text = "GPL-3.0-or-later" }
+requires-python = ">=3.10"
+authors = [{ name = "EZRA Contributors" }]
+keywords = [
+  "llm",
+  "hpc",
+  "chemistry",
+  "materials-science",
+  "huggingface",
+  "routing",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering",
+]
+dependencies = [
+  "click>=8.1",
+  "huggingface_hub>=0.24",
+  "pyyaml>=6.0",
+  "rich>=13.0",
+  "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+
+[project.scripts]
+ezra = "ezra.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/awwalola/EZRA"
+Repository = "https://github.com/awwalola/EZRA"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ezra = ["gallery/*.yaml", "config/*.yaml"]
