@@ -14,7 +14,7 @@ Global options:
 
 ## `ezra doctor`
 
-Environment check: version, models dir, HF token, gallery size, write test.
+Environment check: version, models dir, HF token, gallery size, CPU/RAM/GPU fit budget, write test. Mentions `ezra models recommend` for hardware-aware picks.
 
 ## `ezra init-config`
 
@@ -34,6 +34,7 @@ For HPC partition / modules, use `ezra hpc init-site` instead. See [Configuratio
 | Command | Description |
 |---------|-------------|
 | `list` | Browse the gallery |
+| `recommend [KEYWORD]` | Rank open models that fit this machine |
 | `download NAME [NAME …]` | Download named models |
 | `download --all` | Download matching free models |
 | `info NAME` | Details for one model |
@@ -43,6 +44,12 @@ For HPC partition / modules, use `ezra hpc init-site` instead. See [Configuratio
 ### `models list` flags
 
 `--query`, `--tag`, `--science`, `--format`, `--max-size`, `--include-gated` / `--no-gated`, `--json`
+
+### `models recommend` flags
+
+`KEYWORD` (optional), `--limit`, `--tag`, `--science`, `--format`, `--include-gated` / `--no-gated`, `--json`
+
+Examples: `ezra models recommend chemistry`, `ezra models recommend --format gguf`. Full guide: [Models - Recommend](models.md#recommend-for-this-machine).
 
 ### `models download` flags
 
@@ -66,7 +73,7 @@ Shared resource flags: `--models-dir`, `--time`, `--cpus`, `--mem`, `--gpus`, `-
 
 `init-site` accepts `--models-dir PATH` to write `local.models_dir` into the new profile.
 
-Set `EZRA_SITE=<name>` after `init-site` so config/modules match your cluster. See [sites/README.md](../sites/README.md).
+Set `EZRA_SITE=<name>` after `init-site` so config/modules match your cluster. See [sites/README.md](sites.md).
 
 Examples:
 

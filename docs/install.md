@@ -31,9 +31,12 @@ pip install -e ".[dev]"
 ```bash
 ezra doctor
 ezra models list
+ezra models recommend chemistry
 ```
 
-`ezra doctor` prints the models directory, whether a Hugging Face token is set, gallery size, and whether the models path is writable.
+`ezra doctor` prints the models directory, HF token status, gallery size, CPU/RAM/GPU fit budget, and whether the models path is writable.
+
+`ezra models recommend` probes this machine and ranks open gallery models that fit (optional keyword). See [Models - Recommend](models.md#recommend-for-this-machine).
 
 ## Optional: local config
 
@@ -63,5 +66,6 @@ See [Configuration](configuration.md) for all env vars and `ezra.yaml`.
 
 ## Next steps
 
+- Pick a model for this machine: [Models - Recommend](models.md#recommend-for-this-machine)
 - Download models: [Models](models.md)
 - Cluster jobs: [HPC / SLURM](hpc.md)

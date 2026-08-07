@@ -2,7 +2,7 @@
 
 EZRA is meant to run on login nodes or batch jobs with no GUI. Use **SBATCH** so downloads and (later) serve jobs get CPUs, memory, GPUs, and time limits on compute nodes.
 
-**Every cluster is different.** Customize once with a **site profile**, then commit and push it so others on the same HPC can reuse your partition, modules, and notes. See [`sites/README.md`](../sites/README.md).
+**Every cluster is different.** Customize once with a **site profile**, then commit and push it so others on the same HPC can reuse your partition, modules, and notes. See [`sites/README.md`](sites.md).
 
 ## Customize for your HPC (do this first)
 

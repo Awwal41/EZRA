@@ -347,8 +347,115 @@ def models_remove(ctx: click.Context, names: tuple[str, ...], dry_run: bool) -> 
         result = dl.remove(name, dry_run=dry_run)
         style = "green" if result.status != "failed" else "red"
         console.print(f"[{style}]{result.status}[/{style}] {result.name}: {result.message}")
-        if result.status == "failed":
-            sys.exit(1)
+
+
+@models_group.command("recommend")
+@click.argument("keyword", required=False, default=None)
+@click.option("--limit", type=int, default=5, show_default=True, help="Max recommendations.")
+@click.option("--tag", default=None, help="Require this gallery tag.")
+@click.option("--science", is_flag=True, help="Only models with science_tags.")
+@click.option("--format", "fmt", default=None, help="Filter by format: gguf | safetensors.")
+@click.option(
+    "--include-gated/--no-gated",
+    default=False,
+    help="Include gated HF models (default: exclude).",
+)
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON.")
+@click.pass_context
+def models_recommend(
+    ctx: click.Context,
+    keyword: str | None,
+    limit: int,
+    tag: str | None,
+    science: bool,
+    fmt: str | None,
+    include_gated: bool,
+    as_json: bool,
+) -> None:
+    """Recommend open models that fit this machine (optional keyword).
+
+    \b
+    Examples:
+      ezra models recommend
+      ezra models recommend chemistry
+      ezra models recommend reasoning --limit 5
+      ezra models recommend --format gguf --science
+    """
+    from ezra.hardware import probe_system
+    from ezra.recommend import recommend
+
+    gallery: ModelGallery = ctx.obj["gallery"]
+    system = probe_system()
+    picks = recommend(
+        gallery,
+        system,
+        keyword=keyword,
+        tag=tag,
+        science_only=science,
+        include_gated=include_gated,
+        format=fmt,
+        limit=limit,
+    )
+
+    if as_json:
+        click.echo(
+            json.dumps(
+                {
+                    "system": {
+                        "ram_total_gb": system.ram_total_gb,
+                        "cpu_count": system.cpu_count,
+                        "effective_memory_gb": system.effective_memory_gb,
+                        "has_gpu": system.has_gpu,
+                        "gpus": [
+                            {"name": g.name, "vram_gb": round(g.vram_gb, 2)}
+                            for g in system.gpus
+                        ],
+                    },
+                    "keyword": keyword,
+                    "recommendations": [r.to_dict() for r in picks],
+                },
+                indent=2,
+            )
+        )
+        return
+
+    console.print("[bold]System[/bold]")
+    for line in system.summary_lines():
+        console.print(f"  {line}")
+    if keyword:
+        console.print(f"  Keyword:   {keyword}")
+    console.print()
+
+    if not picks:
+        console.print(
+            "[yellow]No gallery models fit this machine with the given filters.[/yellow]\n"
+            "Try a broader keyword, --include-gated, or free up RAM / use a GPU node."
+        )
+        return
+
+    table = Table(title=f"Recommended models ({len(picks)})")
+    table.add_column("#", style="dim", no_wrap=True)
+    table.add_column("Name", style="cyan", no_wrap=True)
+    table.add_column("Size", no_wrap=True)
+    table.add_column("Fmt", no_wrap=True)
+    table.add_column("Need", no_wrap=True)
+    table.add_column("Why")
+    for i, rec in enumerate(picks, start=1):
+        gated = "*" if rec.spec.gated else ""
+        table.add_row(
+            str(i),
+            f"{rec.spec.name}{gated}",
+            rec.spec.params or f"{rec.spec.size_b}B",
+            rec.spec.format[:4],
+            f"{rec.required_gb:.0f}G",
+            "; ".join(rec.reasons[:3]),
+        )
+    console.print(table)
+    top = picks[0].spec.name
+    console.print(
+        f"\nTop pick: [bold cyan]{top}[/bold cyan]\n"
+        f"Download: [green]ezra models download {top}[/green]"
+    )
 
 
 @main.command("init-config")
@@ -426,9 +533,12 @@ def init_config(target: str, force: bool, with_env: bool) -> None:
 @click.pass_context
 def doctor(ctx: click.Context) -> None:
     """Quick environment check for HPC / local use."""
+    from ezra.hardware import probe_system
+
     config = ctx.obj["config"]
     gallery: ModelGallery = ctx.obj["gallery"]
     site = os.environ.get("EZRA_SITE", "").strip() or "<none>"
+    system = probe_system()
     console.print(f"EZRA version:     {__version__}")
     console.print(f"EZRA_SITE:        {site}")
     console.print(f"Models dir:       {config.models_dir}")
@@ -440,6 +550,19 @@ def doctor(ctx: click.Context) -> None:
     console.print(f"HF token set:     {'yes' if config.hf_token else 'no'}")
     console.print(f"Gallery models:   {len(gallery.names())}")
     console.print(f"Max workers:      {config.max_workers}")
+    console.print(f"CPU cores:        {system.cpu_count}")
+    console.print(f"System RAM:       {system.ram_total_gb:.1f} GB")
+    if system.gpus:
+        gpu_bits = ", ".join(f"{g.name} ({g.vram_gb:.1f} GB)" for g in system.gpus)
+        console.print(f"GPU:              {gpu_bits}")
+        console.print(f"Fit budget:       {system.effective_memory_gb:.1f} GB (VRAM)")
+    else:
+        console.print("GPU:              none detected (nvidia-smi)")
+        console.print(f"Fit budget:       {system.effective_memory_gb:.1f} GB (~80% RAM)")
+    console.print(
+        "Tip: [green]ezra models recommend chemistry[/green] "
+        "picks open models that fit this machine"
+    )
     if site == "<none>":
         console.print(
             "Tip: [green]ezra init-config[/green] (local) or "

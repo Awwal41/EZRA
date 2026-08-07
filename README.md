@@ -1,9 +1,9 @@
 # EZRA
 **Easy Zero-setup Routing Assistant** for local & HPC LLMs - a researcher-first system for downloading, running, and intelligently routing free/open models, purpose-built for multi-purpose applications.
 
-> Phase 1 (this repo): curated free-model gallery + HPC-friendly one-command downloads. Router, local runtime, and science tools come next.
+> Phase 1 (this repo): curated free-model gallery, hardware-aware recommendations, and HPC-friendly one-command downloads. Router, local runtime, and science tools come next.
 
-**Full guides:** [docs/](docs/README.md) - [install](docs/install.md) · [models](docs/models.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
+**Full guides:** [docs/](docs/README.md) (Markdown on GitHub) · Sphinx HTML via `pip install -e ".[docs]" && cd docs && make html` · [install](docs/install.md) · [models](docs/models.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
 
 ## Quick start
 
@@ -23,10 +23,23 @@ ezra doctor
 ezra models list
 ```
 
+### Recommend a model for this machine
+
+Not sure which open LLM will run well on your laptop or HPC node? EZRA probes RAM (and NVIDIA VRAM if present), then ranks gallery models that fit. Pass an optional keyword (`chemistry`, `reasoning`, `materials`, …):
+
+```bash
+ezra models recommend
+ezra models recommend chemistry
+ezra models recommend reasoning --limit 5
+ezra models recommend --format gguf --science
+```
+
+It prints a system summary, a ranked table (why each model was chosen), and a ready-to-run download line for the top pick. Details: [docs/models.md](docs/models.md#recommend-for-this-machine).
+
 ### Download models
 
 ```bash
-# one model by name
+# after recommend, or pick a name yourself
 ezra models download qwen2.5-7b-instruct
 
 # several names
@@ -117,6 +130,7 @@ sbatch scripts/hpc_interactive.sh
 ezra doctor
 ezra init-config [--home|--cwd] [--env] [--force]
 ezra models list [--query TEXT] [--tag TAG] [--science] [--format gguf|safetensors]
+ezra models recommend [KEYWORD] [--limit N] [--tag TAG] [--science] [--format gguf|safetensors]
 ezra models download NAME [NAME ...]
 ezra models download --all [--tag TAG] [--science] [--max-size N] [--no-gated]
 ezra models info NAME
@@ -138,7 +152,7 @@ Add a model by appending an entry (name, `repo_id`, format, tags) and reinstall 
 
 | Phase | Focus |
 |-------|--------|
-| **1 - Core Local** (now) | Gallery, download-by-name / download-all, HPC staging, config |
+| **1 - Core Local** (now) | Gallery, recommend-by-hardware, download-by-name / download-all, HPC staging, config |
 | **2 - Smart routing + HPC** | Domain classifier, policy engine, OpenAI-compatible API, remote adapters |
 | **3 - Scientific layer** | Chem/materials prompts, tool-calling, RAG helpers, eval harness |
 | **4 - Lab scale** | Shared configs, plugins, observability |
@@ -147,14 +161,27 @@ Add a model by appending an entry (name, `repo_id`, format, tags) and reinstall 
 
 ## Documentation
 
+User guides are Markdown under [`docs/`](docs/) (readable on GitHub). The same tree builds with **Sphinx + MyST + reStructuredText** (API autodoc, search, Furo theme):
+
+```bash
+pip install -e ".[docs]"
+cd docs
+make html          # Linux / macOS — or: .\make.bat html on Windows
+# open docs/_build/html/index.html
+```
+
 | Doc | Contents |
 |-----|----------|
 | [docs/install.md](docs/install.md) | Install, venv, `ezra doctor` |
-| [docs/models.md](docs/models.md) | List / download / status / remove |
+| [docs/models.md](docs/models.md) | Recommend / list / download / status / remove |
 | [docs/hpc.md](docs/hpc.md) | Site profiles, scratch, `ezra hpc submit` |
 | [sites/README.md](sites/README.md) | Customize for your cluster, commit & push |
 | [docs/configuration.md](docs/configuration.md) | `ezra.yaml` and environment variables |
-| [docs/cli.md](docs/cli.md) | Command reference |
+| [docs/cli.md](docs/cli.md) | Command reference (includes `models recommend`) |
+| [docs/api.rst](docs/api.rst) | Python API (Sphinx autodoc) |
+| [docs/index.rst](docs/index.rst) | Sphinx site home |
+| [.readthedocs.yaml](.readthedocs.yaml) | Read the Docs build config |
+
 
 ## Contributing
 

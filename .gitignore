@@ -66,8 +66,10 @@ slurm-*.out
 ezra-*-*.out
 ezra-*-*.err
 
-# ── Editors / OS ────────────────────────────────────────────────────────────
-.idea/
+# ── Docs (Sphinx) ───────────────────────────────────────────────────────────
+docs/_build/
+docs/api/_autosummary/
+
 .vscode/
 *.swp
 *.swo

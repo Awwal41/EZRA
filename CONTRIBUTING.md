@@ -66,6 +66,8 @@ python -m venv .venv
 source .venv/bin/activate
 
 pip install -e ".[dev]"
+# optional: documentation site (Sphinx + MyST)
+pip install -e ".[docs]"
 ezra doctor
 ```
 
@@ -73,6 +75,15 @@ Run tests:
 
 ```bash
 pytest
+```
+
+Build HTML docs:
+
+```bash
+cd docs
+make html          # Linux / macOS
+# Windows: .\make.bat html
+# open _build/html/index.html
 ```
 
 Lint / format with Ruff (listed under `[project.optional-dependencies] dev`):
@@ -98,7 +109,7 @@ Do **not** commit model weights (`.gguf`, `.safetensors`), `.venv/`, `.env`, rep
 | `src/ezra/hpc/` | SLURM / SBATCH helpers |
 | `scripts/hpc_*.sh` | Example HPC job scripts (honor `EZRA_SITE`) |
 | `sites/` | Per-cluster profiles (`init-site` → edit → commit & push) |
-| `docs/` | User guides (install, models, HPC, config, CLI) |
+| `docs/` | User guides (Markdown) + Sphinx site (`conf.py`, `index.rst`, MyST) |
 | `tests/` | Pytest suite (prefer no network) |
 | `TODO.md` | Shared backlog - anyone can add items |
 

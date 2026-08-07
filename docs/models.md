@@ -1,8 +1,22 @@
 # Models
 
-EZRA ships a curated gallery of free/open checkpoints (general LLMs plus chemistry/materials models). Browse by name, download one or many, then check disk usage.
+EZRA ships a curated gallery of free/open checkpoints (general LLMs plus chemistry/materials models). **Start with `ezra models recommend`** if you are unsure what fits your laptop or GPU node, or browse/download by name.
 
 Gallery source: [`src/ezra/gallery/models.yaml`](../src/ezra/gallery/models.yaml).
+
+## Recommend for this machine
+
+Probe RAM / NVIDIA VRAM and rank open gallery models that fit, optionally filtered by a keyword (tags, science, description):
+
+```bash
+ezra models recommend
+ezra models recommend chemistry
+ezra models recommend reasoning --limit 5
+ezra models recommend --format gguf --science
+ezra models recommend chemistry --json
+```
+
+The command prints a short system summary, then a ranked table with why each model was chosen. Download the top pick with the suggested `ezra models download <name>` line.
 
 ## List models
 

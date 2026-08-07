@@ -36,6 +36,12 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "ruff>=0.5"]
+docs = [
+  "sphinx>=7.0",
+  "myst-parser>=3.0",
+  "furo>=2024.1.0",
+  "sphinx-copybutton>=0.5",
+]
 
 [project.scripts]
 ezra = "ezra.cli:main"
@@ -43,6 +49,7 @@ ezra = "ezra.cli:main"
 [project.urls]
 Homepage = "https://github.com/awwalola/EZRA"
 Repository = "https://github.com/awwalola/EZRA"
+Documentation = "https://ezra.readthedocs.io"
 
 [tool.setuptools.packages.find]
 where = ["src"]
