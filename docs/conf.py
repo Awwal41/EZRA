@@ -42,10 +42,62 @@ root_doc = "index"
 html_theme = "furo"
 html_static_path = ["_static"]
 html_title = f"EZRA {release}"
+html_logo = "_static/logo-icon-light.svg"
+html_favicon = "_static/favicon.svg"
+
+# Classic Read the Docs blue for sidebar + brand (links, accents)
+_RTD_BLUE = "#2980B9"
+_RTD_BLUE_HOVER = "#3091d1"
+_RTD_BLUE_DARK = "#2472a4"
+_RTD_BLUE_LIGHT = "#5dade2"
+
 html_theme_options = {
+    # Light-ink mark: readable on blue sidebar (light) and dark sidebar (dark)
+    "light_logo": "logo-icon-light.svg",
+    "dark_logo": "logo-icon-light.svg",
+    "sidebar_hide_name": False,
     "source_repository": "https://github.com/Awwal41/EZRA",
     "source_branch": "main",
     "source_directory": "docs/",
+    "light_css_variables": {
+        "color-brand-primary": _RTD_BLUE,
+        "color-brand-content": _RTD_BLUE,
+        "color-sidebar-background": _RTD_BLUE,
+        "color-sidebar-background-border": _RTD_BLUE,
+        "color-sidebar-brand-text": "#ffffff",
+        "color-sidebar-caption-text": "#e8f4fc",
+        "color-sidebar-link-text": "#ffffff",
+        "color-sidebar-link-text--top-level": "#ffffff",
+        "color-sidebar-item-background--hover": _RTD_BLUE_HOVER,
+        "color-sidebar-item-background--current": _RTD_BLUE_HOVER,
+        "color-sidebar-item-expander-background--hover": _RTD_BLUE_HOVER,
+        "color-sidebar-search-background": _RTD_BLUE_DARK,
+        "color-sidebar-search-background--focus": _RTD_BLUE_DARK,
+        "color-sidebar-search-border": _RTD_BLUE_DARK,
+        "color-sidebar-search-text": "#ffffff",
+        "color-sidebar-search-foreground": "#ffffff",
+        "color-sidebar-search-icon": "#ffffff",
+    },
+    "dark_css_variables": {
+        "color-brand-primary": _RTD_BLUE_LIGHT,
+        "color-brand-content": _RTD_BLUE_LIGHT,
+        # Keep dark sidebar dark (light-mode blue would otherwise inherit)
+        "color-sidebar-background": "#131416",
+        "color-sidebar-background-border": "#303335",
+        "color-sidebar-brand-text": "#ffffff",
+        "color-sidebar-caption-text": "#8b8b8d",
+        "color-sidebar-link-text": "#d0d0d0",
+        "color-sidebar-link-text--top-level": "#ffffff",
+        "color-sidebar-item-background--hover": "#1a1c1e",
+        "color-sidebar-item-background--current": "#1a1c1e",
+        "color-sidebar-item-expander-background--hover": "#1a1c1e",
+        "color-sidebar-search-background": "#202020",
+        "color-sidebar-search-background--focus": "#202020",
+        "color-sidebar-search-border": "#303335",
+        "color-sidebar-search-text": "#d0d0d0",
+        "color-sidebar-search-foreground": "#d0d0d0",
+        "color-sidebar-search-icon": "#8b8b8d",
+    },
     "footer_icons": [
         {
             "name": "GitHub",

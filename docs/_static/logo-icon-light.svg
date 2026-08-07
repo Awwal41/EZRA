@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-labelledby="ezraIconLightTitle ezraIconLightDesc">
+  <title id="ezraIconLightTitle">EZRA</title>
+  <desc id="ezraIconLightDesc">Rising structure from a broken base with a keystone being placed - light ink for dark or colored backgrounds.</desc>
+  <g fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="square">
+    <path d="M22 98 H48"/>
+    <path d="M62 98 H98"/>
+    <path d="M30 98 V58"/>
+    <path d="M50 98 V38"/>
+    <path d="M70 98 V28"/>
+    <path d="M90 98 V48"/>
+    <path d="M30 28 H90"/>
+  </g>
+  <rect x="55" y="18" width="18" height="12" fill="#ffffff"/>
+</svg>

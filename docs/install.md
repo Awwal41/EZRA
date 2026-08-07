@@ -5,7 +5,7 @@ EZRA needs **Python 3.10+**. No GPU is required to download models; GPUs matter 
 ## Clone and install
 
 ```bash
-git clone https://github.com/awwalola/EZRA.git
+git clone https://github.com/Awwal41/EZRA.git
 cd EZRA
 
 python -m venv .venv
@@ -41,11 +41,11 @@ ezra models recommend chemistry
 ## Optional: local config
 
 ```bash
-ezra init-config                 # ~/.ezra/ezra.yaml — edit EDIT ME fields
+ezra init-config                 # ~/.ezra/ezra.yaml (edit EDIT ME fields)
 # or: ezra init-config --cwd --env   # ./ezra.yaml + .env (both gitignored)
 ```
 
-On HPC, create a site profile instead: `ezra hpc init-site my-cluster` — see [HPC](hpc.md).
+On HPC, create a site profile instead: `ezra hpc init-site my-cluster`. See [HPC](hpc.md).
 
 ## Where models are stored
 

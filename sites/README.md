@@ -1,8 +1,8 @@
-# Site profiles (per-HPC customization)
+﻿# Site profiles (per-HPC customization)
 
-Every cluster is different: partition names, accounts, `module load` lines, GPU GRES strings, and scratch paths. **EZRA expects you to customize for your machine** — do not assume the generic `scripts/hpc_*.sh` defaults match your site.
+Every cluster is different: partition names, accounts, `module load` lines, GPU GRES strings, and scratch paths. **EZRA expects you to customize for your machine**. Do not assume the generic `scripts/hpc_*.sh` defaults match your site.
 
-For laptop-only prefs (no SLURM), use `ezra init-config` / `.env.example` instead — see [docs/configuration.md](../docs/configuration.md).
+For laptop-only prefs (no SLURM), use `ezra init-config` / `.env.example` instead. See [docs/configuration.md](../docs/configuration.md).
 
 ## Quick start (your cluster)
 
@@ -16,7 +16,7 @@ $EDITOR sites/my-cluster/modules.sh
 $EDITOR sites/my-cluster/NOTES.md
 
 # optional local secrets (gitignored):
-# cp .env.example .env   # set HF_TOKEN, EZRA_SITE, …
+# cp .env.example .env   # set HF_TOKEN, EZRA_SITE, â€¦
 ```
 
 Then use the profile:
@@ -35,7 +35,7 @@ ezra hpc submit download
 
 | File | Used for |
 |------|----------|
-| `sites/$EZRA_SITE/ezra.yaml` | SLURM defaults (`partition`, `account`, CPUs, GPUs, …) via `EZRA_CONFIG` |
+| `sites/$EZRA_SITE/ezra.yaml` | SLURM defaults (`partition`, `account`, CPUs, GPUs, â€¦) via `EZRA_CONFIG` |
 | `sites/$EZRA_SITE/modules.sh` | `module load` / env setup inside SBATCH jobs |
 
 ## What you should edit
@@ -48,13 +48,13 @@ In **`ezra.yaml`** (search for `EDIT ME`):
 
 In **`modules.sh`** (search for `EDIT ME`):
 
-- `module load python/…`
-- `module load cuda/…` (GPU jobs)
+- `module load python/â€¦`
+- `module load cuda/â€¦` (GPU jobs)
 - Any site compiler / MPI modules your admins require
 
 In **`NOTES.md`**:
 
-- Cluster name, how to request an allocation, scratch path convention, links to your center’s docs
+- Cluster name, how to request an allocation, scratch path convention, links to your centerâ€™s docs
 
 ## Commit and push (so others on the same HPC benefit)
 
@@ -65,28 +65,28 @@ git checkout -b sites/my-cluster
 git add sites/my-cluster
 git commit -m "Add my-cluster SLURM site profile (partition, modules, notes)"
 git push -u origin sites/my-cluster
-# open a PR against awwalola/EZRA
+# open a PR against Awwal41/EZRA (base: develop)
 ```
 
 **Do not commit:**
 
 - `HF_TOKEN`, passwords, or private account numbers you are not allowed to share
 - Absolute paths to your personal home if they contain usernames you want private (prefer `$SCRATCH` / `$USER` in NOTES instead)
-- Model weights, `.env`, or a repo-root `ezra.yaml` (those are gitignored — use `ezra.yaml.example` / `.env.example`)
+- Model weights, `.env`, or a repo-root `ezra.yaml` (those are gitignored; use `ezra.yaml.example` / `.env.example`)
 
-Personal-only overrides: `ezra init-config`, `~/.ezra/ezra.yaml`, `sites/local/` (gitignored), or `export EZRA_CONFIG=…`.
+Personal-only overrides: `ezra init-config`, `~/.ezra/ezra.yaml`, `sites/local/` (gitignored), or `export EZRA_CONFIG=â€¦`.
 
 ## Layout
 
 ```text
 sites/
-  README.md          ← this file
-  _template/         ← copied by `ezra hpc init-site`
+  README.md          â† this file
+  _template/         â† copied by `ezra hpc init-site`
     ezra.yaml
     modules.sh
     NOTES.md
-  my-cluster/        ← your committed profile (example name)
-    …
+  my-cluster/        â† your committed profile (example name)
+    â€¦
 ```
 
 Generic example scripts under `scripts/hpc_*.sh` remain; prefer generating or submitting with `EZRA_SITE` set so your profile applies automatically.

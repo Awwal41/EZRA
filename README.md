@@ -1,4 +1,12 @@
 # EZRA
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-light.svg"/>
+    <img src="assets/logo.svg" alt="EZRA - rising structure mark and wordmark" width="420"/>
+  </picture>
+</p>
+
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-0A66C2?logo=github)](https://awwal41.github.io/EZRA/)
 [![Read the Docs](https://img.shields.io/readthedocs/ezra?logo=readthedocs&label=Read%20the%20Docs)](https://ezra.readthedocs.io/)
 
@@ -185,7 +193,7 @@ Add a model by appending an entry (name, `repo_id`, format, tags) and reinstall 
 
 **Published HTML:** [https://awwal41.github.io/EZRA/](https://awwal41.github.io/EZRA/) (GitHub Pages) · optional mirror [Read the Docs](https://ezra.readthedocs.io/) after you import the repo there.
 
-User guides are Markdown under [`docs/`](docs/) (readable on GitHub). The same tree builds with **Sphinx + MyST + reStructuredText** (API autodoc, search, Furo theme). CI: [`.github/workflows/docs.yml`](.github/workflows/docs.yml) builds on PRs and deploys Pages from `main`.
+User guides are Markdown under [`docs/`](docs/) (readable on GitHub). The same tree builds with **Sphinx + MyST + reStructuredText** (API autodoc, search, Furo theme). CI: [`.github/workflows/docs.yml`](.github/workflows/docs.yml) builds on PRs/`develop` and deploys Pages from `main`.
 
 ```bash
 pip install -e ".[docs]"
@@ -214,7 +222,7 @@ How to turn Pages on / link RTD: [docs/README.md](docs/README.md#publish-so-peop
 
 ## Contributing
 
-Fork, setup, coding style, gallery additions, and PR checklist: see [CONTRIBUTING.md](CONTRIBUTING.md). Shared backlog: [TODO.md](TODO.md).
+Work on **`develop`**; open PRs into `develop`, then merge `develop` → `main` for releases. Fork, setup, coding style, and checklist: [CONTRIBUTING.md](CONTRIBUTING.md). Shared backlog: [TODO.md](TODO.md).
 
 ## License
 

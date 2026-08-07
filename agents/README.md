@@ -8,7 +8,21 @@ automation script can each have a different assistant without forking EZRA.
 Same idea as [site profiles](../sites/README.md) for HPC: copy a template, edit a few
 files, optionally commit and share.
 
-## Quick start
+**Full step-by-step guide:** [docs/agents.md](../docs/agents.md)
+(install → init → recommend models → edit `agent.yaml` / `prompt.md` → check → download).
+
+## Quick start (10 steps)
+
+1. `pip install -e .` and `ezra doctor`
+2. `ezra agents init my-lab-assistant` (or `local/scratch-bot` for private)
+3. `ezra models recommend chemistry` (pick aliases that fit this machine)
+4. Edit `agents/my-lab-assistant/agent.yaml` (`preferred` / `fallback` / tags)
+5. Edit `prompt.md` (role, priorities, style, boundaries)
+6. Fill `NOTES.md` (owner, hardware, intent)
+7. `ezra agents check my-lab-assistant`
+8. `ezra agents show my-lab-assistant --prompt`
+9. `ezra models download <preferred-alias> ...`
+10. Iterate; keep private experiments under `agents/local/`
 
 ```bash
 # from the repo root, after pip install -e .
@@ -22,12 +36,6 @@ $EDITOR agents/my-lab-assistant/NOTES.md
 ezra agents list
 ezra agents show my-lab-assistant
 ezra agents check my-lab-assistant   # validate gallery aliases + suggest downloads
-```
-
-Point `models.preferred` at aliases from `ezra models list` / `ezra models recommend`,
-then download what you need:
-
-```bash
 ezra models recommend chemistry
 ezra models download qwen2.5-7b-instruct
 ```
@@ -48,12 +56,19 @@ ezra models download qwen2.5-7b-instruct
 | `agents/local/` | Gitignored - keep private experiments here |
 
 ```bash
-ezra agents init local/scratch-bot   # also fine: name starting without _
-# or manually: mkdir -p agents/local && cp -r agents/_template agents/local/mine
+ezra agents init local/scratch-bot
 ```
 
 `agents/local/` is gitignored (see `.gitignore`). Do not put HF tokens or private
 data in tracked agent folders.
+
+## Effective customization tips
+
+- Pin **preferred** to 2-3 gallery aliases from `ezra models recommend`, plus lighter **fallback**.
+- Write a short structured prompt: role → priorities → tasks → style → boundaries.
+- Never invent citations in the prompt instructions; tell the model to ask when context is missing.
+- Run `ezra agents check` after every YAML change.
+- Study [`chem-assistant`](chem-assistant/) with `ezra agents show chem-assistant --prompt`, then copy ideas into a new profile.
 
 ## Example
 
@@ -66,5 +81,3 @@ with `ezra agents init`.
 Phase 1 ships the **scaffold + validation** (`init` / `list` / `show` / `check`).
 When local serve + routing land, the same `agent.yaml` will select models and
 inject `prompt.md` into chat / API sessions - no re-scaffold required.
-
-Full guide: [docs/agents.md](../docs/agents.md).
