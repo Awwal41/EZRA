@@ -76,12 +76,17 @@ def test_resolve_session_model_empty_raises() -> None:
         resolve_session_model()
 
 
-def test_open_session_requires_backend(tmp_path: Path) -> None:
+def test_open_session_auto_backend_unavailable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     root = _fake_agents_tree(tmp_path)
     from ezra.agents import init_agent
+    from ezra.inference import runtime as runtime_mod
 
     init_agent("lab-bot", root=root)
-    with pytest.raises(RuntimeError, match="No chat backend"):
+    monkeypatch.setattr(runtime_mod, "llama_cpp_available", lambda: False)
+    monkeypatch.setattr(runtime_mod, "mlx_available", lambda: False)
+    with pytest.raises(RuntimeError, match="No local inference backend"):
         open_session(agent="lab-bot", root=root)
 
 

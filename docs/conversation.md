@@ -1,15 +1,14 @@
-# Conversation runtime (design)
+# Conversation runtime
 
-**Status:** session types + stub backend landed (`ezra.conversation`). Local
-`ezra chat` / `ezra serve` still wait on inference backends.
+**Status:** session API, llama.cpp / MLX backends, `ezra chat`, and OpenAI
+`ezra serve` are implemented. Install optional extras for real inference.
 
-EZRA Phase 1 scaffolds agents and downloads models. The **conversation** layer
-is the thin runtime that turns an agent profile into multi-turn chat and (later)
-an OpenAI-compatible HTTP surface so labs can connect Gradio, Open WebUI, Cursor,
-or a custom UI without forking EZRA.
+EZRA turns an agent profile into multi-turn chat and an OpenAI-compatible HTTP
+surface so labs can connect Gradio, Open WebUI, Cursor, or a custom UI without
+forking EZRA.
 
-See also: [Personal agents](agents.md), [TODO.md](../TODO.md) (P0 serve / P1
-wire-agents / sessions), [API](api.rst).
+See also: [Personal agents](agents.md), [Install](install.md), [CLI](cli.md),
+[TODO.md](../TODO.md), [API](api.rst).
 
 ---
 
@@ -18,8 +17,9 @@ wire-agents / sessions), [API](api.rst).
 | Layer | Role | Today |
 |-------|------|--------|
 | **Agents** (`agents/<name>/`) | Config: system prompt, preferred models, tools | Scaffold + checks |
-| **Conversation** (`ezra.conversation`) | Sessions, history, agent binding, stream/send | Session API + `StubBackend` |
-| **Serve** (`ezra serve`) | OpenAI-compatible `/v1/chat/completions` | Planned (P0) |
+| **Conversation** (`ezra.conversation`) | Sessions, history, agent binding, stream/send | Shipped |
+| **Inference** (`ezra.inference`) | llama.cpp (GGUF), MLX, model cache | Optional extras |
+| **Serve** (`ezra serve`) | OpenAI-compatible `/v1/chat/completions` | `pip install -e ".[serve]"` |
 | **External UI** | Gradio, Open WebUI, lab frontends | Client only |
 
 Agents stay YAML + Markdown. Conversation is the runtime. Frontends talk HTTP
@@ -27,16 +27,25 @@ Agents stay YAML + Markdown. Conversation is the runtime. Frontends talk HTTP
 
 ---
 
+## Install extras
+
+```bash
+pip install -e ".[local,serve]"   # GGUF + OpenAI HTTP
+pip install -e ".[mlx]"           # Apple Silicon (non-GGUF), optional
+```
+
+Local chat needs a **downloaded GGUF** gallery model (`ezra models list --format gguf`).
+
+---
+
 ## Python surface
 
 ```python
-from ezra.conversation import StubBackend, open_session
+from ezra.conversation import open_session
 
-# Prefer binding an existing agents/<name>/ profile.
-# Until llama.cpp / MLX land, pass StubBackend() (tests / dry-run only).
-s = open_session(agent="chem-assistant", backend=StubBackend())
-# Or pin a gallery model without an agent:
-# s = open_session(model="qwen2.5-7b-instruct", backend=StubBackend())
+# Auto-creates LocalRuntime when llama-cpp-python / mlx-lm is installed
+s = open_session(agent="chem-assistant")
+# Or: open_session(model="qwen2.5-7b-instruct")
 
 reply = s.send("Explain this reaction…")
 # reply.text, reply.model, reply.agent
@@ -47,6 +56,8 @@ for chunk in s.stream("…"):
 s.messages   # [{role, content}, ...] including injected system prompt
 s.save()     # ~/.ezra/sessions/<id>.json
 ```
+
+Tests / dry-run: pass `backend=StubBackend()` or use `ezra chat --backend stub`.
 
 ### Binding rules
 
@@ -61,34 +72,34 @@ alias.
 
 ---
 
-## CLI surface (target)
+## CLI
 
 ```bash
 ezra chat --agent chem-assistant
 ezra chat --model qwen2.5-7b-instruct
+ezra chat --backend stub --model phi-3.5-mini-instruct -p "Hello"
 
 ezra serve --agent chem-assistant --host 0.0.0.0 --port 8000
 ezra serve --model qwen2.5-7b-instruct --host 0.0.0.0 --port 8000
 ```
 
-HPC SBATCH templates already call `ezra serve` when present
-([HPC](hpc.md)). After this lands, prefer:
+HPC SBATCH templates call `ezra serve` when present ([HPC](hpc.md)):
 
 ```bash
-ezra hpc submit serve --agent chem-assistant --gpus 1
-# or keep --model for a bare gallery alias
+ezra hpc submit serve --model qwen2.5-7b-instruct --gpus 1
 ```
+
+(`--agent` on HPC submit is still a backlog idea; use `--model` or configure the agent’s preferred GGUF.)
 
 ---
 
 ## OpenAI-compatible HTTP
 
-`ezra serve` exposes at least:
-
 | Endpoint | Notes |
 |----------|--------|
 | `POST /v1/chat/completions` | Streaming + non-streaming |
 | `GET /v1/models` | Gallery aliases and/or `agent:<name>` ids |
+| `GET /health` | Liveness |
 
 Clients set `base_url` to `http://<host>:<port>/v1`. The `model` field may be:
 
@@ -96,8 +107,7 @@ Clients set `base_url` to `http://<host>:<port>/v1`. The `model` field may be:
 - an agent id (`agent:chem-assistant`) so the server applies that profile’s
   prompt and preferred-model chain.
 
-Response metadata should indicate **which model answered** (router / CLI
-indicator from the P0 backlog).
+Responses include `ezra.agent`, `ezra.backend`, and `ezra.resolved_model`.
 
 ---
 
@@ -111,9 +121,9 @@ base_url = "http://localhost:8000/v1"
 # model="agent:chem-assistant"  or  model="qwen2.5-7b-instruct"
 ```
 
-No first-party Gradio/Streamlit app is required for MVP. A short recipe in
-docs (Gradio or Open WebUI) is enough for P1/P2. A full desktop/web product UI
-stays P2.
+**Open WebUI / Gradio:** set the OpenAI API base URL to your `ezra serve` host and
+use a gallery alias or `agent:<name>` as the model id. No first-party Gradio app
+is required for MVP.
 
 ---
 
@@ -121,17 +131,11 @@ stays P2.
 
 - Visual workflow / multi-agent canvas
 - Built-in multi-step science tool graphs (tools stay `[]` on agents until P2)
+- Automatic safetensors → GGUF conversion
 - Replacing the CLI or agent folder layout
 
----
+## Package layout
 
-## Ship order
-
-1. **Session types** — done (`src/ezra/conversation/`, tests in `tests/test_conversation.py`).
-2. **`ezra chat`** — once a local backend (llama.cpp / MLX) can complete.
-3. **`ezra serve`** — `/v1/chat/completions` (+ streaming).
-4. **Wire agents into serve** — same binding already used by `open_session`.
-5. **Richer session notes** — optional experiment metadata beyond JSON save.
-6. **Docs recipe** — “point Gradio / Open WebUI at EZRA”.
-
-Package layout: `src/ezra/conversation/` — reused later by `cli.py` chat/serve.
+- `src/ezra/conversation/` — sessions
+- `src/ezra/inference/` — weights, llama.cpp / MLX, `LocalRuntime`
+- `src/ezra/serve/` — FastAPI app factory

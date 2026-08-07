@@ -12,9 +12,9 @@
 
 **Easy Zero-setup Routing Assistant** for local & HPC LLMs - a researcher-first system for downloading, running, and intelligently routing free/open models, purpose-built for multi-purpose applications.
 
-> Phase 1 (this repo): curated free-model gallery, hardware-aware recommendations, and HPC-friendly one-command downloads. Router, local runtime, and science tools come next.
+> Phase 1 (this repo): curated free-model gallery, hardware-aware recommendations, HPC-friendly downloads, personal agents, and local chat/serve (optional extras).
 
-**Docs:** [GitHub Pages](https://awwal41.github.io/EZRA/) · [Read the Docs](https://ezra.readthedocs.io/) · [Markdown on GitHub](docs/README.md) · [install](docs/install.md) · [models](docs/models.md) · [personal agents](docs/agents.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
+**Docs:** [GitHub Pages](https://awwal41.github.io/EZRA/) · [Read the Docs](https://ezra.readthedocs.io/) · [Markdown on GitHub](docs/README.md) · [install](docs/install.md) · [models](docs/models.md) · [personal agents](docs/agents.md) · [conversation](docs/conversation.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
 
 ## Quick start
 
@@ -25,6 +25,9 @@ python -m venv .venv
 source .venv/bin/activate   # Linux / macOS / HPC
 
 pip install -e .
+
+# optional: local chat + OpenAI serve
+# pip install -e ".[local,serve]"
 
 # optional: local config / env (both gitignored — copy from *.example)
 ezra init-config                  # ~/.ezra/ezra.yaml
@@ -144,6 +147,7 @@ sbatch scripts/hpc_interactive.sh
 | `EZRA_CONFIG` | Path to `ezra.yaml` |
 | `EZRA_ROOT` | Repo checkout path inside batch jobs (optional) |
 | `EZRA_HOST` / `EZRA_PORT` | Bind address for serve jobs (default `0.0.0.0:8000`) |
+| `EZRA_N_GPU_LAYERS` | llama.cpp GPU layers (`-1` = all) |
 | `EZRA_HOLD_SECONDS` | How long interactive/serve-placeholder jobs sleep |
 | `EZRA_WORKERS` | Parallel download workers inside SBATCH download jobs |
 | `MODEL` | Gallery model name for serve / single-model download |
@@ -166,6 +170,8 @@ ezra agents list
 ezra agents init NAME [--description TEXT] [--force]
 ezra agents show NAME [--prompt]
 ezra agents check NAME
+ezra chat [--agent NAME] [--model NAME] [--backend auto|llama|mlx|stub] [-p TEXT]
+ezra serve [--agent NAME] [--model NAME] [--backend …] [--host HOST] [--port N]
 ezra hpc templates
 ezra hpc sites
 ezra hpc init-site NAME
@@ -182,8 +188,8 @@ Add a model by appending an entry (name, `repo_id`, format, tags) and reinstall 
 
 | Phase | Focus |
 |-------|--------|
-| **1 - Core Local** (now) | Gallery, recommend-by-hardware, download-by-name / download-all, personal agent scaffolds, HPC staging, config |
-| **2 - Smart routing + HPC** | Domain classifier, policy engine, OpenAI-compatible API, agent prompts wired into chat/serve, remote adapters |
+| **1 - Core Local** (now) | Gallery, recommend-by-hardware, download, agents, HPC staging, local chat/serve |
+| **2 - Smart routing + HPC** | Domain classifier, policy engine, remote adapters |
 | **3 - Scientific layer** | Chem/materials prompts, tool-calling, RAG helpers, eval harness |
 | **4 - Lab scale** | Shared configs, plugins, observability |
 
@@ -206,9 +212,10 @@ How to turn Pages on / link RTD: [docs/README.md](docs/README.md#publish-so-peop
 
 | Doc | Contents |
 |-----|----------|
-| [docs/install.md](docs/install.md) | Install, venv, `ezra doctor` |
+| [docs/install.md](docs/install.md) | Install, venv, `ezra doctor`, chat extras |
 | [docs/models.md](docs/models.md) | Recommend / list / download / status / remove |
 | [docs/agents.md](docs/agents.md) | Personal agents: init / prompt / preferred models |
+| [docs/conversation.md](docs/conversation.md) | Sessions, `ezra chat` / `ezra serve`, UI adapters |
 | [agents/README.md](agents/README.md) | In-tree agent scaffolds + chem-assistant example |
 | [docs/hpc.md](docs/hpc.md) | Site profiles, scratch, `ezra hpc submit` |
 | [sites/README.md](sites/README.md) | Customize for your cluster, commit & push |

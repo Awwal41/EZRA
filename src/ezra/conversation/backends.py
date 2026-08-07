@@ -1,7 +1,7 @@
 """Chat backends for the conversation runtime.
 
-Local llama.cpp / MLX backends land later. ``StubBackend`` exists for unit
-tests and dry-runs until inference ships.
+Real local inference lives in :mod:`ezra.inference`. ``StubBackend`` is for
+unit tests and ``ezra chat --backend stub`` dry-runs.
 """
 
 from __future__ import annotations

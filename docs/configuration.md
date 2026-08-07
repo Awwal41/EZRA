@@ -65,6 +65,7 @@ Edit `sites/my-cluster/ezra.yaml` and `modules.sh` (search for **EDIT ME**), the
 | `EZRA_CONFIG` | Path to `ezra.yaml` |
 | `EZRA_ROOT` | Repo checkout path inside batch jobs (optional) |
 | `EZRA_HOST` / `EZRA_PORT` | Bind address for serve jobs (default `0.0.0.0:8000`) |
+| `EZRA_N_GPU_LAYERS` | llama.cpp GPU layers (`-1` = all; overrides `local.n_gpu_layers`) |
 | `EZRA_HOLD_SECONDS` | How long interactive/serve-placeholder jobs sleep |
 | `EZRA_WORKERS` | Parallel download workers inside SBATCH download jobs |
 | `MODEL` | Gallery model name for serve / single-model download |
@@ -79,11 +80,15 @@ Start from [`ezra.yaml.example`](../ezra.yaml.example) (`ezra init-config`) or t
 version: 1
 
 local:
+  backend: auto            # auto | llama | mlx | stub
   models_dir: ~/.ezra/models   # prefer EZRA_MODELS_DIR on clusters
   prefer_quant: auto
   max_workers: 2
   resume: true
   hf_token_env: HF_TOKEN
+  max_loaded: 2
+  n_ctx: 4096
+  n_gpu_layers: -1
 
 hpc:
   enabled: true

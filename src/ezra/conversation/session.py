@@ -77,9 +77,9 @@ def sessions_dir(home: Path | None = None) -> Path:
 class Session:
     """Multi-turn chat bound to an agent and/or gallery model.
 
-    Use :func:`open_session` to construct. Pass a :class:`~ezra.conversation.backends.ChatBackend`
-    (e.g. :class:`~ezra.conversation.backends.StubBackend` in tests); real
-    inference backends are not shipped yet.
+    Use :func:`open_session` to construct. Pass an explicit
+    :class:`~ezra.conversation.backends.ChatBackend` (e.g. ``StubBackend`` in
+    tests), or omit ``backend`` to auto-create a local inference runtime.
     """
 
     model: str
@@ -148,8 +148,9 @@ def open_session(
     Args:
         agent: Name under ``agents/<name>/`` (loads prompt + preferred models).
         model: Gallery alias override (or sole binding when ``agent`` is omitted).
-        backend: Completion backend. Required until local serve ships; use
-            ``StubBackend()`` in tests.
+        backend: Completion backend. If omitted, builds a local runtime via
+            :func:`ezra.inference.create_backend` (requires ``.[local]`` / ``.[mlx]``).
+            Pass ``StubBackend()`` in tests.
         root: Repo root for agent lookup (tests).
         config: Loaded ``ezra.yaml`` (router defaults + optional install probe).
         available_models: If set, preferred/fallback resolution prefers these
@@ -159,17 +160,22 @@ def open_session(
     Raises:
         ValueError: neither agent nor model given, or no model can be resolved.
         FileNotFoundError: agent profile missing.
-        RuntimeError: no backend provided.
+        RuntimeError: local backend unavailable when ``backend`` is omitted.
     """
     if not agent and not model:
         raise ValueError("Pass agent=... and/or model=... to open a session.")
-    if backend is None:
-        raise RuntimeError(
-            "No chat backend configured. Local inference is not shipped yet. "
-            "Pass StubBackend() for tests, or wait for ezra chat / ezra serve."
-        )
 
     cfg = config
+    if cfg is None:
+        try:
+            cfg = load_config()
+        except (OSError, ValueError):
+            cfg = None
+
+    if backend is None:
+        from ezra.inference import create_backend
+
+        backend = create_backend(cfg or EzraConfig())
     agent_name: str | None = None
     spec: AgentSpec | None = None
     prompt_text = system_prompt

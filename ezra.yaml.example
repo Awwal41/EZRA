@@ -16,7 +16,7 @@
 version: 1
 
 local:
-  backend: auto
+  backend: auto               # auto | llama | mlx | stub
   # EDIT ME: where weights live (HPC: use scratch / project FS)
   # Or skip this and: export EZRA_MODELS_DIR=/scratch/$USER/ezra/models
   models_dir: ~/.ezra/models
@@ -24,6 +24,9 @@ local:
   max_workers: 2
   resume: true
   hf_token_env: HF_TOKEN      # export HF_TOKEN=… separately (.env is gitignored)
+  max_loaded: 2
+  n_ctx: 4096
+  n_gpu_layers: -1            # or export EZRA_N_GPU_LAYERS
 
 router:
   mode: auto
