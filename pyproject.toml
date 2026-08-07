@@ -47,9 +47,9 @@ docs = [
 ezra = "ezra.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/awwalola/EZRA"
-Repository = "https://github.com/awwalola/EZRA"
-Documentation = "https://ezra.readthedocs.io"
+Homepage = "https://github.com/Awwal41/EZRA"
+Repository = "https://github.com/Awwal41/EZRA"
+Documentation = "https://awwal41.github.io/EZRA/"
 
 [tool.setuptools.packages.find]
 where = ["src"]

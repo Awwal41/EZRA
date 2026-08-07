@@ -55,6 +55,29 @@ Examples: `ezra models recommend chemistry`, `ezra models recommend --format ggu
 
 `--all`, `--tag`, `--science`, `--format`, `--max-size`, `--include-gated` / `--no-gated`, `--quant`, `--force`, `--dry-run`, `--workers`, `--json`
 
+## `ezra agents`
+
+Scaffold personal agents (system prompt + preferred gallery models). See [Personal agents](agents.md) and [agents/README.md](../agents/README.md).
+
+| Command | Description |
+|---------|-------------|
+| `list` | Profiles under `agents/` (incl. `agents/local/…`) |
+| `init NAME` | Copy `agents/_template` → `agents/<NAME>` |
+| `show NAME` | Summary + prompt preview (`--prompt` for full text) |
+| `check NAME` | Validate aliases vs gallery; suggest downloads |
+
+`init` accepts `--force` and `--description TEXT`. Names may be `my-bot` or `local/my-bot`.
+
+Examples:
+
+```bash
+ezra agents init my-lab-assistant
+ezra agents init local/scratch-bot --description "Private experiments"
+ezra agents list
+ezra agents show chem-assistant --prompt
+ezra agents check chem-assistant
+```
+
 ## `ezra hpc`
 
 | Command | Description |
@@ -87,4 +110,4 @@ ezra hpc submit download --models-dir /scratch/$USER/ezra/models --dry-run
 ezra hpc submit serve --model chemllm-7b --gpus 1 --mem 64G
 ```
 
-More detail: [Models](models.md), [HPC](hpc.md).
+More detail: [Models](models.md), [Personal agents](agents.md), [HPC](hpc.md).

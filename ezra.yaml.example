@@ -3,7 +3,10 @@
 # Customize (pick one):
 #   1) cp ezra.yaml.example ezra.yaml          # repo-local (gitignored)
 #   2) mkdir -p ~/.ezra && cp ezra.yaml.example ~/.ezra/ezra.yaml
-#   3) On HPC, prefer a shareable site profile instead:
+#   3) Personal agent (prompt + preferred models):
+#        ezra agents init my-lab-assistant
+#      See agents/README.md and docs/agents.md
+#   4) On HPC, prefer a shareable site profile instead:
 #        ezra hpc init-site my-cluster --models-dir /scratch/$USER/ezra/models
 #        export EZRA_SITE=my-cluster
 #      See sites/README.md

@@ -1,9 +1,12 @@
 # EZRA
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-0A66C2?logo=github)](https://awwal41.github.io/EZRA/)
+[![Read the Docs](https://img.shields.io/readthedocs/ezra?logo=readthedocs&label=Read%20the%20Docs)](https://ezra.readthedocs.io/)
+
 **Easy Zero-setup Routing Assistant** for local & HPC LLMs - a researcher-first system for downloading, running, and intelligently routing free/open models, purpose-built for multi-purpose applications.
 
 > Phase 1 (this repo): curated free-model gallery, hardware-aware recommendations, and HPC-friendly one-command downloads. Router, local runtime, and science tools come next.
 
-**Full guides:** [docs/](docs/README.md) (Markdown on GitHub) · Sphinx HTML via `pip install -e ".[docs]" && cd docs && make html` · [install](docs/install.md) · [models](docs/models.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
+**Docs:** [GitHub Pages](https://awwal41.github.io/EZRA/) · [Read the Docs](https://ezra.readthedocs.io/) · [Markdown on GitHub](docs/README.md) · [install](docs/install.md) · [models](docs/models.md) · [personal agents](docs/agents.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
 
 ## Quick start
 
@@ -65,6 +68,21 @@ Installed weights land under `~/.ezra/models/<name>/`. Choose a path with `--mod
 ezra models status
 ezra models info chemllm-7b
 ```
+
+### Build a personal agent
+
+Wrap EZRA with **your** system prompt and preferred gallery models (same idea as HPC site profiles — copy a template, edit, optionally share):
+
+```bash
+ezra agents init my-lab-assistant
+# edit agents/my-lab-assistant/agent.yaml + prompt.md
+
+ezra agents list
+ezra agents show my-lab-assistant
+ezra agents check my-lab-assistant   # validate aliases, suggest downloads
+```
+
+Starter example: [`agents/chem-assistant`](agents/chem-assistant/). Private experiments: `ezra agents init local/scratch-bot` (`agents/local/` is gitignored). Details: [docs/agents.md](docs/agents.md) · [agents/README.md](agents/README.md).
 
 ## HPC (SLURM / SBATCH)
 
@@ -136,6 +154,10 @@ ezra models download --all [--tag TAG] [--science] [--max-size N] [--no-gated]
 ezra models info NAME
 ezra models status
 ezra models remove NAME
+ezra agents list
+ezra agents init NAME [--description TEXT] [--force]
+ezra agents show NAME [--prompt]
+ezra agents check NAME
 ezra hpc templates
 ezra hpc sites
 ezra hpc init-site NAME
@@ -152,16 +174,18 @@ Add a model by appending an entry (name, `repo_id`, format, tags) and reinstall 
 
 | Phase | Focus |
 |-------|--------|
-| **1 - Core Local** (now) | Gallery, recommend-by-hardware, download-by-name / download-all, HPC staging, config |
-| **2 - Smart routing + HPC** | Domain classifier, policy engine, OpenAI-compatible API, remote adapters |
+| **1 - Core Local** (now) | Gallery, recommend-by-hardware, download-by-name / download-all, personal agent scaffolds, HPC staging, config |
+| **2 - Smart routing + HPC** | Domain classifier, policy engine, OpenAI-compatible API, agent prompts wired into chat/serve, remote adapters |
 | **3 - Scientific layer** | Chem/materials prompts, tool-calling, RAG helpers, eval harness |
 | **4 - Lab scale** | Shared configs, plugins, observability |
 
-**One sentence:** EZRA lets materials and chemistry researchers download free LLMs, run them locally, and intelligently route between local models and HPC - without cloud lock-in.
+**One sentence:** EZRA lets materials and chemistry researchers download free LLMs, build personal agents on top of them, run locally, and intelligently route between local models and HPC - without cloud lock-in.
 
 ## Documentation
 
-User guides are Markdown under [`docs/`](docs/) (readable on GitHub). The same tree builds with **Sphinx + MyST + reStructuredText** (API autodoc, search, Furo theme):
+**Published HTML:** [https://awwal41.github.io/EZRA/](https://awwal41.github.io/EZRA/) (GitHub Pages) · optional mirror [Read the Docs](https://ezra.readthedocs.io/) after you import the repo there.
+
+User guides are Markdown under [`docs/`](docs/) (readable on GitHub). The same tree builds with **Sphinx + MyST + reStructuredText** (API autodoc, search, Furo theme). CI: [`.github/workflows/docs.yml`](.github/workflows/docs.yml) builds on PRs and deploys Pages from `main`.
 
 ```bash
 pip install -e ".[docs]"
@@ -170,17 +194,22 @@ make html          # Linux / macOS — or: .\make.bat html on Windows
 # open docs/_build/html/index.html
 ```
 
+How to turn Pages on / link RTD: [docs/README.md](docs/README.md#publish-so-people-get-a-link).
+
 | Doc | Contents |
 |-----|----------|
 | [docs/install.md](docs/install.md) | Install, venv, `ezra doctor` |
 | [docs/models.md](docs/models.md) | Recommend / list / download / status / remove |
+| [docs/agents.md](docs/agents.md) | Personal agents: init / prompt / preferred models |
+| [agents/README.md](agents/README.md) | In-tree agent scaffolds + chem-assistant example |
 | [docs/hpc.md](docs/hpc.md) | Site profiles, scratch, `ezra hpc submit` |
 | [sites/README.md](sites/README.md) | Customize for your cluster, commit & push |
 | [docs/configuration.md](docs/configuration.md) | `ezra.yaml` and environment variables |
-| [docs/cli.md](docs/cli.md) | Command reference (includes `models recommend`) |
+| [docs/cli.md](docs/cli.md) | Command reference (includes `models recommend`, `agents`) |
 | [docs/api.rst](docs/api.rst) | Python API (Sphinx autodoc) |
 | [docs/index.rst](docs/index.rst) | Sphinx site home |
-| [.readthedocs.yaml](.readthedocs.yaml) | Read the Docs build config |
+| [`.github/workflows/docs.yml`](.github/workflows/docs.yml) | Build + GitHub Pages deploy |
+| [.readthedocs.yaml](.readthedocs.yaml) | Optional Read the Docs build config |
 
 
 ## Contributing

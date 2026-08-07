@@ -27,6 +27,14 @@ Recommendations
    :undoc-members:
    :show-inheritance:
 
+Personal agents
+---------------
+
+.. automodule:: ezra.agents
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Config
 ------
 

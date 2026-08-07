@@ -9,5 +9,6 @@ listed here as releases land.
 
 * Curated free/open model gallery and Hugging Face downloads
 * ``ezra models recommend`` — hardware-aware open-model picks (keyword + RAM/VRAM)
+* Personal agent scaffolds (``ezra agents init`` / ``show`` / ``check``) under ``agents/``
 * HPC site profiles and ``ezra hpc submit`` / SBATCH helpers
 * Sphinx + MyST documentation site

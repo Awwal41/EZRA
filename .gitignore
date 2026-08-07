@@ -39,6 +39,10 @@ secrets.yml
 sites/local/
 sites/_local/
 
+# Personal-only agents (shareable agents/<name>/ stay tracked)
+agents/local/
+agents/_local/
+
 # Site-local secrets if someone drops them in a profile
 sites/**/.env
 sites/**/secrets.*

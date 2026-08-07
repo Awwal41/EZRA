@@ -43,13 +43,13 @@ html_theme = "furo"
 html_static_path = ["_static"]
 html_title = f"EZRA {release}"
 html_theme_options = {
-    "source_repository": "https://github.com/awwalola/EZRA",
+    "source_repository": "https://github.com/Awwal41/EZRA",
     "source_branch": "main",
     "source_directory": "docs/",
     "footer_icons": [
         {
             "name": "GitHub",
-            "url": "https://github.com/awwalola/EZRA",
+            "url": "https://github.com/Awwal41/EZRA",
             "html": """
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38

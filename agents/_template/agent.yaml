@@ -1,0 +1,33 @@
+# Personal EZRA agent - CUSTOMIZE ME
+# Scaffolded by: ezra agents init <name>
+# Docs: docs/agents.md · agents/README.md
+version: 1
+
+# Display name (defaults to the folder name if omitted)
+name: my-agent
+description: Short blurb for what this agent helps with.
+
+# Gallery model aliases (see: ezra models list / ezra models recommend)
+models:
+  # Tried first when the runtime/router lands (Phase 2+)
+  preferred:
+    - qwen2.5-7b-instruct
+  # Used if preferred models are missing or do not fit hardware
+  fallback:
+    - phi-3.5-mini-instruct
+  # Optional: prefer gallery entries that carry any of these tags
+  tags: []
+
+# System prompt file (relative to this agent directory)
+prompt: prompt.md
+
+# Domain hints (materials / chemistry / general / coding / ...)
+science_focus:
+  - general
+
+# Future: tool hooks (PubChem, RDKit, ASE, ...) - leave empty for now
+tools: []
+
+# Optional router preference for this agent (inherits ezra.yaml when omitted)
+# router:
+#   mode: local_only   # auto | local_only | hpc_preferred | manual

@@ -1,0 +1,27 @@
+# Chemistry / materials lab assistant
+# Example personal agent - copy or adapt with: ezra agents init my-chem-bot
+version: 1
+
+name: chem-assistant
+description: >
+  Lab-oriented helper for chemistry and materials questions - units, mechanisms,
+  synthesis planning sketches, and literature triage using open models.
+
+models:
+  preferred:
+    - chemllm-7b
+    - qwen2.5-7b-instruct
+  fallback:
+    - phi-3.5-mini-instruct
+    - gemma-2-2b-it
+  tags:
+    - chemistry
+    - materials
+
+prompt: prompt.md
+
+science_focus:
+  - chemistry
+  - materials
+
+tools: []

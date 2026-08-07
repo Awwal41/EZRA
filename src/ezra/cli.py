@@ -569,6 +569,10 @@ def doctor(ctx: click.Context) -> None:
             "[green]ezra hpc init-site my-cluster[/green] then "
             "[green]export EZRA_SITE=my-cluster[/green] (HPC - see sites/README.md)"
         )
+    console.print(
+        "Tip: [green]ezra agents init my-lab-assistant[/green] "
+        "scaffolds a personal agent (prompt + preferred models)"
+    )
     try:
         config.models_dir.mkdir(parents=True, exist_ok=True)
         test = config.models_dir / ".ezra_write_test"
@@ -954,6 +958,181 @@ def hpc_submit(
         console.print(f"Models dir: {job_models_dir}")
         if model:
             console.print(f"MODEL={model}")
+
+
+@main.group("agents")
+def agents_group() -> None:
+    """Scaffold and inspect personal agents (prompt + preferred models)."""
+
+
+@agents_group.command("list")
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON.")
+def agents_list(as_json: bool) -> None:
+    """List personal agent profiles under agents/."""
+    from ezra.agents import list_agents, load_agent_spec
+
+    profiles = list_agents()
+    if as_json:
+        rows = []
+        for p in profiles:
+            try:
+                spec = load_agent_spec(p)
+                rows.append(
+                    {
+                        "name": p.name,
+                        "display_name": spec.name,
+                        "description": spec.description,
+                        "preferred": spec.preferred_models,
+                        "path": str(p.path),
+                    }
+                )
+            except (OSError, ValueError, TypeError) as exc:
+                rows.append({"name": p.name, "path": str(p.path), "error": str(exc)})
+        console.print_json(data=rows)
+        return
+
+    if not profiles:
+        console.print("No agents yet. Create one with [green]ezra agents init NAME[/green]")
+        console.print("Example: [cyan]ezra agents init my-lab-assistant[/cyan]")
+        console.print("Starter: [cyan]agents/chem-assistant[/cyan] (see agents/README.md)")
+        return
+
+    table = Table(title="EZRA personal agents")
+    table.add_column("Name", style="cyan")
+    table.add_column("Preferred models")
+    table.add_column("Focus")
+    table.add_column("Description")
+    for p in profiles:
+        try:
+            spec = load_agent_spec(p)
+            preferred = ", ".join(spec.preferred_models[:3]) or "-"
+            focus = ", ".join(spec.science_focus[:3]) or "-"
+            desc = (spec.description[:60] + "…") if len(spec.description) > 60 else spec.description
+            table.add_row(p.name, preferred, focus, desc or "-")
+        except (OSError, ValueError, TypeError) as exc:
+            table.add_row(p.name, "-", "-", f"[red]{exc}[/red]")
+    console.print(table)
+
+
+@agents_group.command("init")
+@click.argument("name")
+@click.option("--force", is_flag=True, help="Overwrite an existing agent folder.")
+@click.option("--description", default=None, help="One-line description for agent.yaml.")
+def agents_init(name: str, force: bool, description: str | None) -> None:
+    """Create agents/<name> from the editable template (then customize).
+
+    \b
+    Examples:
+      ezra agents init my-lab-assistant
+      ezra agents init local/scratch-bot
+      ezra agents init teaching-ta --description "Office-hours helper"
+    """
+    from ezra.agents import init_agent
+
+    try:
+        profile = init_agent(name, force=force, description=description)
+    except (ValueError, FileExistsError, FileNotFoundError) as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    console.print(f"Created [bold]{profile.path}[/bold]")
+    console.print("Edit [cyan]agent.yaml[/cyan] + [cyan]prompt.md[/cyan] (search for CUSTOMIZE ME).")
+    console.print(f"Then: [green]ezra agents show {profile.name}[/green]")
+    console.print(f"      [green]ezra agents check {profile.name}[/green]")
+    if profile.name.startswith("local/"):
+        console.print("[dim]agents/local/ is gitignored — fine for private experiments.[/dim]")
+    else:
+        console.print(
+            "[dim]Optional: commit agents/"
+            f"{profile.name} to share with your lab (no secrets).[/dim]"
+        )
+
+
+@agents_group.command("show")
+@click.argument("name")
+@click.option("--prompt", "show_prompt", is_flag=True, help="Print the full system prompt.")
+def agents_show(name: str, show_prompt: bool) -> None:
+    """Show one agent profile (models, prompt path, description)."""
+    from ezra.agents import get_agent, load_agent_spec
+
+    try:
+        profile = get_agent(name)
+        spec = load_agent_spec(profile)
+    except (FileNotFoundError, ValueError, OSError) as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    console.print(f"[bold]{spec.name}[/bold]  ([cyan]{profile.name}[/cyan])")
+    console.print(f"Path:         {profile.path}")
+    if spec.description:
+        console.print(f"Description:  {spec.description}")
+    console.print(f"Preferred:    {', '.join(spec.preferred_models) or '(none)'}")
+    console.print(f"Fallback:     {', '.join(spec.fallback_models) or '(none)'}")
+    console.print(f"Model tags:   {', '.join(spec.model_tags) or '(none)'}")
+    console.print(f"Focus:        {', '.join(spec.science_focus) or '(none)'}")
+    console.print(f"Prompt file:  {profile.prompt_path}")
+    if spec.router_mode:
+        console.print(f"Router mode:  {spec.router_mode}")
+    if profile.prompt_path.is_file():
+        text = profile.prompt_path.read_text(encoding="utf-8")
+        if show_prompt:
+            console.print("\n-- prompt --")
+            console.print(text.rstrip())
+        else:
+            preview = text.strip().splitlines()[:8]
+            console.print("\n-- prompt preview --")
+            console.print("\n".join(preview))
+            if len(text.strip().splitlines()) > 8:
+                console.print(f"[dim]... ({len(text.strip().splitlines())} lines; use --prompt)[/dim]")
+    else:
+        console.print(f"[yellow]Missing prompt file: {profile.prompt_path}[/yellow]")
+
+
+@agents_group.command("check")
+@click.argument("name")
+@click.pass_context
+def agents_check(ctx: click.Context, name: str) -> None:
+    """Validate agent model aliases against the gallery and suggest downloads."""
+    from ezra.agents import check_agent_models, get_agent, load_agent_spec
+
+    gallery: ModelGallery = ctx.obj["gallery"]
+    try:
+        profile = get_agent(name)
+        spec = load_agent_spec(profile)
+    except (FileNotFoundError, ValueError, OSError) as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    result = check_agent_models(
+        spec,
+        gallery.names(),
+        prompt_exists=profile.prompt_path.is_file(),
+    )
+
+    console.print(f"Agent [cyan]{profile.name}[/cyan] ({spec.name})")
+    if result.known:
+        console.print(f"Gallery OK:    [green]{', '.join(result.known)}[/green]")
+    else:
+        console.print("Gallery OK:    [yellow](no preferred/fallback aliases listed)[/yellow]")
+    if result.unknown:
+        console.print(f"Unknown:       [red]{', '.join(result.unknown)}[/red]")
+        console.print("  Fix aliases in agent.yaml or add them to the gallery.")
+    if result.missing_prompt:
+        console.print(f"Prompt:        [red]missing[/red] ({profile.prompt_path})")
+    else:
+        console.print(f"Prompt:        [green]ok[/green] ({profile.prompt_path.name})")
+
+    if result.download_hint:
+        console.print(f"\nDownload: [green]{result.download_hint}[/green]")
+    keyword = (spec.science_focus[0] if spec.science_focus else None) or (
+        spec.model_tags[0] if spec.model_tags else None
+    )
+    if keyword and keyword != "general":
+        console.print(
+            f"Or pick by hardware: [green]ezra models recommend {keyword}[/green]"
+        )
+    else:
+        console.print("Or pick by hardware: [green]ezra models recommend[/green]")
+
+    if result.unknown or result.missing_prompt:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

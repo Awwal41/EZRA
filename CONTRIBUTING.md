@@ -109,11 +109,12 @@ Do **not** commit model weights (`.gguf`, `.safetensors`), `.venv/`, `.env`, rep
 | `src/ezra/hpc/` | SLURM / SBATCH helpers |
 | `scripts/hpc_*.sh` | Example HPC job scripts (honor `EZRA_SITE`) |
 | `sites/` | Per-cluster profiles (`init-site` → edit → commit & push) |
+| `agents/` | Personal agent scaffolds (`agents init` → edit prompt/models) |
 | `docs/` | User guides (Markdown) + Sphinx site (`conf.py`, `index.rst`, MyST) |
 | `tests/` | Pytest suite (prefer no network) |
 | `TODO.md` | Shared backlog - anyone can add items |
 
-Match existing module boundaries: gallery data in YAML, download logic in `downloader.py`, config in `config.py`, CLI thin wrappers in `cli.py`.
+Match existing module boundaries: gallery data in YAML, download logic in `downloader.py`, config in `config.py`, agents in `agents.py`, CLI thin wrappers in `cli.py`.
 
 ---
 
@@ -155,7 +156,7 @@ Follow patterns already used in the tree. Prefer consistency over personal prefe
 ### Docs and TODO
 
 - Keep [README.md](README.md) examples and guides under [docs/](docs/README.md) accurate when you change CLI flags or behavior.
-- User-facing how-to (install, models, HPC, config, CLI) lives in `docs/` - update the matching page, not only the README.
+- User-facing how-to (install, models, agents, HPC, config, CLI) lives in `docs/` - update the matching page, not only the README.
 - Shared ideas go in [TODO.md](TODO.md) with priority tags (`P0` / `P1` / `P2` / `Idea`).
 
 ---
@@ -197,6 +198,17 @@ Details: [`sites/README.md`](sites/README.md) and [docs/hpc.md](docs/hpc.md).
 
 - Prefer extending `src/ezra/hpc/sbatch.py` / `sites.py` and keeping `scripts/hpc_*.sh` as thin examples that honor `EZRA_SITE`.
 - Cover new template logic in `tests/test_sbatch.py` / `tests/test_sites.py` where practical.
+
+### Personal agents
+
+**Domain prompts and preferred models belong in `agents/<name>/`, not hard-coded in the CLI.**
+
+1. `ezra agents init <name>` (or start from `agents/chem-assistant/`)
+2. Edit `agent.yaml` (gallery aliases) + `prompt.md`; fill `NOTES.md`
+3. `ezra agents check <name>` and confirm aliases resolve
+4. Commit shareable agents (no secrets); keep private work under `agents/local/`
+
+Details: [`agents/README.md`](agents/README.md) and [docs/agents.md](docs/agents.md).
 
 ---
 

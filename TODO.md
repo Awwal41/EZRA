@@ -36,6 +36,7 @@ Track what already landed so we do not re-open finished work.
 - [x] CLI entrypoint (`cli.py`: `ezra models list|download`, `ezra doctor`, `ezra hpc`)
 - [x] SBATCH generator + templates (`hpc/sbatch.py`, `scripts/hpc_*.sh`)
 - [x] Gallery + SBATCH unit tests (`tests/test_gallery.py`, `tests/test_sbatch.py`)
+- [x] Personal agent scaffolds (`agents/_template`, `ezra agents init|list|show|check`)
 
 ---
 
@@ -80,6 +81,7 @@ Track what already landed so we do not re-open finished work.
 
 - [ ] HPC OpenAI-compatible remote endpoints in config + client `P1`
 - [ ] Chemistry / materials system prompt pack `P1`
+- [ ] Wire `agents/<name>/` prompts + preferred models into local chat / serve `P1`
 - [ ] Session saving + basic experiment notes `P1`
 - [ ] Resource monitor (RAM / VRAM) to prevent OOM crashes `P1`
 - [ ] Streaming responses through local API and HPC bridge `P1`

@@ -2,6 +2,7 @@
 #
 # Prefer customizing via:
 #   ezra init-config                  # ~/.ezra/ezra.yaml
+#   ezra agents init <name>           # agents/<name>/ (personal agent; optional commit)
 #   ezra hpc init-site <name>         # sites/<name>/ (HPC; commit & push)
 # Or copy ezra.yaml.example / .env.example at the repo root.
 version: 1
