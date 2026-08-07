@@ -35,6 +35,14 @@ Personal agents
    :undoc-members:
    :show-inheritance:
 
+Conversation runtime
+--------------------
+
+.. automodule:: ezra.conversation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Config
 ------
 

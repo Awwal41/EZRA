@@ -8,6 +8,7 @@ HTML site with **Sphinx** + **MyST** + **reStructuredText**.
 | [Installation](install.md) | First-time setup (venv, `pip install`, `ezra doctor`) |
 | [Models](models.md) | Recommend by hardware + keyword, browse, download, status, remove |
 | [Personal agents](agents.md) | Scaffold your own assistant (prompt + preferred models) |
+| [Conversation runtime](conversation.md) | Session API (`open_session`); chat/serve still planned |
 | [HPC / SLURM](hpc.md) | Site profiles, scratch paths, SBATCH submit |
 | [Site profiles](sites.md) | Customize partition/modules for your cluster ([full notes](../sites/README.md)) |
 | [Configuration](configuration.md) | `ezra.yaml`, env vars, models directory |
