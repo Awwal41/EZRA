@@ -41,8 +41,9 @@ root_doc = "index"
 
 html_theme = "furo"
 html_static_path = ["_static"]
+html_css_files = ["custom.css"]
 html_title = f"EZRA {release}"
-html_logo = "_static/logo-icon-light.svg"
+# Prefer Furo light_logo/dark_logo only — html_logo duplicates the sidebar mark
 html_favicon = "_static/favicon.svg"
 
 # Classic Read the Docs blue for sidebar + brand (links, accents)
