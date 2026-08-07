@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 120" width="320" height="120" role="img" aria-labelledby="ezraLogoLightTitle ezraLogoLightDesc">
+  <title id="ezraLogoLightTitle">EZRA</title>
+  <desc id="ezraLogoLightDesc">EZRA wordmark with rising structure mark - light ink for dark backgrounds.</desc>
+  <g fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M20 95 H55"/>
+    <path d="M75 95 H110"/>
+    <path d="M30 95 V55"/>
+    <path d="M55 95 V40"/>
+    <path d="M80 95 V25"/>
+    <path d="M105 95 V45"/>
+    <path d="M30 25 H105"/>
+  </g>
+  <rect x="52" y="18" width="16" height="10" fill="#ffffff"/>
+  <text x="140" y="72"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="42"
+        font-weight="700"
+        letter-spacing="4"
+        fill="#ffffff">EZRA</text>
+</svg>

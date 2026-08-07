@@ -1,19 +1,26 @@
 # EZRA brand assets
 
-SVG logos inspired by the biblical **Ezra**: a restorer who helped rebuild after destruction (walls, community, and the written word).
+SVG logos: a **rising structure** from a broken base, with the final keystone being
+placed - rebuilding in progress (inspired by biblical Ezra the restorer).
 
-| File | Use |
-|------|-----|
-| [`logo-icon.svg`](logo-icon.svg) | App icon, favicon, avatar (square mark) |
-| [`logo.svg`](logo.svg) | README / docs header (icon + wordmark) |
+| File | Ink | Use |
+|------|-----|-----|
+| [`logo-icon.svg`](logo-icon.svg) | Dark (`#1a1a1a`) | App icon on light backgrounds |
+| [`logo-icon-light.svg`](logo-icon-light.svg) | Light (`#ffffff`) | Icon on dark or colored backgrounds |
+| [`logo.svg`](logo.svg) | Dark | README / headers (light mode) |
+| [`logo-light.svg`](logo-light.svg) | Light | README / headers (dark mode) |
 
 ## Symbol
 
-- **Rubble** at the base: what was broken
-- **Rising masonry + arch**: rebuilding in progress
-- **Gold keystone**: the act of setting things right again
-- **Scroll in the gateway**: Ezra the scribe; restoring knowledge and guidance
+- **Broken base**: incomplete foundation
+- **Rising columns** of different heights: rebuilding underway
+- **Upper beam**: structure coming together
+- **Keystone**: the final stone being set
 
-Palette: deep teal-slate (`#0F2E3A` / `#1A4A5C`), stone (`#F3E6C8`), restoration gold (`#F0C14B`).
+## Where copies live
 
-Docs copies live under [`docs/_static/`](../docs/_static/) for Sphinx.
+- Canonical sources: this folder (`assets/`)
+- Sphinx / GitHub Pages / RTD: [`docs/_static/`](../docs/_static/)
+  - Sidebar uses the **light-ink** icon (blue sidebar in light mode, dark sidebar in dark mode)
+  - Favicon: light mark on RTD blue (`#2980B9`) badge
+- README: `<picture>` switches `logo.svg` / `logo-light.svg` with `prefers-color-scheme`

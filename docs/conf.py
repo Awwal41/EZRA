@@ -42,7 +42,7 @@ root_doc = "index"
 html_theme = "furo"
 html_static_path = ["_static"]
 html_title = f"EZRA {release}"
-html_logo = "_static/logo-icon.svg"
+html_logo = "_static/logo-icon-light.svg"
 html_favicon = "_static/favicon.svg"
 
 # Classic Read the Docs blue for sidebar + brand (links, accents)
@@ -52,8 +52,9 @@ _RTD_BLUE_DARK = "#2472a4"
 _RTD_BLUE_LIGHT = "#5dade2"
 
 html_theme_options = {
-    "light_logo": "logo-icon.svg",
-    "dark_logo": "logo-icon.svg",
+    # Light-ink mark: readable on blue sidebar (light) and dark sidebar (dark)
+    "light_logo": "logo-icon-light.svg",
+    "dark_logo": "logo-icon-light.svg",
     "sidebar_hide_name": False,
     "source_repository": "https://github.com/Awwal41/EZRA",
     "source_branch": "main",
