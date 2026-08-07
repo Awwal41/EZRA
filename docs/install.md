@@ -18,6 +18,11 @@ source .venv/bin/activate
 
 pip install -U pip
 pip install -e .
+
+# Local chat / OpenAI serve (optional extras)
+pip install -e ".[local,serve]"   # GGUF via llama.cpp + FastAPI
+# Apple Silicon non-GGUF (optional):
+# pip install -e ".[mlx]"
 ```
 
 For development (tests + Ruff):
@@ -25,6 +30,8 @@ For development (tests + Ruff):
 ```bash
 pip install -e ".[dev]"
 ```
+
+On Windows, `llama-cpp-python` may need a pre-built wheel or a C++ toolchain; see the [llama-cpp-python](https://github.com/abetlen/llama-cpp-python) docs if `pip install` fails.
 
 ## Verify
 
@@ -34,9 +41,22 @@ ezra models list
 ezra models recommend chemistry
 ```
 
-`ezra doctor` prints the models directory, HF token status, gallery size, CPU/RAM/GPU fit budget, and whether the models path is writable.
+`ezra doctor` prints the models directory, HF token status, gallery size, CPU/RAM/GPU fit budget, whether llama-cpp / mlx-lm / FastAPI are importable, and whether the models path is writable.
 
 `ezra models recommend` probes this machine and ranks open gallery models that fit (optional keyword). See [Models - Recommend](models.md#recommend-for-this-machine).
+
+## Chat and serve (after downloading a GGUF)
+
+```bash
+ezra models download phi-3.5-mini-instruct
+ezra chat --model phi-3.5-mini-instruct
+ezra serve --model phi-3.5-mini-instruct --port 8000
+# Point OpenAI-compatible clients at http://127.0.0.1:8000/v1
+```
+
+Dry-run without weights: `ezra chat --backend stub --model phi-3.5-mini-instruct -p "hi"`.
+
+See [Conversation runtime](conversation.md).
 
 ## Optional: local config
 

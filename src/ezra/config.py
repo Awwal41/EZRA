@@ -59,6 +59,10 @@ class EzraConfig:
     hf_token_env: str = "HF_TOKEN"
     max_workers: int = 2
     resume: bool = True
+    backend: str = "auto"
+    max_loaded: int = 2
+    n_ctx: int = 4096
+    n_gpu_layers: int = -1
     raw: dict[str, Any] = field(default_factory=dict)
 
     @property
@@ -107,11 +111,20 @@ def load_config(path: Path | None = None) -> EzraConfig:
     local = data.get("local") or {}
     models_dir = resolve_models_dir(yaml_value=local.get("models_dir"))
 
+    n_gpu = local.get("n_gpu_layers", -1)
+    env_layers = os.environ.get("EZRA_N_GPU_LAYERS", "").strip()
+    if env_layers:
+        n_gpu = int(env_layers)
+
     return EzraConfig(
         models_dir=models_dir,
         prefer_quant=str(local.get("prefer_quant", "auto")),
         hf_token_env=str(local.get("hf_token_env", "HF_TOKEN")),
         max_workers=int(local.get("max_workers", 2)),
         resume=bool(local.get("resume", True)),
+        backend=str(local.get("backend", "auto")),
+        max_loaded=int(local.get("max_loaded", 2)),
+        n_ctx=int(local.get("n_ctx", 4096)),
+        n_gpu_layers=int(n_gpu),
         raw=data,
     )

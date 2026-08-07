@@ -573,6 +573,33 @@ def doctor(ctx: click.Context) -> None:
         "Tip: [green]ezra agents init my-lab-assistant[/green] "
         "scaffolds a personal agent (prompt + preferred models)"
     )
+    from ezra.inference.llama_cpp_engine import llama_cpp_available
+    from ezra.inference.mlx_engine import mlx_available
+    from ezra.serve import fastapi_available
+
+    llama_status = (
+        "[green]ok[/green]"
+        if llama_cpp_available()
+        else "[yellow]missing[/yellow] (pip install -e '.[local]')"
+    )
+    mlx_status = (
+        "[green]ok[/green]"
+        if mlx_available()
+        else "[yellow]missing[/yellow] (pip install -e '.[mlx]')"
+    )
+    serve_status = (
+        "[green]ok[/green]"
+        if fastapi_available()
+        else "[yellow]missing[/yellow] (pip install -e '.[serve]')"
+    )
+    console.print(f"llama-cpp-python: {llama_status}")
+    console.print(f"mlx-lm:           {mlx_status}")
+    console.print(f"fastapi/uvicorn:  {serve_status}")
+    console.print(f"Chat backend:     {config.backend}")
+    console.print(
+        "Tip: [green]ezra chat --model qwen2.5-7b-instruct[/green] "
+        "or [green]ezra serve --model qwen2.5-7b-instruct[/green]"
+    )
     try:
         config.models_dir.mkdir(parents=True, exist_ok=True)
         test = config.models_dir / ".ezra_write_test"
@@ -1133,6 +1160,179 @@ def agents_check(ctx: click.Context, name: str) -> None:
 
     if result.unknown or result.missing_prompt:
         sys.exit(1)
+
+
+def _cli_backend(ctx: click.Context, backend: str):
+    """Resolve chat backend from --backend flag."""
+    from ezra.conversation import StubBackend
+    from ezra.inference import create_backend
+
+    config = ctx.obj["config"]
+    prefer = backend.strip().lower()
+    if prefer == "stub":
+        return StubBackend(), "stub"
+    try:
+        runtime = create_backend(config, prefer=prefer, gallery=ctx.obj["gallery"])
+    except Exception as exc:
+        raise click.ClickException(str(exc)) from exc
+    label = getattr(runtime, "name", prefer)
+    return runtime, str(label)
+
+
+@main.command("chat")
+@click.option("--agent", default=None, help="Personal agent under agents/<name>/.")
+@click.option("--model", "model_name", default=None, help="Gallery model alias.")
+@click.option(
+    "--backend",
+    "backend_name",
+    type=click.Choice(["auto", "llama", "mlx", "stub"], case_sensitive=False),
+    default="auto",
+    show_default=True,
+    help="Inference backend (stub = dry-run).",
+)
+@click.option("-p", "--prompt", "one_shot", default=None, help="One-shot prompt (non-interactive).")
+@click.option("--stream/--no-stream", default=True, help="Stream tokens in the REPL.")
+@click.pass_context
+def chat_cmd(
+    ctx: click.Context,
+    agent: str | None,
+    model_name: str | None,
+    backend_name: str,
+    one_shot: str | None,
+    stream: bool,
+) -> None:
+    """Chat with a local model or personal agent.
+
+    \b
+    Examples:
+      ezra chat --model qwen2.5-7b-instruct
+      ezra chat --agent chem-assistant
+      ezra chat --backend stub --model phi-3.5-mini-instruct -p "Hello"
+    """
+    from ezra.conversation import open_session
+    from ezra.inference import BackendUnavailable, WeightsError
+
+    if not agent and not model_name:
+        raise click.UsageError("Provide --agent and/or --model")
+
+    backend, label = _cli_backend(ctx, backend_name)
+    try:
+        session = open_session(
+            agent=agent,
+            model=model_name,
+            backend=backend,
+            config=ctx.obj["config"],
+        )
+    except (BackendUnavailable, WeightsError, FileNotFoundError, ValueError, RuntimeError) as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    def _banner() -> None:
+        who = f"agent={session.agent}" if session.agent else "no agent"
+        console.print(
+            f"[bold]EZRA chat[/bold]  model=[cyan]{session.model}[/cyan]  "
+            f"{who}  backend=[magenta]{label}[/magenta]"
+        )
+        console.print("[dim]Commands: /save  /quit[/dim]")
+
+    if one_shot is not None:
+        if stream:
+            console.print(f"[dim]({session.model})[/dim] ", end="")
+            for chunk in session.stream(one_shot):
+                console.print(chunk, end="")
+            console.print()
+        else:
+            reply = session.send(one_shot)
+            console.print(f"[dim]({reply.model}{f' / {reply.agent}' if reply.agent else ''})[/dim]")
+            console.print(reply.text)
+        return
+
+    _banner()
+    while True:
+        try:
+            line = console.input("[bold green]you>[/bold green] ").strip()
+        except (EOFError, KeyboardInterrupt):
+            console.print()
+            break
+        if not line:
+            continue
+        if line in {"/quit", "/exit", ":q"}:
+            break
+        if line == "/save":
+            path = session.save()
+            console.print(f"Saved [bold]{path}[/bold]")
+            continue
+        try:
+            if stream:
+                console.print(f"[bold cyan]{session.model}>[/bold cyan] ", end="")
+                for chunk in session.stream(line):
+                    console.print(chunk, end="")
+                console.print()
+            else:
+                reply = session.send(line)
+                tag = reply.model
+                if reply.agent:
+                    tag = f"{reply.agent} / {reply.model}"
+                console.print(f"[bold cyan]{tag}>[/bold cyan] {reply.text}")
+        except (BackendUnavailable, WeightsError, RuntimeError, OSError) as exc:
+            console.print(f"[red]{exc}[/red]")
+
+
+@main.command("serve")
+@click.option("--agent", default=None, help="Default agent for requests without model=agent:…")
+@click.option("--model", "model_name", default=None, help="Default gallery model.")
+@click.option(
+    "--backend",
+    "backend_name",
+    type=click.Choice(["auto", "llama", "mlx", "stub"], case_sensitive=False),
+    default="auto",
+    show_default=True,
+)
+@click.option("--host", default=None, help="Bind host (default 0.0.0.0 or EZRA_HOST).")
+@click.option("--port", default=None, type=int, help="Bind port (default 8000 or EZRA_PORT).")
+@click.pass_context
+def serve_cmd(
+    ctx: click.Context,
+    agent: str | None,
+    model_name: str | None,
+    backend_name: str,
+    host: str | None,
+    port: int | None,
+) -> None:
+    """OpenAI-compatible HTTP API (``/v1/chat/completions``).
+
+    \b
+    Examples:
+      ezra serve --model qwen2.5-7b-instruct --port 8000
+      ezra serve --agent chem-assistant --backend stub
+    """
+    from ezra.serve import create_app, fastapi_available, run_server
+
+    if not fastapi_available():
+        raise click.ClickException(
+            "FastAPI/uvicorn not installed. Install with: pip install -e '.[serve]'"
+        )
+    if not agent and not model_name:
+        raise click.UsageError(
+            "Provide --agent and/or --model as the default for this server."
+        )
+
+    backend, label = _cli_backend(ctx, backend_name)
+    bind_host = host or os.environ.get("EZRA_HOST", "0.0.0.0")
+    bind_port = int(port or os.environ.get("EZRA_PORT", "8000"))
+
+    app = create_app(
+        backend=backend,
+        default_agent=agent,
+        default_model=model_name,
+        gallery=ctx.obj["gallery"],
+        backend_label=label,
+        config=ctx.obj["config"],
+    )
+    console.print(
+        f"Serving OpenAI API on [bold]http://{bind_host}:{bind_port}/v1[/bold]  "
+        f"(backend=[magenta]{label}[/magenta])"
+    )
+    run_server(app, host=bind_host, port=bind_port)
 
 
 if __name__ == "__main__":

@@ -35,6 +35,30 @@ Personal agents
    :undoc-members:
    :show-inheritance:
 
+Conversation runtime
+--------------------
+
+.. automodule:: ezra.conversation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Local inference
+---------------
+
+.. automodule:: ezra.inference
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Serve (OpenAI HTTP)
+-------------------
+
+.. automodule:: ezra.serve
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Config
 ------
 

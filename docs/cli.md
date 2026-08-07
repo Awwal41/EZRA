@@ -78,6 +78,45 @@ ezra agents show chem-assistant --prompt
 ezra agents check chem-assistant
 ```
 
+## `ezra chat`
+
+Interactive (or one-shot) chat with a gallery model or personal agent. Requires `pip install -e ".[local]"` for real GGUF replies (or `--backend stub` to dry-run).
+
+| Flag | Meaning |
+|------|---------|
+| `--agent NAME` | Bind `agents/<name>/` (prompt + preferred models) |
+| `--model NAME` | Gallery alias |
+| `--backend auto\|llama\|mlx\|stub` | Inference backend (default `auto`) |
+| `-p` / `--prompt TEXT` | One-shot non-interactive prompt |
+| `--stream` / `--no-stream` | Token streaming in the REPL |
+
+REPL commands: `/save` (write `~/.ezra/sessions/<id>.json`), `/quit`.
+
+```bash
+ezra chat --model qwen2.5-7b-instruct
+ezra chat --agent chem-assistant
+ezra chat --backend stub --model phi-3.5-mini-instruct -p "Hello"
+```
+
+## `ezra serve`
+
+OpenAI-compatible HTTP API (`GET /v1/models`, `POST /v1/chat/completions`). Requires `pip install -e ".[serve]"` plus a local backend extra.
+
+| Flag | Meaning |
+|------|---------|
+| `--agent` / `--model` | Default binding for the process |
+| `--backend` | `auto` / `llama` / `mlx` / `stub` |
+| `--host` / `--port` | Bind address (defaults `0.0.0.0:8000`, or `EZRA_HOST` / `EZRA_PORT`) |
+
+Request `model` may be a gallery alias or `agent:<name>`. Responses include `ezra.agent`, `ezra.backend`, and `ezra.resolved_model`.
+
+```bash
+ezra serve --model qwen2.5-7b-instruct --port 8000
+ezra serve --agent chem-assistant --backend stub
+```
+
+See [Conversation runtime](conversation.md).
+
 ## `ezra hpc`
 
 | Command | Description |

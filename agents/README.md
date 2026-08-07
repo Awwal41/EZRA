@@ -81,3 +81,4 @@ with `ezra agents init`.
 Phase 1 ships the **scaffold + validation** (`init` / `list` / `show` / `check`).
 When local serve + routing land, the same `agent.yaml` will select models and
 inject `prompt.md` into chat / API sessions - no re-scaffold required.
+Design contract: [`docs/conversation.md`](../docs/conversation.md).

@@ -37,6 +37,7 @@ Track what already landed so we do not re-open finished work.
 - [x] SBATCH generator + templates (`hpc/sbatch.py`, `scripts/hpc_*.sh`)
 - [x] Gallery + SBATCH unit tests (`tests/test_gallery.py`, `tests/test_sbatch.py`)
 - [x] Personal agent scaffolds (`agents/_template`, `ezra agents init|list|show|check`)
+- [x] Conversation + local inference (`ezra.conversation`, `ezra.inference`, `ezra chat`, `ezra serve`)
 
 ---
 
@@ -58,10 +59,11 @@ Track what already landed so we do not re-open finished work.
 
 ### Local inference
 
-- [ ] llama.cpp backend (minimum viable load + chat/completion) `P0`
-- [ ] MLX backend (Apple Silicon) `P0`
-- [ ] OpenAI-compatible local HTTP API (`/v1/chat/completions`) `P0`
-- [ ] Simple multi-model switching (manual + basic auto) `P0`
+- [x] llama.cpp backend (minimum viable load + chat/completion) `P0`
+- [x] MLX backend (Apple Silicon) `P0`
+- [x] OpenAI-compatible local HTTP API (`/v1/chat/completions`) `P0`
+- [x] Simple multi-model switching (manual + basic auto) `P0`
+- [x] Conversation session types (`ezra.conversation`: bind agent/model, messages, stub backend for tests) - design: `docs/conversation.md` `P0`
 
 ### Router (basic)
 
@@ -81,8 +83,11 @@ Track what already landed so we do not re-open finished work.
 
 - [ ] HPC OpenAI-compatible remote endpoints in config + client `P1`
 - [ ] Chemistry / materials system prompt pack `P1`
-- [ ] Wire `agents/<name>/` prompts + preferred models into local chat / serve `P1`
-- [ ] Session saving + basic experiment notes `P1`
+- [x] Wire `agents/<name>/` prompts + preferred models into local chat / serve `P1`
+- [x] `ezra chat` CLI (agent or model) on top of conversation runtime `P1`
+- [x] `ezra serve --agent` / `model=agent:<name>` in `/v1/chat/completions` `P1`
+- [x] Session saving + basic experiment notes (`~/.ezra/sessions/`) `P1`
+- [x] Docs recipe: point Gradio / Open WebUI at local `ezra serve` `P1`
 - [ ] Resource monitor (RAM / VRAM) to prevent OOM crashes `P1`
 - [ ] Streaming responses through local API and HPC bridge `P1`
 - [ ] Health checks + simple fallback chain when a model/endpoint is down `P1`
@@ -107,8 +112,8 @@ Track what already landed so we do not re-open finished work.
 
 _Drop anything here - no commitment required. Promote to P0/P1/P2 when agreed._
 
-- [ ] …
-- [ ] …
+- [ ] Visual multi-agent / workflow canvas (conversation runtime stays HTTP + Python API first) `Idea`
+- [ ] `ezra hpc submit serve --agent <name>` once serve binds agent profiles `Idea`
 
 ---
 

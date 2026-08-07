@@ -20,6 +20,7 @@ Quick links
 * :doc:`install` - venv, ``pip install``, ``ezra doctor``
 * :doc:`models` - recommend, list, download, status
 * :doc:`agents` - personal agent scaffolds (prompt + preferred models)
+* :doc:`conversation` - sessions, ``ezra chat`` / ``ezra serve``, UI adapters
 * :doc:`hpc` - site profiles and ``ezra hpc submit``
 * :doc:`cli` - full CLI reference
 * :doc:`api` - Python package reference
@@ -41,6 +42,7 @@ Quick links
    :caption: Development
 
    contributing
+   conversation
    api
 
 .. toctree::

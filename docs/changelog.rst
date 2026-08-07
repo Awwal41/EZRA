@@ -12,3 +12,6 @@ listed here as releases land.
 * Personal agent scaffolds (``ezra agents init`` / ``show`` / ``check``) under ``agents/``
 * HPC site profiles and ``ezra hpc submit`` / SBATCH helpers
 * Sphinx + MyST documentation site
+* Conversation session API (``ezra.conversation``) with agent binding + stub backend
+* Local inference (llama.cpp / MLX) and ``ezra chat`` / ``ezra serve`` (OpenAI ``/v1``)
+* Design note for chat / serve runtime (``docs/conversation.md``)
