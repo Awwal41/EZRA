@@ -1,4 +1,9 @@
 # EZRA
+
+<p align="center">
+  <img src="assets/logo.svg" alt="EZRA - restorer mark and wordmark" width="420"/>
+</p>
+
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-0A66C2?logo=github)](https://awwal41.github.io/EZRA/)
 [![Read the Docs](https://img.shields.io/readthedocs/ezra?logo=readthedocs&label=Read%20the%20Docs)](https://ezra.readthedocs.io/)
 

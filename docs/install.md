@@ -41,11 +41,11 @@ ezra models recommend chemistry
 ## Optional: local config
 
 ```bash
-ezra init-config                 # ~/.ezra/ezra.yaml — edit EDIT ME fields
+ezra init-config                 # ~/.ezra/ezra.yaml (edit EDIT ME fields)
 # or: ezra init-config --cwd --env   # ./ezra.yaml + .env (both gitignored)
 ```
 
-On HPC, create a site profile instead: `ezra hpc init-site my-cluster` — see [HPC](hpc.md).
+On HPC, create a site profile instead: `ezra hpc init-site my-cluster`. See [HPC](hpc.md).
 
 ## Where models are stored
 
