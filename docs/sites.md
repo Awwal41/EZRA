@@ -4,7 +4,7 @@ Every cluster has different partitions, accounts, modules, and scratch paths.
 EZRA stores that once in a **site profile** under `sites/<name>/`.
 
 The full how-to in the repository checkout is
-[sites/README.md](https://github.com/awwalola/EZRA/blob/main/sites/README.md).
+[sites/README.md](https://github.com/Awwal41/EZRA/blob/develop/sites/README.md).
 
 ## Quick start
 

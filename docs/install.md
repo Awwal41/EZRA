@@ -5,7 +5,7 @@ EZRA needs **Python 3.10+**. No GPU is required to download models; GPUs matter 
 ## Clone and install
 
 ```bash
-git clone https://github.com/awwalola/EZRA.git
+git clone https://github.com/Awwal41/EZRA.git
 cd EZRA
 
 python -m venv .venv

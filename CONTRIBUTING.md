@@ -16,7 +16,9 @@ EZRA is **GPL-3.0-or-later**. By contributing, you agree that your contributions
 
 ## 1. Fork and clone
 
-1. On GitHub, open [awwalola/EZRA](https://github.com/awwalola/EZRA) and click **Fork**.
+Day-to-day work happens on **`develop`**. Stable releases land on **`main`** via pull request (`develop` → `main`). Do not commit feature work straight to `main`.
+
+1. On GitHub, open [Awwal41/EZRA](https://github.com/Awwal41/EZRA) and click **Fork**.
 2. Clone **your** fork (replace `YOUR_USER` with your GitHub username):
 
    ```bash
@@ -27,14 +29,16 @@ EZRA is **GPL-3.0-or-later**. By contributing, you agree that your contributions
 3. Add the upstream remote so you can stay in sync:
 
    ```bash
-   git remote add upstream https://github.com/awwalola/EZRA.git
+   git remote add upstream https://github.com/Awwal41/EZRA.git
    git fetch upstream
    git remote -v
    ```
 
-4. Create a branch for your work (never commit directly on `main` in your PR branch workflow):
+4. Check out **`develop`**, then create a branch for your work:
 
    ```bash
+   git checkout develop
+   git pull upstream develop   # or: origin develop if you push there directly
    git checkout -b feature/short-description
    # or: fix/…, docs/…, gallery/…
    ```
@@ -43,12 +47,12 @@ EZRA is **GPL-3.0-or-later**. By contributing, you agree that your contributions
 
 ```bash
 git fetch upstream
-git checkout main
-git merge upstream/main   # or: git rebase upstream/main
-git push origin main
+git checkout develop
+git merge upstream/develop   # or: git rebase upstream/develop
+git push origin develop
 ```
 
-Rebase or merge `main` into your feature branch before opening or updating a PR.
+Rebase or merge `develop` into your feature branch before opening or updating a PR.
 
 ---
 
@@ -179,7 +183,7 @@ Follow patterns already used in the tree. Prefer consistency over personal prefe
 
 ### Fix a bug or add a CLI feature
 
-1. Branch from up-to-date `main`.
+1. Branch from up-to-date `develop`.
 2. Implement the smallest change that solves the problem.
 3. Add or update tests under `tests/` (unit tests should not require network or GPUs).
 4. Run `pytest` and `ruff check` / `ruff format`.
@@ -236,13 +240,17 @@ pytest tests/test_gallery.py -q
 
 ### Open a PR
 
-1. Push your branch to **your fork**:
+**Default:** feature / fix / docs PRs target **`develop`**.
+
+**Release:** maintainers open (or accept) a PR from **`develop` → `main`** when a batch is ready to ship.
+
+1. Push your branch to **your fork** (or to `origin` if you have write access):
 
    ```bash
    git push -u origin feature/short-description
    ```
 
-2. Open a pull request against `awwalola/EZRA` → `main`.
+2. Open a pull request against `Awwal41/EZRA` → **`develop`** (not `main`, unless this is an intentional release PR).
 3. In the PR description, include:
    - **What** changed and **why**
    - How you tested (`pytest`, `ezra doctor`, dry-run download, …)
@@ -251,7 +259,8 @@ pytest tests/test_gallery.py -q
 
 ### PR checklist
 
-- [ ] Branch is up to date with `upstream/main`
+- [ ] Branch is up to date with `upstream/develop`
+- [ ] Base branch is `develop` (or `main` only for a release merge)
 - [ ] `pip install -e ".[dev]"` works
 - [ ] `pytest` passes
 - [ ] `ruff check` / `ruff format` clean (or intentional, noted exceptions)

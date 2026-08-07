@@ -65,7 +65,7 @@ git checkout -b sites/my-cluster
 git add sites/my-cluster
 git commit -m "Add my-cluster SLURM site profile (partition, modules, notes)"
 git push -u origin sites/my-cluster
-# open a PR against awwalola/EZRA
+# open a PR against Awwal41/EZRA (base: develop)
 ```
 
 **Do not commit:**
