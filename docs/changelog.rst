@@ -14,4 +14,8 @@ listed here as releases land.
 * Sphinx + MyST documentation site
 * Conversation session API (``ezra.conversation``) with agent binding + stub backend
 * Local inference (llama.cpp / MLX) and ``ezra chat`` / ``ezra serve`` (OpenAI ``/v1``)
+* Document parsing module (``ezra.parse``) with vendored MegaParse + ``ezra parse`` / ``ezra chat --file``
+* Peekaboo submodule (``third_party/Peekaboo``) + ``ezra.peekaboo`` / ``ezra peekaboo`` (macOS MCP)
+* gogcli submodule (``third_party/gogcli``) + ``ezra.gog`` / ``ezra gog`` (Google Workspace MCP)
+* OpenClaw submodule (``third_party/OpenClaw`` @ ``v2026.6.34``, shallow) + ``ezra.openclaw`` (no auto-start)
 * Design note for chat / serve runtime (``docs/conversation.md``)

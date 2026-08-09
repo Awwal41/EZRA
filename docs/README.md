@@ -9,9 +9,13 @@ HTML site with **Sphinx** + **MyST** + **reStructuredText**.
 | [Models](models.md) | Recommend by hardware + keyword, browse, download, status, remove |
 | [Personal agents](agents.md) | Scaffold your own assistant (prompt + preferred models) |
 | [Conversation runtime](conversation.md) | Sessions, `ezra chat` / `serve`, OpenAI `/v1` |
+| [Document parsing](parse.md) | MegaParse + basic backends, `ezra parse`, chat `--file` |
+| [OpenClaw](openclaw.md) | Pinned submodule + `ezra.openclaw` (Gateway optional; no auto-start) |
 | [HPC / SLURM](hpc.md) | Site profiles, scratch paths, SBATCH submit |
 | [Site profiles](sites.md) | Customize partition/modules for your cluster ([full notes](../sites/README.md)) |
 | [Configuration](configuration.md) | `ezra.yaml`, env vars, models directory |
+| [Peekaboo](peekaboo.md) | macOS screen capture / UI automation submodule + MCP |
+| [gogcli](gog.md) | Google Workspace CLI (`gog`) submodule + MCP |
 | [CLI reference](cli.md) | Full command list and common flags (`models recommend`, `agents`, …) |
 
 Sphinx entrypoints (also published as HTML - see **Publish** below):

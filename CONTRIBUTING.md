@@ -12,6 +12,8 @@ Be respectful, assume good intent, and keep discussion focused on the work. Hara
 
 EZRA is **GPL-3.0-or-later**. By contributing, you agree that your contributions are licensed under the same terms. See [LICENSE](LICENSE).
 
+Vendored third-party code under `third_party/` keeps its upstream license (MegaParse is **Apache-2.0**). Do not relicense those trees; keep `LICENSE` / `NOTICE` / `UPSTREAM.txt` when refreshing.
+
 ---
 
 ## Branching model
@@ -38,9 +40,14 @@ Docs CI **builds** on `develop` and on PRs; the HTML site **deploys** from `main
 2. Clone **your** fork (replace `YOUR_USER` with your GitHub username):
 
    ```bash
-   git clone https://github.com/YOUR_USER/EZRA.git
+   git clone --recurse-submodules https://github.com/YOUR_USER/EZRA.git
    cd EZRA
+   # if you already cloned without submodules:
+   # git submodule update --init --recursive
    ```
+
+   Third-party trees under `third_party/` (Peekaboo, MegaParse, …) are git
+   submodules. See [`third_party/README.md`](third_party/README.md).
 
 3. Add the upstream remote so you can stay in sync with the canonical repo:
 
@@ -185,7 +192,7 @@ Copy templates from `ezra.yaml.example` / `.env.example`, or run `ezra init-conf
 | `tests/` | Pytest suite (prefer no network) |
 | `TODO.md` | Shared backlog - anyone can add items |
 
-**Module boundaries:** gallery data stays in YAML; download logic in `downloader.py`; config in `config.py`; agents in `agents.py`; CLI commands in `cli.py` should stay thin wrappers around library code.
+**Module boundaries:** gallery data stays in YAML; download logic in `downloader.py`; config in `config.py`; agents in `agents.py`; document parsing in `ezra.parse` (wrap vendored MegaParse — do not import `megaparse` from other EZRA modules); CLI commands in `cli.py` should stay thin wrappers around library code.
 
 ---
 

@@ -38,6 +38,8 @@ Track what already landed so we do not re-open finished work.
 - [x] Gallery + SBATCH unit tests (`tests/test_gallery.py`, `tests/test_sbatch.py`)
 - [x] Personal agent scaffolds (`agents/_template`, `ezra agents init|list|show|check`)
 - [x] Conversation + local inference (`ezra.conversation`, `ezra.inference`, `ezra chat`, `ezra serve`)
+- [x] Document parse module (`ezra.parse` + vendored MegaParse under `third_party/MegaParse`, `ezra parse`, `ezra chat --file`)
+- [x] OpenClaw as shallow pinned submodule (`third_party/OpenClaw` @ v2026.6.34) + `ezra.openclaw` facade
 
 ---
 
@@ -56,6 +58,12 @@ Track what already landed so we do not re-open finished work.
 - [ ] `ezra models download --all` - download all gallery models (parallel + resume) `P0`
 - [ ] Quant selection / auto-pick (GGUF Q4_K_M default; respect `prefer_quant`) `P0`
 - [ ] Clear progress + resume on interrupted HPC downloads `P0`
+
+### Document parsing
+
+- [x] `ezra.parse` facade over MegaParse + basic backend `P0`
+- [x] Vendor MegaParse Python sources (`third_party/MegaParse`, Apache-2.0) `P0`
+- [x] CLI `ezra parse` + chat `--file` document context `P0`
 
 ### Local inference
 
@@ -102,6 +110,7 @@ Track what already landed so we do not re-open finished work.
 - [ ] Desktop or web UI (gallery + chat + router settings) `P2`
 - [ ] Scientific tool-calling hooks (PubChem, RDKit-style, ASE/pymatgen) `P2`
 - [ ] Domain RAG helpers + lightweight chem/materials eval harness `P2`
+- [ ] Ship / fetch MegaParse DocLayNet ONNX for hi_res layout (currently excluded from git) `P2`
 - [ ] Plugin system for custom routers / backends / tools `P2`
 - [ ] Lab-shared exportable configs + multi-user notes `P2`
 - [ ] Multimodal inputs (structures, spectra, lab images) `Idea`
@@ -114,6 +123,11 @@ _Drop anything here - no commitment required. Promote to P0/P1/P2 when agreed._
 
 - [ ] Visual multi-agent / workflow canvas (conversation runtime stays HTTP + Python API first) `Idea`
 - [ ] `ezra hpc submit serve --agent <name>` once serve binds agent profiles `Idea`
+- [x] Vendor Peekaboo as `third_party/Peekaboo` submodule + `ezra.peekaboo` adapter / MCP helpers `P2`
+- [x] Vendor gogcli as `third_party/gogcli` submodule + `ezra.gog` adapter / MCP helpers `P2`
+- [ ] Wire Peekaboo captures into agent chat multimodal turns (macOS) `Idea`
+- [ ] Wire `ezra gog run` into agent tool-calling (readonly defaults) `Idea`
+- [ ] Promote MegaParse checkout to a proper git submodule (match Peekaboo layout) `Idea`
 
 ---
 

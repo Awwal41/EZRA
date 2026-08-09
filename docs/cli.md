@@ -78,6 +78,57 @@ ezra agents show chem-assistant --prompt
 ezra agents check chem-assistant
 ```
 
+## `ezra openclaw`
+
+Status helpers for the pinned [OpenClaw](https://github.com/openclaw/openclaw) submodule. See [OpenClaw](openclaw.md).
+
+| Command | Description |
+|---------|-------------|
+| `status` | Submodule / CLI availability (`--json`) |
+| `version` | Probe `openclaw --version` if resolvable |
+
+EZRA never auto-runs `onboard` or starts the Gateway.
+
+## `ezra parse`
+
+Parse a document to LLM-ready text (basic backend for notes/text; MegaParse for PDF/Office). See [Document parsing](parse.md).
+
+| Flag | Meaning |
+|------|---------|
+| `--backend auto\|basic\|megaparse` | Override `parse.backend` |
+| `--strategy auto\|fast\|hi_res` | MegaParse strategy |
+| `-o` / `--output PATH` | Write result to a file |
+| `--json` | Emit JSON with metadata + text |
+
+```bash
+ezra parse paper.pdf -o paper.md
+ezra parse notes.md
+```
+
+## `ezra peekaboo`
+
+macOS Peekaboo helpers (vendored submodule). See [Peekaboo](peekaboo.md).
+
+```bash
+ezra peekaboo status
+ezra peekaboo status --json
+ezra peekaboo mcp-config
+ezra peekaboo mcp-config --npx
+ezra peekaboo capture [--path PATH] [--mode screen]
+```
+
+## `ezra gog`
+
+Google Workspace helpers via gogcli (`gog`). See [gogcli](gog.md).
+
+```bash
+ezra gog status
+ezra gog status --json
+ezra gog mcp-config
+ezra gog run gmail search 'newer_than:7d' --json
+ezra gog run --no-readonly calendar events --today
+```
+
 ## `ezra chat`
 
 Interactive (or one-shot) chat with a gallery model or personal agent. Requires `pip install -e ".[local]"` for real GGUF replies (or `--backend stub` to dry-run).
@@ -88,6 +139,7 @@ Interactive (or one-shot) chat with a gallery model or personal agent. Requires 
 | `--model NAME` | Gallery alias |
 | `--backend auto\|llama\|mlx\|stub` | Inference backend (default `auto`) |
 | `-p` / `--prompt TEXT` | One-shot non-interactive prompt |
+| `--file PATH` | Parse a document and prepend it to the first message |
 | `--stream` / `--no-stream` | Token streaming in the REPL |
 
 REPL commands: `/save` (write `~/.ezra/sessions/<id>.json`), `/quit`.
@@ -96,6 +148,7 @@ REPL commands: `/save` (write `~/.ezra/sessions/<id>.json`), `/quit`.
 ezra chat --model qwen2.5-7b-instruct
 ezra chat --agent chem-assistant
 ezra chat --backend stub --model phi-3.5-mini-instruct -p "Hello"
+ezra chat --file paper.pdf --model qwen2.5-7b-instruct -p "Summarize methods"
 ```
 
 ## `ezra serve`

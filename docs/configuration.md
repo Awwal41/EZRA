@@ -90,6 +90,24 @@ local:
   n_ctx: 4096
   n_gpu_layers: -1
 
+parse:
+  backend: auto            # auto | basic | megaparse
+  strategy: auto           # auto | fast | hi_res
+
+peekaboo:
+  enabled: auto            # auto | on | off (macOS screen / MCP)
+  # cli: /opt/homebrew/bin/peekaboo   # or EZRA_PEEKABOO_CLI
+
+gog:
+  enabled: auto            # auto | on | off (Google Workspace CLI)
+  # cli: ""                # or EZRA_GOG_CLI
+  # account: you@gmail.com # or GOG_ACCOUNT / EZRA_GOG_ACCOUNT
+
+openclaw:
+  enabled: auto            # auto | on | off (personal AI Gateway submodule)
+  # cli: ""                # or EZRA_OPENCLAW_CLI
+  # EZRA never auto-starts the Gateway
+
 hpc:
   enabled: true
   slurm:

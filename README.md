@@ -14,7 +14,7 @@
 
 > Phase 1 (this repo): curated free-model gallery, hardware-aware recommendations, HPC-friendly downloads, personal agents, and local chat/serve (optional extras).
 
-**Docs:** [GitHub Pages](https://awwal41.github.io/EZRA/) · [Read the Docs](https://ezra.readthedocs.io/) · [Markdown on GitHub](docs/README.md) · [install](docs/install.md) · [models](docs/models.md) · [personal agents](docs/agents.md) · [conversation](docs/conversation.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
+**Docs:** [GitHub Pages](https://awwal41.github.io/EZRA/) · [Read the Docs](https://ezra.readthedocs.io/) · [Markdown on GitHub](docs/README.md) · [install](docs/install.md) · [models](docs/models.md) · [personal agents](docs/agents.md) · [parse](docs/parse.md) · [openclaw](docs/openclaw.md) · [peekaboo](docs/peekaboo.md) · [gog](docs/gog.md) · [conversation](docs/conversation.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
 
 ## Quick start
 
@@ -28,6 +28,8 @@ pip install -e .
 
 # optional: local chat + OpenAI serve
 # pip install -e ".[local,serve]"
+# optional: document parsing (MegaParse for PDF/Office; Python ≥ 3.11)
+# pip install -e ".[parse]"
 
 # optional: local config / env (both gitignored — copy from *.example)
 ezra init-config                  # ~/.ezra/ezra.yaml
@@ -35,6 +37,7 @@ ezra init-config                  # ~/.ezra/ezra.yaml
 
 ezra doctor
 ezra models list
+ezra parse paper.pdf -o paper.md   # after pip install -e ".[parse]" or ".[parse-basic]"
 ```
 
 ### Recommend a model for this machine
@@ -172,6 +175,9 @@ ezra agents show NAME [--prompt]
 ezra agents check NAME
 ezra chat [--agent NAME] [--model NAME] [--backend auto|llama|mlx|stub] [-p TEXT]
 ezra serve [--agent NAME] [--model NAME] [--backend …] [--host HOST] [--port N]
+ezra openclaw status|version              # pinned submodule; never auto-starts Gateway
+ezra peekaboo status|mcp-config|capture   # macOS; submodule under third_party/Peekaboo
+ezra gog status|mcp-config|run …          # Google Workspace; third_party/gogcli
 ezra hpc templates
 ezra hpc sites
 ezra hpc init-site NAME

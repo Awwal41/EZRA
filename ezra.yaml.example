@@ -31,6 +31,27 @@ local:
 router:
   mode: auto
 
+# Document parsing for LLM ingestion (PDF / Office via MegaParse)
+parse:
+  backend: auto               # auto | basic | megaparse
+  strategy: auto              # auto | fast | hi_res
+
+# macOS Peekaboo (screen capture / UI automation / MCP) — see docs/peekaboo.md
+peekaboo:
+  enabled: auto               # auto | on | off
+  # cli: ""                   # optional absolute path; or EZRA_PEEKABOO_CLI
+
+# Google Workspace via gogcli (`gog`) — see docs/gog.md
+gog:
+  enabled: auto               # auto | on | off
+  # cli: ""                   # optional path; or EZRA_GOG_CLI
+  # account: you@gmail.com    # or GOG_ACCOUNT / EZRA_GOG_ACCOUNT
+
+# OpenClaw personal AI Gateway — see docs/openclaw.md (pinned submodule)
+openclaw:
+  enabled: auto               # auto | on | off
+  # cli: ""                   # optional path; or EZRA_OPENCLAW_CLI
+
 hpc:
   enabled: false
   endpoints: []

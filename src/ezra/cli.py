@@ -61,6 +61,15 @@ def main(ctx: click.Context, config_path: Path | None, models_dir: Path | None) 
     config = load_config(config_path)
     if models_dir is not None:
         config.models_dir = resolve_models_dir(cli_override=models_dir)
+    # Let vendor helpers see yaml CLI paths when env is unset.
+    if config.peekaboo_cli and not os.environ.get("EZRA_PEEKABOO_CLI"):
+        os.environ["EZRA_PEEKABOO_CLI"] = config.peekaboo_cli
+    if config.gog_cli and not os.environ.get("EZRA_GOG_CLI"):
+        os.environ["EZRA_GOG_CLI"] = config.gog_cli
+    if config.gog_account and not os.environ.get("GOG_ACCOUNT"):
+        os.environ["GOG_ACCOUNT"] = config.gog_account
+    if config.openclaw_cli and not os.environ.get("EZRA_OPENCLAW_CLI"):
+        os.environ["EZRA_OPENCLAW_CLI"] = config.openclaw_cli
     ctx.obj["config"] = config
     ctx.obj["gallery"] = ModelGallery()
 
@@ -573,8 +582,18 @@ def doctor(ctx: click.Context) -> None:
         "Tip: [green]ezra agents init my-lab-assistant[/green] "
         "scaffolds a personal agent (prompt + preferred models)"
     )
+    from ezra.gog import gog_root
+    from ezra.gog import resolve_cli as resolve_gog_cli
     from ezra.inference.llama_cpp_engine import llama_cpp_available
     from ezra.inference.mlx_engine import mlx_available
+    from ezra.openclaw import openclaw_root
+    from ezra.openclaw import resolve_cli as resolve_openclaw_cli
+    from ezra.parse import megaparse_available
+    from ezra.peekaboo import (
+        peekaboo_platform_supported,
+        peekaboo_root,
+        resolve_cli,
+    )
     from ezra.serve import fastapi_available
 
     llama_status = (
@@ -592,13 +611,77 @@ def doctor(ctx: click.Context) -> None:
         if fastapi_available()
         else "[yellow]missing[/yellow] (pip install -e '.[serve]')"
     )
+    parse_status = (
+        "[green]ok[/green]"
+        if megaparse_available()
+        else "[yellow]basic only[/yellow] (pip install -e '.[parse]' · Python ≥ 3.11)"
+    )
+    cli_bin = resolve_cli()
+    if not peekaboo_platform_supported():
+        peekaboo_status = "[dim]n/a (macOS only)[/dim]"
+    elif cli_bin is not None:
+        peekaboo_status = f"[green]ok[/green] ({cli_bin})"
+    elif peekaboo_root() is not None:
+        peekaboo_status = (
+            "[yellow]sources only[/yellow] "
+            "(brew install steipete/tap/peekaboo or build third_party/Peekaboo)"
+        )
+    else:
+        peekaboo_status = (
+            "[yellow]missing[/yellow] "
+            "(git submodule update --init --recursive third_party/Peekaboo)"
+        )
     console.print(f"llama-cpp-python: {llama_status}")
     console.print(f"mlx-lm:           {mlx_status}")
     console.print(f"fastapi/uvicorn:  {serve_status}")
+    console.print(f"MegaParse:        {parse_status}")
+    gog_bin = resolve_gog_cli()
+    if gog_bin is not None:
+        gog_status = f"[green]ok[/green] ({gog_bin})"
+    elif gog_root() is not None:
+        gog_status = (
+            "[yellow]sources only[/yellow] "
+            "(brew install openclaw/tap/gogcli or make build in third_party/gogcli)"
+        )
+    else:
+        gog_status = (
+            "[yellow]missing[/yellow] "
+            "(git submodule update --init third_party/gogcli)"
+        )
+    oc_bin = resolve_openclaw_cli()
+    if oc_bin is not None:
+        openclaw_status = f"[green]ok[/green] ({oc_bin})"
+    elif openclaw_root() is not None:
+        openclaw_status = (
+            "[yellow]sources only[/yellow] "
+            "(npm install -g openclaw@latest or build third_party/OpenClaw)"
+        )
+    else:
+        openclaw_status = (
+            "[yellow]missing[/yellow] "
+            "(git submodule update --init --depth 1 third_party/OpenClaw)"
+        )
+    console.print(f"Peekaboo:         {peekaboo_status}")
+    console.print(f"gog (Workspace):  {gog_status}")
+    console.print(f"OpenClaw:         {openclaw_status}")
     console.print(f"Chat backend:     {config.backend}")
+    console.print(f"Parse backend:    {config.parse_backend} / {config.parse_strategy}")
+    console.print(f"Peekaboo enabled: {config.peekaboo_enabled}")
+    console.print(f"gog enabled:      {config.gog_enabled}")
+    console.print(f"OpenClaw enabled: {config.openclaw_enabled}")
+    if config.gog_account:
+        console.print(f"gog account:      {config.gog_account}")
     console.print(
         "Tip: [green]ezra chat --model qwen2.5-7b-instruct[/green] "
         "or [green]ezra serve --model qwen2.5-7b-instruct[/green]"
+    )
+    console.print(
+        "Tip: [green]ezra parse paper.pdf -o paper.md[/green] "
+        "or [green]ezra chat --file paper.pdf --model …[/green]"
+    )
+    console.print(
+        "Tip: [green]ezra openclaw status[/green] "
+        "(submodule pinned; EZRA never auto-starts the Gateway)"
     )
     try:
         config.models_dir.mkdir(parents=True, exist_ok=True)
@@ -1179,6 +1262,81 @@ def _cli_backend(ctx: click.Context, backend: str):
     return runtime, str(label)
 
 
+@main.command("parse")
+@click.argument("path", type=click.Path(path_type=Path, exists=True))
+@click.option(
+    "--backend",
+    "parse_backend",
+    type=click.Choice(["auto", "basic", "megaparse"], case_sensitive=False),
+    default=None,
+    help="Parse backend (default: parse.backend from config).",
+)
+@click.option(
+    "--strategy",
+    type=click.Choice(["auto", "fast", "hi_res"], case_sensitive=False),
+    default=None,
+    help="MegaParse strategy (default: parse.strategy from config).",
+)
+@click.option(
+    "-o",
+    "--output",
+    type=click.Path(path_type=Path),
+    default=None,
+    help="Write parsed text to this file (else stdout).",
+)
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON metadata + text.")
+@click.pass_context
+def parse_cmd(
+    ctx: click.Context,
+    path: Path,
+    parse_backend: str | None,
+    strategy: str | None,
+    output: Path | None,
+    as_json: bool,
+) -> None:
+    """Parse a document into LLM-ready text (MegaParse or basic).
+
+    \b
+    Examples:
+      ezra parse notes.md
+      ezra parse paper.pdf -o paper.md
+      ezra parse slide.pptx --backend megaparse --strategy fast
+    """
+    from ezra.parse import DocumentParser
+
+    config = ctx.obj["config"]
+    backend = parse_backend or config.parse_backend
+    strat = strategy or config.parse_strategy
+    try:
+        doc = DocumentParser(backend=backend, strategy=strat).parse(path)
+    except (FileNotFoundError, ValueError, RuntimeError, OSError) as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    if as_json:
+        payload = {
+            "path": str(doc.path),
+            "backend": doc.backend,
+            "strategy": doc.strategy,
+            "file_type": doc.file_type,
+            "metadata": doc.metadata,
+            "text": doc.text,
+        }
+        text = json.dumps(payload, indent=2, ensure_ascii=False)
+    else:
+        text = doc.text
+
+    if output is not None:
+        output = output.expanduser()
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(text, encoding="utf-8")
+        console.print(
+            f"Parsed [cyan]{doc.path.name}[/cyan] with "
+            f"[magenta]{doc.backend}[/magenta] → [bold]{output}[/bold]"
+        )
+    else:
+        console.print(text)
+
+
 @main.command("chat")
 @click.option("--agent", default=None, help="Personal agent under agents/<name>/.")
 @click.option("--model", "model_name", default=None, help="Gallery model alias.")
@@ -1191,6 +1349,13 @@ def _cli_backend(ctx: click.Context, backend: str):
     help="Inference backend (stub = dry-run).",
 )
 @click.option("-p", "--prompt", "one_shot", default=None, help="One-shot prompt (non-interactive).")
+@click.option(
+    "--file",
+    "doc_path",
+    type=click.Path(path_type=Path, exists=True),
+    default=None,
+    help="Parse a document and prepend it to the first user message.",
+)
 @click.option("--stream/--no-stream", default=True, help="Stream tokens in the REPL.")
 @click.pass_context
 def chat_cmd(
@@ -1199,6 +1364,7 @@ def chat_cmd(
     model_name: str | None,
     backend_name: str,
     one_shot: str | None,
+    doc_path: Path | None,
     stream: bool,
 ) -> None:
     """Chat with a local model or personal agent.
@@ -1208,12 +1374,27 @@ def chat_cmd(
       ezra chat --model qwen2.5-7b-instruct
       ezra chat --agent chem-assistant
       ezra chat --backend stub --model phi-3.5-mini-instruct -p "Hello"
+      ezra chat --file paper.pdf --model qwen2.5-7b-instruct -p "Summarize methods"
     """
     from ezra.conversation import open_session
     from ezra.inference import BackendUnavailable, WeightsError
 
     if not agent and not model_name:
         raise click.UsageError("Provide --agent and/or --model")
+
+    doc_prefix = ""
+    if doc_path is not None:
+        from ezra.parse import DocumentParser
+
+        config = ctx.obj["config"]
+        try:
+            parsed = DocumentParser(
+                backend=config.parse_backend,
+                strategy=config.parse_strategy,
+            ).parse(doc_path)
+        except (FileNotFoundError, ValueError, RuntimeError, OSError) as exc:
+            raise click.ClickException(str(exc)) from exc
+        doc_prefix = parsed.as_chat_context() + "\n\n"
 
     backend, label = _cli_backend(ctx, backend_name)
     try:
@@ -1232,21 +1413,25 @@ def chat_cmd(
             f"[bold]EZRA chat[/bold]  model=[cyan]{session.model}[/cyan]  "
             f"{who}  backend=[magenta]{label}[/magenta]"
         )
+        if doc_path is not None:
+            console.print(f"[dim]Document context: {doc_path}[/dim]")
         console.print("[dim]Commands: /save  /quit[/dim]")
 
     if one_shot is not None:
+        prompt = doc_prefix + one_shot
         if stream:
             console.print(f"[dim]({session.model})[/dim] ", end="")
-            for chunk in session.stream(one_shot):
+            for chunk in session.stream(prompt):
                 console.print(chunk, end="")
             console.print()
         else:
-            reply = session.send(one_shot)
+            reply = session.send(prompt)
             console.print(f"[dim]({reply.model}{f' / {reply.agent}' if reply.agent else ''})[/dim]")
             console.print(reply.text)
         return
 
     _banner()
+    first = True
     while True:
         try:
             line = console.input("[bold green]you>[/bold green] ").strip()
@@ -1262,13 +1447,15 @@ def chat_cmd(
             console.print(f"Saved [bold]{path}[/bold]")
             continue
         try:
+            user_text = (doc_prefix + line) if first and doc_prefix else line
+            first = False
             if stream:
                 console.print(f"[bold cyan]{session.model}>[/bold cyan] ", end="")
-                for chunk in session.stream(line):
+                for chunk in session.stream(user_text):
                     console.print(chunk, end="")
                 console.print()
             else:
-                reply = session.send(line)
+                reply = session.send(user_text)
                 tag = reply.model
                 if reply.agent:
                     tag = f"{reply.agent} / {reply.model}"
@@ -1333,6 +1520,253 @@ def serve_cmd(
         f"(backend=[magenta]{label}[/magenta])"
     )
     run_server(app, host=bind_host, port=bind_port)
+
+
+@main.group("peekaboo")
+def peekaboo_group() -> None:
+    """macOS Peekaboo helpers (vendored under third_party/Peekaboo)."""
+
+
+@peekaboo_group.command("status")
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON.")
+@click.pass_context
+def peekaboo_status(ctx: click.Context, as_json: bool) -> None:
+    """Show Peekaboo submodule / CLI availability."""
+    from ezra.peekaboo import (
+        mcp_launch_command,
+        peekaboo_available,
+        peekaboo_platform_supported,
+        peekaboo_root,
+        resolve_cli,
+    )
+
+    config = ctx.obj["config"]
+    root = peekaboo_root()
+    cli_bin = resolve_cli()
+    payload = {
+        "enabled": config.peekaboo_enabled,
+        "platform_supported": peekaboo_platform_supported(),
+        "available": peekaboo_available(),
+        "root": str(root) if root else None,
+        "cli": str(cli_bin) if cli_bin else None,
+        "cli_override": config.peekaboo_cli or None,
+        "mcp_launch": mcp_launch_command(),
+        "upstream": "https://github.com/openclaw/Peekaboo",
+    }
+    if as_json:
+        console.print(json.dumps(payload, indent=2))
+        return
+    console.print(f"Enabled:     {payload['enabled']}")
+    console.print(f"Platform:    {'macOS' if payload['platform_supported'] else 'other (CLI n/a)'}")
+    console.print(f"Available:   {'yes' if payload['available'] else 'no'}")
+    console.print(f"Submodule:   {payload['root'] or '<missing — git submodule update --init --recursive>'}")
+    console.print(f"CLI:         {payload['cli'] or '<not found on PATH / build tree>'}")
+    console.print(f"MCP launch:  {' '.join(payload['mcp_launch'])}")
+    console.print(f"Upstream:    {payload['upstream']}")
+
+
+@peekaboo_group.command("mcp-config")
+@click.option("--npx", "prefer_npx", is_flag=True, help="Prefer npx @steipete/peekaboo.")
+def peekaboo_mcp_config(prefer_npx: bool) -> None:
+    """Print a Cursor / Claude MCP snippet for Peekaboo."""
+    from ezra.peekaboo import mcp_launch_command
+
+    argv = mcp_launch_command(prefer_npx=prefer_npx)
+    snippet = {
+        "mcpServers": {
+            "peekaboo": {
+                "command": argv[0],
+                "args": argv[1:],
+            }
+        }
+    }
+    console.print(json.dumps(snippet, indent=2))
+
+
+@peekaboo_group.command("capture")
+@click.option(
+    "--path",
+    "out_path",
+    type=click.Path(path_type=Path),
+    default=None,
+    help="Output PNG (default: ~/.ezra/captures/...).",
+)
+@click.option(
+    "--mode",
+    default="screen",
+    show_default=True,
+    help="Peekaboo image mode (e.g. screen).",
+)
+def peekaboo_capture(out_path: Path | None, mode: str) -> None:
+    """Capture the screen via Peekaboo (macOS + CLI required)."""
+    from ezra.peekaboo import PeekabooNotAvailable, capture_screen
+
+    try:
+        saved = capture_screen(out_path, mode=mode)
+    except PeekabooNotAvailable as exc:
+        raise click.ClickException(str(exc)) from exc
+    except Exception as exc:
+        raise click.ClickException(f"Peekaboo capture failed: {exc}") from exc
+    console.print(f"Saved [cyan]{saved}[/cyan]")
+
+
+@main.group("gog")
+def gog_group() -> None:
+    """Google Workspace helpers via gogcli (vendored under third_party/gogcli)."""
+
+
+@gog_group.command("status")
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON.")
+@click.pass_context
+def gog_status(ctx: click.Context, as_json: bool) -> None:
+    """Show gogcli submodule / CLI availability."""
+    from ezra.gog import gog_available, gog_root, mcp_launch_command, resolve_cli
+
+    config = ctx.obj["config"]
+    root = gog_root()
+    cli_bin = resolve_cli()
+    payload = {
+        "enabled": config.gog_enabled,
+        "available": gog_available(),
+        "root": str(root) if root else None,
+        "cli": str(cli_bin) if cli_bin else None,
+        "cli_override": config.gog_cli or None,
+        "account": config.gog_account or None,
+        "mcp_launch": mcp_launch_command(),
+        "upstream": "https://github.com/openclaw/gogcli",
+    }
+    if as_json:
+        console.print(json.dumps(payload, indent=2))
+        return
+    console.print(f"Enabled:     {payload['enabled']}")
+    console.print(f"Available:   {'yes' if payload['available'] else 'no'}")
+    console.print(
+        f"Submodule:   {payload['root'] or '<missing — git submodule update --init>'}"
+    )
+    console.print(f"CLI:         {payload['cli'] or '<not found on PATH / build tree>'}")
+    console.print(f"Account:     {payload['account'] or '<unset — GOG_ACCOUNT>'}")
+    console.print(f"MCP launch:  {' '.join(payload['mcp_launch'])}")
+    console.print(f"Upstream:    {payload['upstream']}")
+
+
+@gog_group.command("mcp-config")
+def gog_mcp_config() -> None:
+    """Print a Cursor / Claude MCP snippet for gog."""
+    from ezra.gog import mcp_launch_command
+
+    argv = mcp_launch_command()
+    snippet = {
+        "mcpServers": {
+            "gog": {
+                "command": argv[0],
+                "args": argv[1:],
+            }
+        }
+    }
+    console.print(json.dumps(snippet, indent=2))
+
+
+@gog_group.command(
+    "run",
+    context_settings={"ignore_unknown_options": True, "allow_extra_args": True},
+)
+@click.option(
+    "--readonly/--no-readonly",
+    default=True,
+    help="Pass --readonly to gog (default: on).",
+)
+@click.pass_context
+def gog_run(ctx: click.Context, readonly: bool) -> None:
+    """Forward args to ``gog`` (default --readonly for safer agent use).
+
+    \b
+    Examples:
+      ezra gog run gmail search 'newer_than:7d' --max 5 --json
+      ezra gog run --no-readonly calendar events --today
+    """
+    from ezra.gog import GogNotAvailable, run_gog
+
+    args = list(ctx.args)
+    if not args:
+        raise click.UsageError("Pass a gog subcommand, e.g. gmail search '…'")
+    try:
+        result = run_gog(*args, readonly=readonly, check=False, capture_output=False)
+    except GogNotAvailable as exc:
+        raise click.ClickException(str(exc)) from exc
+    if result.returncode:
+        sys.exit(result.returncode)
+
+
+@main.group("openclaw")
+def openclaw_group() -> None:
+    """OpenClaw helpers (pinned submodule under third_party/OpenClaw).
+
+    Safe by default: status/version only. Does not run onboard or start Gateway.
+    """
+
+
+@openclaw_group.command("status")
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON.")
+@click.pass_context
+def openclaw_status_cmd(ctx: click.Context, as_json: bool) -> None:
+    """Show OpenClaw submodule / CLI availability (no Gateway start)."""
+    from ezra.openclaw import (
+        openclaw_available,
+        openclaw_pin_info,
+        openclaw_root,
+        openclaw_version,
+        resolve_cli,
+    )
+
+    config = ctx.obj["config"]
+    root = openclaw_root()
+    cli_bin = resolve_cli()
+    pin = openclaw_pin_info(root)
+    payload = {
+        "enabled": config.openclaw_enabled,
+        "available": openclaw_available(),
+        "root": str(root) if root else None,
+        "cli": str(cli_bin) if cli_bin else None,
+        "cli_override": config.openclaw_cli or None,
+        "pin": pin,
+        "version_probe": openclaw_version() if cli_bin else None,
+        "auto_start": False,
+        "note": "EZRA never auto-runs onboard or starts the Gateway",
+    }
+    if as_json:
+        console.print(json.dumps(payload, indent=2))
+        return
+    console.print(f"Enabled:     {payload['enabled']}")
+    console.print(f"Available:   {'yes' if payload['available'] else 'no'}")
+    console.print(
+        f"Submodule:   {payload['root'] or '<missing — git submodule update --init --depth 1 third_party/OpenClaw>'}"
+    )
+    console.print(f"CLI:         {payload['cli'] or '<not found — npm install -g openclaw@latest>'}")
+    if pin.get("version"):
+        console.print(f"Pin version: {pin['version']}")
+    if payload["version_probe"]:
+        console.print(f"CLI version: {payload['version_probe']}")
+    console.print(f"Upstream:    {pin.get('upstream')}")
+    console.print("[dim]Auto-start Gateway: no (by design)[/dim]")
+
+
+@openclaw_group.command("version")
+def openclaw_version_cmd() -> None:
+    """Probe ``openclaw --version`` if a CLI is resolvable."""
+    from ezra.openclaw import OpenClawNotAvailable, openclaw_version, run_openclaw
+
+    ver = openclaw_version()
+    if ver:
+        console.print(ver)
+        return
+    try:
+        proc = run_openclaw("--version", check=False)
+    except OpenClawNotAvailable as exc:
+        raise click.ClickException(str(exc)) from exc
+    text = (proc.stdout or proc.stderr or "").strip() or "<no output>"
+    console.print(text)
+    if proc.returncode:
+        sys.exit(proc.returncode)
 
 
 if __name__ == "__main__":

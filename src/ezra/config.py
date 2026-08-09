@@ -63,6 +63,15 @@ class EzraConfig:
     max_loaded: int = 2
     n_ctx: int = 4096
     n_gpu_layers: int = -1
+    parse_backend: str = "auto"
+    parse_strategy: str = "auto"
+    peekaboo_enabled: str = "auto"
+    peekaboo_cli: str = ""
+    gog_enabled: str = "auto"
+    gog_cli: str = ""
+    gog_account: str = ""
+    openclaw_enabled: str = "auto"
+    openclaw_cli: str = ""
     raw: dict[str, Any] = field(default_factory=dict)
 
     @property
@@ -116,6 +125,28 @@ def load_config(path: Path | None = None) -> EzraConfig:
     if env_layers:
         n_gpu = int(env_layers)
 
+    parse = data.get("parse") or {}
+    peekaboo = data.get("peekaboo") or {}
+    peekaboo_cli = str(peekaboo.get("cli", "") or "").strip()
+    env_cli = os.environ.get("EZRA_PEEKABOO_CLI", "").strip()
+    if env_cli:
+        peekaboo_cli = env_cli
+    gog = data.get("gog") or {}
+    gog_cli = str(gog.get("cli", "") or "").strip()
+    env_gog_cli = os.environ.get("EZRA_GOG_CLI", "").strip()
+    if env_gog_cli:
+        gog_cli = env_gog_cli
+    gog_account = str(gog.get("account", "") or "").strip()
+    env_account = os.environ.get("EZRA_GOG_ACCOUNT", "").strip() or os.environ.get(
+        "GOG_ACCOUNT", ""
+    ).strip()
+    if env_account:
+        gog_account = env_account
+    openclaw = data.get("openclaw") or {}
+    openclaw_cli = str(openclaw.get("cli", "") or "").strip()
+    env_oc = os.environ.get("EZRA_OPENCLAW_CLI", "").strip()
+    if env_oc:
+        openclaw_cli = env_oc
     return EzraConfig(
         models_dir=models_dir,
         prefer_quant=str(local.get("prefer_quant", "auto")),
@@ -126,5 +157,14 @@ def load_config(path: Path | None = None) -> EzraConfig:
         max_loaded=int(local.get("max_loaded", 2)),
         n_ctx=int(local.get("n_ctx", 4096)),
         n_gpu_layers=int(n_gpu),
+        parse_backend=str(parse.get("backend", "auto")),
+        parse_strategy=str(parse.get("strategy", "auto")),
+        peekaboo_enabled=str(peekaboo.get("enabled", "auto")),
+        peekaboo_cli=peekaboo_cli,
+        gog_enabled=str(gog.get("enabled", "auto")),
+        gog_cli=gog_cli,
+        gog_account=gog_account,
+        openclaw_enabled=str(openclaw.get("enabled", "auto")),
+        openclaw_cli=openclaw_cli,
         raw=data,
     )

@@ -21,6 +21,10 @@ Quick links
 * :doc:`models` - recommend, list, download, status
 * :doc:`agents` - personal agent scaffolds (prompt + preferred models)
 * :doc:`conversation` - sessions, ``ezra chat`` / ``ezra serve``, UI adapters
+* :doc:`parse` - MegaParse document parsing for LLM ingestion
+* :doc:`peekaboo` - macOS Peekaboo screen capture / MCP submodule
+* :doc:`gog` - Google Workspace ``gog`` CLI / MCP submodule
+* :doc:`openclaw` - OpenClaw Gateway submodule (optional, pinned)
 * :doc:`hpc` - site profiles and ``ezra hpc submit``
 * :doc:`cli` - full CLI reference
 * :doc:`api` - Python package reference
@@ -32,6 +36,10 @@ Quick links
    install
    models
    agents
+   parse
+   peekaboo
+   gog
+   openclaw
    hpc
    sites
    configuration

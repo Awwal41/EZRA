@@ -51,6 +51,38 @@ Local inference
    :undoc-members:
    :show-inheritance:
 
+Document parsing
+----------------
+
+.. automodule:: ezra.parse
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Peekaboo (macOS)
+----------------
+
+.. automodule:: ezra.peekaboo
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gogcli (Google Workspace)
+-------------------------
+
+.. automodule:: ezra.gog
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+OpenClaw (Gateway)
+------------------
+
+.. automodule:: ezra.openclaw
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Serve (OpenAI HTTP)
 -------------------
 
