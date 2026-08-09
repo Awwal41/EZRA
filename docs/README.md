@@ -40,6 +40,13 @@ make html          # Linux / macOS
 
 Then open `_build/html/index.html`.
 
+### Prebuilt HTML in the repo (interim)
+
+Until Vercel / Pages is fully set up, a compiled copy lives at
+[`site/index.html`](../site/index.html). Clone the repo and open that file in a
+browser — no Sphinx install required. Regenerate with
+`python -m sphinx -b html docs site` (then delete `site/.doctrees`).
+
 ## Publish (so people get a link)
 
 This repo ships three ways to host the same Sphinx site. For a **private** GitHub

@@ -1,0 +1,6 @@
+﻿Source: https://github.com/openclaw/Peekaboo
+License: MIT (see LICENSE in this directory)
+Snapshot commit: ae58d77640384c5c6973550c31bddf30c6b3c57a
+Vendored into EZRA: 2026-08-09
+Mode: full in-tree copy (NOT a git submodule)
+Includes nested dependency trees formerly submodules: AXorcist, Tachikoma, Commander, TauTUI, Swiftdansi.
