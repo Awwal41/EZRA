@@ -14,8 +14,8 @@ HTML site with **Sphinx** + **MyST** + **reStructuredText**.
 | [HPC / SLURM](hpc.md) | Site profiles, scratch paths, SBATCH submit |
 | [Site profiles](sites.md) | Customize partition/modules for your cluster ([full notes](../sites/README.md)) |
 | [Configuration](configuration.md) | `ezra.yaml`, env vars, models directory |
-| [Peekaboo](peekaboo.md) | macOS screen capture / UI automation submodule + MCP |
-| [gogcli](gog.md) | Google Workspace CLI (`gog`) submodule + MCP |
+| [Peekaboo](peekaboo.md) | macOS screen capture / UI automation (vendored) + MCP |
+| [gogcli](gog.md) | Google Workspace CLI (`gog`, vendored) + MCP |
 | [CLI reference](cli.md) | Full command list and common flags (`models recommend`, `agents`, …) |
 
 Sphinx entrypoints (also published as HTML - see **Publish** below):

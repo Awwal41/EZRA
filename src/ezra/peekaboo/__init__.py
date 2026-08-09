@@ -1,6 +1,6 @@
 """Peekaboo integration — macOS screen capture / UI automation for EZRA agents.
 
-Upstream lives as a git submodule at ``third_party/Peekaboo/``
+Upstream is a **full in-tree snapshot** at ``third_party/Peekaboo/``
 ([openclaw/Peekaboo](https://github.com/openclaw/Peekaboo), MIT).
 
 Peekaboo is **macOS-only**. On other platforms helpers report unavailable and

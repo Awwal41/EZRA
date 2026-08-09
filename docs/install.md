@@ -5,9 +5,9 @@ EZRA needs **Python 3.10+**. No GPU is required to download models; GPUs matter 
 ## Clone and install
 
 ```bash
-git clone --recurse-submodules https://github.com/Awwal41/EZRA.git
+git clone https://github.com/Awwal41/EZRA.git
 cd EZRA
-# already cloned?  git submodule update --init --recursive
+# third_party/* vendors (OpenClaw, Peekaboo, gogcli, MegaParse) are in-tree
 
 python -m venv .venv
 

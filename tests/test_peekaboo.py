@@ -14,12 +14,12 @@ from ezra.peekaboo import (
 )
 
 
-def test_peekaboo_root_points_at_submodule() -> None:
+def test_peekaboo_root_points_at_vendored_tree() -> None:
     root = peekaboo_root()
     assert root is not None
     assert root.name == "Peekaboo"
     assert (root / "README.md").is_file()
-    assert (root / ".gitmodules").is_file()
+    assert (root / "UPSTREAM.txt").is_file()
 
 
 def test_platform_flag_matches_system() -> None:

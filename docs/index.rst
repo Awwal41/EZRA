@@ -22,8 +22,8 @@ Quick links
 * :doc:`agents` - personal agent scaffolds (prompt + preferred models)
 * :doc:`conversation` - sessions, ``ezra chat`` / ``ezra serve``, UI adapters
 * :doc:`parse` - MegaParse document parsing for LLM ingestion
-* :doc:`peekaboo` - macOS Peekaboo screen capture / MCP submodule
-* :doc:`gog` - Google Workspace ``gog`` CLI / MCP submodule
+* :doc:`peekaboo` - macOS Peekaboo screen capture / MCP (vendored)
+* :doc:`gog` - Google Workspace ``gog`` CLI / MCP (vendored)
 * :doc:`openclaw` - OpenClaw Gateway vendored snapshot (optional)
 * :doc:`hpc` - site profiles and ``ezra hpc submit``
 * :doc:`cli` - full CLI reference

@@ -1,4 +1,4 @@
-"""Locate the Peekaboo submodule and MCP launch command."""
+"""Locate the vendored Peekaboo tree and MCP launch command."""
 
 from __future__ import annotations
 
@@ -10,7 +10,8 @@ from pathlib import Path
 def peekaboo_root() -> Path | None:
     """Return ``third_party/Peekaboo`` when present in this EZRA checkout.
 
-    Override with ``EZRA_PEEKABOO_ROOT`` (absolute path to a Peekaboo tree).
+    Full in-tree snapshot (not a git submodule). Override with
+    ``EZRA_PEEKABOO_ROOT``.
     """
     env = os.environ.get("EZRA_PEEKABOO_ROOT", "").strip()
     if env:

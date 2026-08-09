@@ -40,14 +40,13 @@ Docs CI **builds** on `develop` and on PRs; the HTML site **deploys** from `main
 2. Clone **your** fork (replace `YOUR_USER` with your GitHub username):
 
    ```bash
-   git clone --recurse-submodules https://github.com/YOUR_USER/EZRA.git
+   git clone https://github.com/YOUR_USER/EZRA.git
    cd EZRA
-   # if you already cloned without submodules:
-   # git submodule update --init --recursive
    ```
 
-   Third-party trees under `third_party/` (Peekaboo, MegaParse, …) are git
-   submodules. See [`third_party/README.md`](third_party/README.md).
+   Third-party trees under `third_party/` (OpenClaw, Peekaboo, gogcli, MegaParse)
+   are **full in-tree snapshots** (not submodules). See
+   [`third_party/README.md`](third_party/README.md).
 
 3. Add the upstream remote so you can stay in sync with the canonical repo:
 
@@ -406,6 +405,6 @@ pytest tests/test_agents.py tests/test_sites.py -q
 - Near-term work and ideas: [TODO.md](TODO.md)
 - Product vision / phases: [README.md](README.md) (Vision section)
 - Bugs and feature proposals: GitHub Issues on the upstream repo
-- Live docs: [GitHub Pages](https://awwal41.github.io/EZRA/) and [Read the Docs](https://ezra.readthedocs.io/)
+- Live docs: [GitHub Pages](https://awwal41.github.io/EZRA/), [Read the Docs](https://ezra.readthedocs.io/), and optional [Vercel](docs/README.md#3-vercel-optional-shareable-url)
 
 If you are unsure where a change belongs, open a short issue or draft PR first - especially for new dependencies, runtime backends, or Phase 2+ routing work.

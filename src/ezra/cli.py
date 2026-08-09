@@ -629,7 +629,7 @@ def doctor(ctx: click.Context) -> None:
     else:
         peekaboo_status = (
             "[yellow]missing[/yellow] "
-            "(git submodule update --init --recursive third_party/Peekaboo)"
+            "(restore third_party/Peekaboo from the EZRA repo)"
         )
     console.print(f"llama-cpp-python: {llama_status}")
     console.print(f"mlx-lm:           {mlx_status}")
@@ -646,7 +646,7 @@ def doctor(ctx: click.Context) -> None:
     else:
         gog_status = (
             "[yellow]missing[/yellow] "
-            "(git submodule update --init third_party/gogcli)"
+            "(restore third_party/gogcli from the EZRA repo)"
         )
     oc_bin = resolve_openclaw_cli()
     if oc_bin is not None:
@@ -1531,7 +1531,7 @@ def peekaboo_group() -> None:
 @click.option("--json", "as_json", is_flag=True, help="Emit JSON.")
 @click.pass_context
 def peekaboo_status(ctx: click.Context, as_json: bool) -> None:
-    """Show Peekaboo submodule / CLI availability."""
+    """Show Peekaboo vendored-tree / CLI availability."""
     from ezra.peekaboo import (
         mcp_launch_command,
         peekaboo_available,
@@ -1559,7 +1559,7 @@ def peekaboo_status(ctx: click.Context, as_json: bool) -> None:
     console.print(f"Enabled:     {payload['enabled']}")
     console.print(f"Platform:    {'macOS' if payload['platform_supported'] else 'other (CLI n/a)'}")
     console.print(f"Available:   {'yes' if payload['available'] else 'no'}")
-    console.print(f"Submodule:   {payload['root'] or '<missing — git submodule update --init --recursive>'}")
+    console.print(f"Vendored:    {payload['root'] or '<missing — restore third_party/Peekaboo from EZRA>'}")
     console.print(f"CLI:         {payload['cli'] or '<not found on PATH / build tree>'}")
     console.print(f"MCP launch:  {' '.join(payload['mcp_launch'])}")
     console.print(f"Upstream:    {payload['upstream']}")
@@ -1619,7 +1619,7 @@ def gog_group() -> None:
 @click.option("--json", "as_json", is_flag=True, help="Emit JSON.")
 @click.pass_context
 def gog_status(ctx: click.Context, as_json: bool) -> None:
-    """Show gogcli submodule / CLI availability."""
+    """Show gogcli vendored-tree / CLI availability."""
     from ezra.gog import gog_available, gog_root, mcp_launch_command, resolve_cli
 
     config = ctx.obj["config"]
@@ -1641,7 +1641,7 @@ def gog_status(ctx: click.Context, as_json: bool) -> None:
     console.print(f"Enabled:     {payload['enabled']}")
     console.print(f"Available:   {'yes' if payload['available'] else 'no'}")
     console.print(
-        f"Submodule:   {payload['root'] or '<missing — git submodule update --init>'}"
+        f"Vendored:    {payload['root'] or '<missing — restore third_party/gogcli from EZRA>'}"
     )
     console.print(f"CLI:         {payload['cli'] or '<not found on PATH / build tree>'}")
     console.print(f"Account:     {payload['account'] or '<unset — GOG_ACCOUNT>'}")

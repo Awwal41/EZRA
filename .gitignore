@@ -85,7 +85,8 @@ docs/api/_autosummary/
 Thumbs.db
 Desktop.ini
 
-# -- Vendored OpenClaw build artifacts (sources stay tracked) ---------------
-third_party/OpenClaw/node_modules/
-third_party/OpenClaw/**/node_modules/
-third_party/OpenClaw/.pnpm-store/
+# -- Vendored third_party build artifacts (sources stay tracked) ------------
+third_party/**/node_modules/
+third_party/**/.pnpm-store/
+third_party/**/.build/
+third_party/**/DerivedData/

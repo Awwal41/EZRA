@@ -49,7 +49,7 @@ def resolve_cli() -> Path | None:
 
 
 def gog_available() -> bool:
-    """True if a ``gog`` binary is on PATH or built under the submodule."""
+    """True if a ``gog`` binary is on PATH or built under the vendored tree."""
     if resolve_cli() is not None:
         return True
     return gog_root() is not None
@@ -74,7 +74,7 @@ def run_gog(
             "(see third_party/gogcli/README.md) or: brew install openclaw/tap/gogcli"
             if root
             else "Install: brew install openclaw/tap/gogcli  "
-            "(or clone submodule + make build)"
+            "(or build third_party/gogcli)"
         )
         raise GogNotAvailable(
             "gog CLI not found on PATH and no built binary under "

@@ -8,12 +8,13 @@ from ezra.config import load_config
 from ezra.gog import gog_root, mcp_launch_command, resolve_cli
 
 
-def test_gog_root_points_at_submodule() -> None:
+def test_gog_root_points_at_vendored_tree() -> None:
     root = gog_root()
     assert root is not None
     assert root.name == "gogcli"
     assert (root / "README.md").is_file()
     assert (root / "go.mod").is_file()
+    assert (root / "UPSTREAM.txt").is_file()
 
 
 def test_mcp_launch_command_shape() -> None:

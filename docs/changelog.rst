@@ -15,7 +15,8 @@ listed here as releases land.
 * Conversation session API (``ezra.conversation``) with agent binding + stub backend
 * Local inference (llama.cpp / MLX) and ``ezra chat`` / ``ezra serve`` (OpenAI ``/v1``)
 * Document parsing module (``ezra.parse``) with vendored MegaParse + ``ezra parse`` / ``ezra chat --file``
-* Peekaboo submodule (``third_party/Peekaboo``) + ``ezra.peekaboo`` / ``ezra peekaboo`` (macOS MCP)
-* gogcli submodule (``third_party/gogcli``) + ``ezra.gog`` / ``ezra gog`` (Google Workspace MCP)
+* Peekaboo full in-tree snapshot (``third_party/Peekaboo``) + ``ezra.peekaboo`` (macOS MCP)
+* gogcli full in-tree snapshot (``third_party/gogcli`` @ ``v0.35.0``) + ``ezra.gog``
 * OpenClaw full in-tree snapshot (``third_party/OpenClaw`` @ ``v2026.6.34``) + ``ezra.openclaw`` (no auto-start)
+* MegaParse full in-tree library snapshot (``third_party/MegaParse``) + ``ezra.parse``
 * Design note for chat / serve runtime (``docs/conversation.md``)

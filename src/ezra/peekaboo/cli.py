@@ -86,7 +86,7 @@ def run_peekaboo(
             f"Vendored sources are at {root}. Build with pnpm (see third_party/Peekaboo/README.md) "
             "or: brew install steipete/tap/peekaboo"
             if root
-            else "Install: brew install steipete/tap/peekaboo  (or clone submodule + build)"
+            else "Install: brew install steipete/tap/peekaboo  (or build third_party/Peekaboo)"
         )
         raise PeekabooNotAvailable(
             "Peekaboo CLI not found on PATH and no built binary under "

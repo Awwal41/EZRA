@@ -1,4 +1,4 @@
-"""Locate the gogcli submodule and MCP launch command."""
+"""Locate the vendored gogcli tree and MCP launch command."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from pathlib import Path
 def gog_root() -> Path | None:
     """Return ``third_party/gogcli`` when present in this EZRA checkout.
 
-    Override with ``EZRA_GOG_ROOT`` (absolute path to a gogcli tree).
+    Full in-tree snapshot (not a git submodule). Override with ``EZRA_GOG_ROOT``.
     """
     env = os.environ.get("EZRA_GOG_ROOT", "").strip()
     if env:

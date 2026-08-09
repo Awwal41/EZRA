@@ -107,7 +107,7 @@ ezra parse notes.md
 
 ## `ezra peekaboo`
 
-macOS Peekaboo helpers (vendored submodule). See [Peekaboo](peekaboo.md).
+macOS Peekaboo helpers (vendored in-tree). See [Peekaboo](peekaboo.md).
 
 ```bash
 ezra peekaboo status

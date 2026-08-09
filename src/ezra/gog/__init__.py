@@ -1,6 +1,6 @@
 """gogcli integration — Google Workspace CLI for EZRA agents.
 
-Upstream lives as a git submodule at ``third_party/gogcli/``
+Upstream is a **full in-tree snapshot** at ``third_party/gogcli/``
 ([openclaw/gogcli](https://github.com/openclaw/gogcli), MIT).
 
 The binary is ``gog`` (Gmail, Calendar, Drive, Docs, Sheets, …) with an
