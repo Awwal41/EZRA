@@ -45,7 +45,7 @@ gog:
   # cli: ""            # or export EZRA_GOG_CLI=
   # account: you@gmail.com   # or GOG_ACCOUNT / EZRA_GOG_ACCOUNT
 
-# Personal AI Gateway (ezra.openclaw) — third_party/OpenClaw (pinned submodule)
+# Personal AI Gateway (ezra.openclaw) — third_party/OpenClaw (full in-tree snapshot)
 # EZRA never auto-starts the Gateway; install CLI separately if needed.
 openclaw:
   enabled: auto        # auto | on | off

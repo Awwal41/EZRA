@@ -17,5 +17,5 @@ listed here as releases land.
 * Document parsing module (``ezra.parse``) with vendored MegaParse + ``ezra parse`` / ``ezra chat --file``
 * Peekaboo submodule (``third_party/Peekaboo``) + ``ezra.peekaboo`` / ``ezra peekaboo`` (macOS MCP)
 * gogcli submodule (``third_party/gogcli``) + ``ezra.gog`` / ``ezra gog`` (Google Workspace MCP)
-* OpenClaw submodule (``third_party/OpenClaw`` @ ``v2026.6.34``, shallow) + ``ezra.openclaw`` (no auto-start)
+* OpenClaw full in-tree snapshot (``third_party/OpenClaw`` @ ``v2026.6.34``) + ``ezra.openclaw`` (no auto-start)
 * Design note for chat / serve runtime (``docs/conversation.md``)

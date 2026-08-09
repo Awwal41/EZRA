@@ -1,24 +1,25 @@
 # OpenClaw (personal AI gateway)
 
-EZRA vendors [OpenClaw](https://github.com/openclaw/openclaw) as a **git submodule**
-under [`third_party/OpenClaw/`](../third_party/OpenClaw/) (MIT). OpenClaw is a
-multi-channel personal AI assistant / Gateway (TypeScript, Node). EZRA wraps it
-with [`ezra.openclaw`](../src/ezra/openclaw/) so agents and `ezra doctor` share
-one resolution path.
+EZRA vendors [OpenClaw](https://github.com/openclaw/openclaw) as a **full in-tree
+source snapshot** under [`third_party/OpenClaw/`](../third_party/OpenClaw/) (MIT).
+This is **not** a git submodule: every file is stored in the EZRA repository so
+clones keep working even if upstream disappears or stops being open source.
+
+OpenClaw is a multi-channel personal AI assistant / Gateway (TypeScript, Node).
+EZRA wraps it with [`ezra.openclaw`](../src/ezra/openclaw/) so agents and
+`ezra doctor` share one resolution path.
 
 **Safety defaults:** EZRA never auto-runs `openclaw onboard`, never installs a
-daemon, and never starts the Gateway for you. Submodule checkout is
-**shallow** and **pinned** to a release tag (not floating `main`).
+daemon, and never starts the Gateway for you. The tree is pinned to the release
+recorded in [`third_party/OpenClaw/UPSTREAM.txt`](../third_party/OpenClaw/UPSTREAM.txt).
 
 ## Setup
 
 ```bash
-# from EZRA repo root
-git submodule update --init --depth 1 third_party/OpenClaw
-
+# OpenClaw sources are already in the EZRA checkout under third_party/OpenClaw/
 # optional: install a global CLI (Node 22+)
 npm install -g openclaw@latest
-# or build from the submodule — see upstream README (pnpm workspace)
+# or build from the vendored tree — see third_party/OpenClaw/README.md (pnpm)
 ```
 
 | Variable / config | Meaning |
@@ -35,7 +36,7 @@ Check: `ezra doctor` (OpenClaw line) or `ezra openclaw status`.
 from ezra.openclaw import openclaw_available, openclaw_root, resolve_cli
 
 if openclaw_available():
-    print(openclaw_root())
+    print(openclaw_root())   # …/third_party/OpenClaw
     print(resolve_cli())
 ```
 
@@ -60,20 +61,22 @@ ezra openclaw version
 
 OpenClaw can connect messaging channels and run host tools. Before enabling it:
 
-1. Read upstream [SECURITY.md](https://github.com/openclaw/openclaw/blob/main/SECURITY.md)
+1. Read upstream [SECURITY.md](https://github.com/openclaw/openclaw/blob/main/SECURITY.md) (also in the vendored tree)
 2. Prefer local / sandbox configs; do not expose the Gateway publicly
 3. Keep EZRA’s adapter as the only entry point from Python
 
-## Updating the pin
+## Refreshing the snapshot
+
+When you deliberately upgrade OpenClaw:
 
 ```bash
-cd third_party/OpenClaw
-git fetch --depth 1 origin tag vYYYY.M.P
-git checkout --detach FETCH_HEAD
-cd ../..
+# from a scratch dir
+git clone --depth 1 --branch <tag> https://github.com/openclaw/openclaw.git /tmp/openclaw
+rm -rf third_party/OpenClaw
+mkdir third_party/OpenClaw
+# copy sources (no .git), keep LICENSE / THIRD_PARTY_NOTICES.md
+# update third_party/OpenClaw/UPSTREAM.txt with the new tag/date
 git add third_party/OpenClaw
-# update the pin note in third_party/README.md, then commit
 ```
 
-Do **not** track upstream `main` tip without review — the repo is large and
-moves quickly.
+Do **not** turn this path back into a submodule.

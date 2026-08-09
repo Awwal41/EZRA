@@ -8,13 +8,14 @@ from ezra.config import load_config
 from ezra.openclaw import openclaw_pin_info, openclaw_root, resolve_cli
 
 
-def test_openclaw_root_points_at_submodule() -> None:
+def test_openclaw_root_points_at_vendored_tree() -> None:
     root = openclaw_root()
     assert root is not None
     assert root.name == "OpenClaw"
     assert (root / "package.json").is_file()
     assert (root / "LICENSE").is_file()
     assert (root / "openclaw.mjs").is_file()
+    assert (root / "UPSTREAM.txt").is_file()
 
 
 def test_pin_info_has_version() -> None:

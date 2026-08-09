@@ -47,7 +47,7 @@ gog:
   # cli: ""                   # optional path; or EZRA_GOG_CLI
   # account: you@gmail.com    # or GOG_ACCOUNT / EZRA_GOG_ACCOUNT
 
-# OpenClaw personal AI Gateway — see docs/openclaw.md (pinned submodule)
+# OpenClaw personal AI Gateway — see docs/openclaw.md (full in-tree snapshot)
 openclaw:
   enabled: auto               # auto | on | off
   # cli: ""                   # optional path; or EZRA_OPENCLAW_CLI

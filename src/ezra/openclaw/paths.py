@@ -1,4 +1,4 @@
-"""Locate the OpenClaw submodule checkout."""
+"""Locate the vendored OpenClaw source tree (full in-tree snapshot)."""
 
 from __future__ import annotations
 
@@ -8,6 +8,9 @@ from pathlib import Path
 
 def openclaw_root() -> Path | None:
     """Return ``third_party/OpenClaw`` when present in this EZRA checkout.
+
+    This is a **full vendored copy** of OpenClaw sources (not a git submodule),
+    so EZRA keeps working offline even if upstream vanishes.
 
     Override with ``EZRA_OPENCLAW_ROOT`` (absolute path to an OpenClaw tree).
     """

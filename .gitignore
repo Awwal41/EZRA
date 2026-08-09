@@ -74,6 +74,9 @@ ezra-*-*.err
 docs/_build/
 docs/api/_autosummary/
 
+# Vercel CLI local link (org/project ids live in GitHub Actions secrets)
+.vercel/
+
 .vscode/
 *.swp
 *.swo
@@ -81,3 +84,8 @@ docs/api/_autosummary/
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# -- Vendored OpenClaw build artifacts (sources stay tracked) ---------------
+third_party/OpenClaw/node_modules/
+third_party/OpenClaw/**/node_modules/
+third_party/OpenClaw/.pnpm-store/

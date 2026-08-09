@@ -24,7 +24,7 @@ Quick links
 * :doc:`parse` - MegaParse document parsing for LLM ingestion
 * :doc:`peekaboo` - macOS Peekaboo screen capture / MCP submodule
 * :doc:`gog` - Google Workspace ``gog`` CLI / MCP submodule
-* :doc:`openclaw` - OpenClaw Gateway submodule (optional, pinned)
+* :doc:`openclaw` - OpenClaw Gateway vendored snapshot (optional)
 * :doc:`hpc` - site profiles and ``ezra hpc submit``
 * :doc:`cli` - full CLI reference
 * :doc:`api` - Python package reference

@@ -104,7 +104,7 @@ gog:
   # account: you@gmail.com # or GOG_ACCOUNT / EZRA_GOG_ACCOUNT
 
 openclaw:
-  enabled: auto            # auto | on | off (personal AI Gateway submodule)
+  enabled: auto            # auto | on | off (personal AI Gateway; vendored tree)
   # cli: ""                # or EZRA_OPENCLAW_CLI
   # EZRA never auto-starts the Gateway
 

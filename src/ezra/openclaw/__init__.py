@@ -1,12 +1,13 @@
 """OpenClaw integration — personal AI gateway for EZRA agents (optional).
 
-Upstream lives as a **git submodule** at ``third_party/OpenClaw/``
-([openclaw/openclaw](https://github.com/openclaw/openclaw), MIT), pinned to a
-release tag (see ``third_party/README.md``).
+Upstream sources are a **full in-tree snapshot** at ``third_party/OpenClaw/``
+([openclaw/openclaw](https://github.com/openclaw/openclaw), MIT) — not a
+submodule — so EZRA keeps the code even if upstream goes away. See
+``third_party/OpenClaw/UPSTREAM.txt``.
 
 This package is a thin, safe facade:
 
-- Locates the submodule / CLI
+- Locates the vendored tree / CLI
 - Reports availability for ``ezra doctor``
 - Does **not** auto-run ``onboard``, install daemons, or expose the Gateway
 

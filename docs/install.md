@@ -49,7 +49,7 @@ ezra models list
 ezra models recommend chemistry
 ```
 
-`ezra doctor` prints the models directory, HF token status, gallery size, CPU/RAM/GPU fit budget, whether llama-cpp / mlx-lm / FastAPI / MegaParse are importable, Peekaboo / gog / OpenClaw submodule status, and whether the models path is writable.
+`ezra doctor` prints the models directory, HF token status, gallery size, CPU/RAM/GPU fit budget, whether llama-cpp / mlx-lm / FastAPI / MegaParse are importable, Peekaboo / gog / OpenClaw (vendored) status, and whether the models path is writable.
 
 `ezra models recommend` probes this machine and ranks open gallery models that fit (optional keyword). See [Models - Recommend](models.md#recommend-for-this-machine).
 

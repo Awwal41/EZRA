@@ -175,7 +175,7 @@ ezra agents show NAME [--prompt]
 ezra agents check NAME
 ezra chat [--agent NAME] [--model NAME] [--backend auto|llama|mlx|stub] [-p TEXT]
 ezra serve [--agent NAME] [--model NAME] [--backend …] [--host HOST] [--port N]
-ezra openclaw status|version              # pinned submodule; never auto-starts Gateway
+ezra openclaw status|version              # vendored in-tree; never auto-starts Gateway
 ezra peekaboo status|mcp-config|capture   # macOS; submodule under third_party/Peekaboo
 ezra gog status|mcp-config|run …          # Google Workspace; third_party/gogcli
 ezra hpc templates
@@ -203,9 +203,9 @@ Add a model by appending an entry (name, `repo_id`, format, tags) and reinstall 
 
 ## Documentation
 
-**Published HTML:** [https://awwal41.github.io/EZRA/](https://awwal41.github.io/EZRA/) (GitHub Pages) · optional mirror [Read the Docs](https://ezra.readthedocs.io/) after you import the repo there.
+**Published HTML:** [https://awwal41.github.io/EZRA/](https://awwal41.github.io/EZRA/) (GitHub Pages) · optional [Read the Docs](https://ezra.readthedocs.io/) · optional [Vercel](docs/README.md#3-vercel-optional-shareable-url) (works with a private repo).
 
-User guides are Markdown under [`docs/`](docs/) (readable on GitHub). The same tree builds with **Sphinx + MyST + reStructuredText** (API autodoc, search, Furo theme). CI: [`.github/workflows/docs.yml`](.github/workflows/docs.yml) builds on PRs/`develop` and deploys Pages from `main`.
+User guides are Markdown under [`docs/`](docs/) (readable on GitHub). The same tree builds with **Sphinx + MyST + reStructuredText** (API autodoc, search, Furo theme). CI: [`.github/workflows/docs.yml`](.github/workflows/docs.yml) builds on PRs/`develop` and deploys Pages from `main`; [`.github/workflows/docs-vercel.yml`](.github/workflows/docs-vercel.yml) can publish the same HTML to Vercel when secrets are set.
 
 ```bash
 pip install -e ".[docs]"
@@ -230,6 +230,8 @@ How to turn Pages on / link RTD: [docs/README.md](docs/README.md#publish-so-peop
 | [docs/api.rst](docs/api.rst) | Python API (Sphinx autodoc) |
 | [docs/index.rst](docs/index.rst) | Sphinx site home |
 | [`.github/workflows/docs.yml`](.github/workflows/docs.yml) | Build + GitHub Pages deploy |
+| [`.github/workflows/docs-vercel.yml`](.github/workflows/docs-vercel.yml) | Build + optional Vercel deploy |
+| [`vercel.json`](vercel.json) | Vercel install/build (Sphinx → static HTML) |
 | [.readthedocs.yaml](.readthedocs.yaml) | Optional Read the Docs build config |
 
 

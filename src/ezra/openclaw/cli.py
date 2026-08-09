@@ -73,11 +73,11 @@ def run_openclaw(
         root = openclaw_root()
         hint = (
             f"Vendored sources are at {root}. Install Node 22+ and either "
-            "`npm install -g openclaw@latest` or build the submodule "
+            "`npm install -g openclaw@latest` or build the vendored tree "
             "(see third_party/OpenClaw/README.md)."
             if root
             else "Install: npm install -g openclaw@latest  "
-            "(or: git submodule update --init third_party/OpenClaw)"
+            "(or restore third_party/OpenClaw from the EZRA repo)"
         )
         raise OpenClawNotAvailable(f"OpenClaw CLI not found. {hint}")
 

@@ -80,7 +80,7 @@ ezra agents check chem-assistant
 
 ## `ezra openclaw`
 
-Status helpers for the pinned [OpenClaw](https://github.com/openclaw/openclaw) submodule. See [OpenClaw](openclaw.md).
+Status helpers for the vendored [OpenClaw](https://github.com/openclaw/openclaw) snapshot. See [OpenClaw](openclaw.md).
 
 | Command | Description |
 |---------|-------------|

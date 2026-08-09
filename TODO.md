@@ -39,7 +39,7 @@ Track what already landed so we do not re-open finished work.
 - [x] Personal agent scaffolds (`agents/_template`, `ezra agents init|list|show|check`)
 - [x] Conversation + local inference (`ezra.conversation`, `ezra.inference`, `ezra chat`, `ezra serve`)
 - [x] Document parse module (`ezra.parse` + vendored MegaParse under `third_party/MegaParse`, `ezra parse`, `ezra chat --file`)
-- [x] OpenClaw as shallow pinned submodule (`third_party/OpenClaw` @ v2026.6.34) + `ezra.openclaw` facade
+- [x] OpenClaw as full in-tree snapshot (`third_party/OpenClaw` @ v2026.6.34) + `ezra.openclaw` facade
 
 ---
 

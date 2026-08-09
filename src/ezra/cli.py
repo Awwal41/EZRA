@@ -659,7 +659,7 @@ def doctor(ctx: click.Context) -> None:
     else:
         openclaw_status = (
             "[yellow]missing[/yellow] "
-            "(git submodule update --init --depth 1 third_party/OpenClaw)"
+            "(restore third_party/OpenClaw from the EZRA repo)"
         )
     console.print(f"Peekaboo:         {peekaboo_status}")
     console.print(f"gog (Workspace):  {gog_status}")
@@ -681,7 +681,7 @@ def doctor(ctx: click.Context) -> None:
     )
     console.print(
         "Tip: [green]ezra openclaw status[/green] "
-        "(submodule pinned; EZRA never auto-starts the Gateway)"
+        "(vendored in-tree; EZRA never auto-starts the Gateway)"
     )
     try:
         config.models_dir.mkdir(parents=True, exist_ok=True)
@@ -1699,7 +1699,7 @@ def gog_run(ctx: click.Context, readonly: bool) -> None:
 
 @main.group("openclaw")
 def openclaw_group() -> None:
-    """OpenClaw helpers (pinned submodule under third_party/OpenClaw).
+    """OpenClaw helpers (vendored tree under third_party/OpenClaw).
 
     Safe by default: status/version only. Does not run onboard or start Gateway.
     """
@@ -1709,7 +1709,7 @@ def openclaw_group() -> None:
 @click.option("--json", "as_json", is_flag=True, help="Emit JSON.")
 @click.pass_context
 def openclaw_status_cmd(ctx: click.Context, as_json: bool) -> None:
-    """Show OpenClaw submodule / CLI availability (no Gateway start)."""
+    """Show OpenClaw vendored-tree / CLI availability (no Gateway start)."""
     from ezra.openclaw import (
         openclaw_available,
         openclaw_pin_info,
@@ -1739,11 +1739,11 @@ def openclaw_status_cmd(ctx: click.Context, as_json: bool) -> None:
     console.print(f"Enabled:     {payload['enabled']}")
     console.print(f"Available:   {'yes' if payload['available'] else 'no'}")
     console.print(
-        f"Submodule:   {payload['root'] or '<missing — git submodule update --init --depth 1 third_party/OpenClaw>'}"
+        f"Vendored:    {payload['root'] or '<missing — restore third_party/OpenClaw from EZRA>'}"
     )
     console.print(f"CLI:         {payload['cli'] or '<not found — npm install -g openclaw@latest>'}")
     if pin.get("version"):
-        console.print(f"Pin version: {pin['version']}")
+        console.print(f"Snapshot:    {pin['version']}")
     if payload["version_probe"]:
         console.print(f"CLI version: {payload['version_probe']}")
     console.print(f"Upstream:    {pin.get('upstream')}")
