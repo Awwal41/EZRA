@@ -39,7 +39,7 @@ For HPC partition / modules, use `ezra hpc init-site` instead. See [Configuratio
 | `download --all` | Download matching free models |
 | `info NAME` | Details for one model |
 | `status` | Installed models and disk usage |
-| `remove NAME [NAME …]` | Delete installed model directories |
+| `remove NAME [NAME …]` | Delete installed model directories (`--dry-run` to preview) |
 
 ### `models list` flags
 
@@ -84,7 +84,7 @@ Status helpers for the vendored [OpenClaw](https://github.com/openclaw/openclaw)
 
 | Command | Description |
 |---------|-------------|
-| `status` | Submodule / CLI availability (`--json`) |
+| `status` | Vendored-tree / CLI availability (`--json`) |
 | `version` | Probe `openclaw --version` if resolvable |
 
 EZRA never auto-runs `onboard` or starts the Gateway.
@@ -142,7 +142,7 @@ Interactive (or one-shot) chat with a gallery model or personal agent. Requires 
 | `--file PATH` | Parse a document and prepend it to the first message |
 | `--stream` / `--no-stream` | Token streaming in the REPL |
 
-REPL commands: `/save` (write `~/.ezra/sessions/<id>.json`), `/quit`.
+REPL commands: `/save` (write `~/.ezra/sessions/<id>.json`), `/quit` (also `/exit`, `:q`).
 
 ```bash
 ezra chat --model qwen2.5-7b-instruct
@@ -188,7 +188,7 @@ Shared resource flags: `--models-dir`, `--time`, `--cpus`, `--mem`, `--gpus`, `-
 
 `init-site` accepts `--models-dir PATH` to write `local.models_dir` into the new profile.
 
-Set `EZRA_SITE=<name>` after `init-site` so config/modules match your cluster. See [sites/README.md](sites.md).
+Set `EZRA_SITE=<name>` after `init-site` so config/modules match your cluster. See [Site profiles](sites.md).
 
 Examples:
 

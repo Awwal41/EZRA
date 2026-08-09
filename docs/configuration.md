@@ -53,7 +53,7 @@ ezra hpc init-site my-cluster
 export EZRA_SITE=my-cluster
 ```
 
-Edit `sites/my-cluster/ezra.yaml` and `modules.sh` (search for **EDIT ME**), then commit and push - see [`sites/README.md`](sites.md).
+Edit `sites/my-cluster/ezra.yaml` and `modules.sh` (search for **EDIT ME**), then commit and push - see [Site profiles](sites.md) and [`sites/README.md`](../sites/README.md).
 
 ## Environment variables
 
@@ -71,10 +71,16 @@ Edit `sites/my-cluster/ezra.yaml` and `modules.sh` (search for **EDIT ME**), the
 | `MODEL` | Gallery model name for serve / single-model download |
 | `HF_TOKEN` | Hugging Face token for gated repos (name configurable) |
 | `CUDA_VISIBLE_DEVICES` | Usually set by SLURM when GPUs are granted |
+| `EZRA_PEEKABOO_ROOT` / `EZRA_PEEKABOO_CLI` | Alternate Peekaboo tree / binary (see [Peekaboo](peekaboo.md)) |
+| `EZRA_GOG_ROOT` / `EZRA_GOG_CLI` | Alternate gogcli tree / `gog` binary (see [gogcli](gog.md)) |
+| `GOG_ACCOUNT` / `EZRA_GOG_ACCOUNT` | Default Google account for `ezra gog` |
+| `EZRA_OPENCLAW_ROOT` / `EZRA_OPENCLAW_CLI` | Alternate OpenClaw tree / CLI (see [OpenClaw](openclaw.md)) |
 
 ## Example `ezra.yaml`
 
-Start from [`ezra.yaml.example`](../ezra.yaml.example) (`ezra init-config`) or the site template. Minimal HPC-oriented example:
+Start from [`ezra.yaml.example`](../ezra.yaml.example) (`ezra init-config`) or the site template.
+Packaged defaults keep `hpc.enabled: false`; the block below is an **HPC-oriented**
+override (turn HPC on and fill SLURM defaults):
 
 ```yaml
 version: 1
@@ -95,21 +101,24 @@ parse:
   strategy: auto           # auto | fast | hi_res
 
 peekaboo:
-  enabled: auto            # auto | on | off (macOS screen / MCP)
+  enabled: auto            # reported by doctor/status; does not gate CLI today
   # cli: /opt/homebrew/bin/peekaboo   # or EZRA_PEEKABOO_CLI
 
 gog:
-  enabled: auto            # auto | on | off (Google Workspace CLI)
+  enabled: auto            # reported by doctor/status; does not gate CLI today
   # cli: ""                # or EZRA_GOG_CLI
   # account: you@gmail.com # or GOG_ACCOUNT / EZRA_GOG_ACCOUNT
 
 openclaw:
-  enabled: auto            # auto | on | off (personal AI Gateway; vendored tree)
+  enabled: auto            # reported by doctor/status; does not gate CLI today
   # cli: ""                # or EZRA_OPENCLAW_CLI
   # EZRA never auto-starts the Gateway
 
+# router:                  # reserved for Phase 2 smart routing (kept in yaml)
+#   mode: auto
+
 hpc:
-  enabled: true
+  enabled: true            # defaults package uses false; true here for cluster profiles
   slurm:
     partition: gpu
     # account: mylab
@@ -132,6 +141,12 @@ hpc:
 ```
 
 `ezra hpc script` / `ezra hpc submit` read `hpc.slurm` for default walltime, CPUs, memory, and GPUs. Command-line flags (`--partition`, `--gpus`, …) override these values per job.
+
+Notes:
+
+- `peekaboo|gog|openclaw.enabled` values show up in `ezra doctor` / `* status`; they do **not** currently block the corresponding CLI commands.
+- `router` in packaged defaults is reserved for Phase 2 domain routing (agents may still reference prefs via `agent.yaml`).
+- `local.keep_alive` appears in packaged defaults as a future knob; it is not applied by the loader yet.
 
 ## Hugging Face token
 

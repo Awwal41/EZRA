@@ -96,4 +96,7 @@ See [Configuration](configuration.md) for all env vars and `ezra.yaml`.
 
 - Pick a model for this machine: [Models - Recommend](models.md#recommend-for-this-machine)
 - Download models: [Models](models.md)
+- Personal agents: [Agents](agents.md)
+- Chat / OpenAI serve: [Conversation runtime](conversation.md)
+- Parse PDFs / notes for chat: [Document parsing](parse.md)
 - Cluster jobs: [HPC / SLURM](hpc.md)

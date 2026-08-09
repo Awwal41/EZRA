@@ -24,6 +24,8 @@ Sphinx entrypoints (also published as HTML - see **Publish** below):
 |------|------|
 | [`index.rst`](index.rst) | Site home + toctree |
 | [`api.rst`](api.rst) | Autodoc API reference |
+| [`changelog.rst`](changelog.rst) | Release notes |
+| [`contributing.rst`](contributing.rst) | Contributor pointer into `CONTRIBUTING.md` |
 | [`conf.py`](conf.py) | Sphinx / MyST / Furo theme config |
 | [`Makefile`](Makefile) / [`make.bat`](make.bat) | Local HTML builds |
 

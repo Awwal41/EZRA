@@ -26,7 +26,7 @@ npm install -g openclaw@latest
 |-------------------|---------|
 | `EZRA_OPENCLAW_ROOT` | Alternate OpenClaw checkout path |
 | `EZRA_OPENCLAW_CLI` / `openclaw.cli` | Absolute path to the `openclaw` binary |
-| `openclaw.enabled` | `auto` \| `on` \| `off` in `ezra.yaml` |
+| `openclaw.enabled` | `auto` \| `on` \| `off` in `ezra.yaml` (shown by doctor/status; does not gate CLI today) |
 
 Check: `ezra doctor` (OpenClaw line) or `ezra openclaw status`.
 

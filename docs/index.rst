@@ -36,6 +36,7 @@ Quick links
    install
    models
    agents
+   conversation
    parse
    peekaboo
    gog
@@ -50,7 +51,6 @@ Quick links
    :caption: Development
 
    contributing
-   conversation
    api
 
 .. toctree::

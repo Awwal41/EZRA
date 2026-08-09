@@ -2,7 +2,7 @@
 
 EZRA is meant to run on login nodes or batch jobs with no GUI. Use **SBATCH** so downloads and (later) serve jobs get CPUs, memory, GPUs, and time limits on compute nodes.
 
-**Every cluster is different.** Customize once with a **site profile**, then commit and push it so others on the same HPC can reuse your partition, modules, and notes. See [`sites/README.md`](sites.md).
+**Every cluster is different.** Customize once with a **site profile**, then commit and push it so others on the same HPC can reuse your partition, modules, and notes. See [Site profiles](sites.md) and [`sites/README.md`](../sites/README.md).
 
 ## Customize for your HPC (do this first)
 
@@ -71,7 +71,7 @@ ezra hpc submit download --model qwen2.5-7b-instruct
 ezra hpc submit download --dry-run
 ```
 
-GPU jobs (when serve backends land):
+GPU serve / interactive jobs:
 
 ```bash
 ezra hpc submit serve --model qwen2.5-7b-instruct --gpus 1 --cpus 8 --mem 64G

@@ -1,0 +1,80 @@
+# Build Sphinx docs and deploy the static HTML to Vercel.
+# Preferred over Vercel's native Git builder (Python/Sphinx is more reliable on ubuntu-latest).
+#
+# One-time setup (repo admin):
+# 1. Create a Vercel project (Import the private GitHub repo, or `npx vercel` once locally).
+# 2. Add GitHub Actions secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
+#    (Project → Settings → General for org/project ids; token from vercel.com/account/tokens)
+# 3. Optional: Vercel → Project → Deployment Protection so only collaborators can view.
+#
+# Docs: docs/README.md#3-vercel-optional-shareable-url
+
+name: Docs (Vercel)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "src/ezra/**"
+      - "pyproject.toml"
+      - "vercel.json"
+      - ".github/workflows/docs-vercel.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-vercel
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Vercel secrets
+        id: vercel
+        run: |
+          if [ -n "$VERCEL_TOKEN" ] && [ -n "$VERCEL_ORG_ID" ] && [ -n "$VERCEL_PROJECT_ID" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping Vercel deploy — set secrets VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID (see docs/README.md)."
+          fi
+
+      - uses: actions/setup-python@v5
+        if: steps.vercel.outputs.configured == 'true'
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install package + docs extras
+        if: steps.vercel.outputs.configured == 'true'
+        run: pip install -e ".[docs]"
+
+      - name: Build HTML
+        if: steps.vercel.outputs.configured == 'true'
+        run: |
+          cd docs
+          make html
+
+      - name: Setup Node (Vercel CLI)
+        if: steps.vercel.outputs.configured == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Deploy to Vercel
+        if: steps.vercel.outputs.configured == 'true'
+        run: |
+          npm install --global vercel@latest
+          # Static hosting hints only (root vercel.json has install/build for Git-connected projects).
+          printf '%s\n' '{ "cleanUrls": true, "trailingSlash": false }' > docs/_build/html/vercel.json
+          vercel deploy docs/_build/html --prod --yes --token "$VERCEL_TOKEN"

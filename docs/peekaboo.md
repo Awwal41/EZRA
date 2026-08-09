@@ -24,7 +24,7 @@ brew install steipete/tap/peekaboo
 |-------------------|---------|
 | `EZRA_PEEKABOO_ROOT` | Alternate Peekaboo checkout path |
 | `EZRA_PEEKABOO_CLI` / `peekaboo.cli` | Absolute path to the `peekaboo` binary |
-| `peekaboo.enabled` | `auto` \| `on` \| `off` in `ezra.yaml` |
+| `peekaboo.enabled` | `auto` \| `on` \| `off` in `ezra.yaml` (shown by doctor/status; does not gate CLI today) |
 
 Check: `ezra doctor` or `ezra peekaboo status`.
 

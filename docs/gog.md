@@ -36,7 +36,7 @@ gog auth doctor --check
 | `EZRA_GOG_ROOT` | Alternate gogcli checkout |
 | `EZRA_GOG_CLI` / `gog.cli` | Path to `gog` binary |
 | `GOG_ACCOUNT` / `EZRA_GOG_ACCOUNT` / `gog.account` | Default account |
-| `gog.enabled` | `auto` \| `on` \| `off` |
+| `gog.enabled` | `auto` \| `on` \| `off` (shown by doctor/status; does not gate CLI today) |
 
 Check: `ezra doctor` or `ezra gog status`.
 

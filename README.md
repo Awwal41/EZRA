@@ -168,15 +168,16 @@ ezra models download NAME [NAME ...]
 ezra models download --all [--tag TAG] [--science] [--max-size N] [--no-gated]
 ezra models info NAME
 ezra models status
-ezra models remove NAME
+ezra models remove NAME [--dry-run]
 ezra agents list
 ezra agents init NAME [--description TEXT] [--force]
 ezra agents show NAME [--prompt]
 ezra agents check NAME
-ezra chat [--agent NAME] [--model NAME] [--backend auto|llama|mlx|stub] [-p TEXT]
+ezra parse PATH [--backend auto|basic|megaparse] [-o PATH]
+ezra chat [--agent NAME] [--model NAME] [--backend auto|llama|mlx|stub] [-p TEXT] [--file PATH]
 ezra serve [--agent NAME] [--model NAME] [--backend …] [--host HOST] [--port N]
 ezra openclaw status|version              # vendored in-tree; never auto-starts Gateway
-ezra peekaboo status|mcp-config|capture   # macOS; submodule under third_party/Peekaboo
+ezra peekaboo status|mcp-config|capture   # macOS; in-tree under third_party/Peekaboo
 ezra gog status|mcp-config|run …          # Google Workspace; third_party/gogcli
 ezra hpc templates
 ezra hpc sites
@@ -222,6 +223,10 @@ How to turn Pages on / link RTD: [docs/README.md](docs/README.md#publish-so-peop
 | [docs/models.md](docs/models.md) | Recommend / list / download / status / remove |
 | [docs/agents.md](docs/agents.md) | Personal agents: init / prompt / preferred models |
 | [docs/conversation.md](docs/conversation.md) | Sessions, `ezra chat` / `ezra serve`, UI adapters |
+| [docs/parse.md](docs/parse.md) | Document parsing (`ezra parse`, MegaParse / basic) |
+| [docs/openclaw.md](docs/openclaw.md) | OpenClaw Gateway facade (vendored; no auto-start) |
+| [docs/peekaboo.md](docs/peekaboo.md) | macOS Peekaboo capture / MCP (vendored) |
+| [docs/gog.md](docs/gog.md) | Google Workspace `gog` CLI / MCP (vendored) |
 | [agents/README.md](agents/README.md) | In-tree agent scaffolds + chem-assistant example |
 | [docs/hpc.md](docs/hpc.md) | Site profiles, scratch, `ezra hpc submit` |
 | [sites/README.md](sites/README.md) | Customize for your cluster, commit & push |

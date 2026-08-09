@@ -63,3 +63,23 @@ def test_config_parse_defaults() -> None:
     cfg = load_config()
     assert cfg.parse_backend == "auto"
     assert cfg.parse_strategy == "auto"
+
+
+def test_megaparse_vendored_tree_present() -> None:
+    """MegaParse sources must ship in-tree (same contract as OpenClaw/Peekaboo/gog)."""
+    from ezra.hpc.sites import repo_root
+    from ezra.parse.backends.megaparse import _vendor_src
+
+    root = repo_root() / "third_party" / "MegaParse"
+    assert root.is_dir()
+    assert (root / "UPSTREAM.txt").is_file()
+    assert (root / "LICENSE").is_file()
+    assert (root / "src" / "megaparse" / "__init__.py").is_file()
+    assert (root / "src" / "megaparse_sdk" / "__init__.py").is_file()
+    assert _vendor_src().resolve() == (root / "src").resolve()
+
+
+def test_megaparse_available_is_bool() -> None:
+    from ezra.parse import megaparse_available
+
+    assert isinstance(megaparse_available(), bool)
