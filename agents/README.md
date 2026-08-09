@@ -76,9 +76,10 @@ data in tracked agent folders.
 preferred science models, a domain prompt, and notes. Copy it or start fresh
 with `ezra agents init`.
 
-## Roadmap
+## Runtime
 
-Phase 1 ships the **scaffold + validation** (`init` / `list` / `show` / `check`).
-When local serve + routing land, the same `agent.yaml` will select models and
-inject `prompt.md` into chat / API sessions - no re-scaffold required.
+`ezra agents init` / `list` / `show` / `check` scaffold and validate profiles.
+The same `agent.yaml` + `prompt.md` already select models and inject the system
+prompt for `ezra chat` / `ezra serve`. Phase 2 adds smarter domain routing on
+top — no re-scaffold required.
 Design contract: [`docs/conversation.md`](../docs/conversation.md).

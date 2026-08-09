@@ -4,7 +4,7 @@ Build your own assistant on top of EZRA: a **system prompt**, **preferred galler
 
 Agents are folders under [`agents/`](../agents/README.md), same spirit as [HPC site profiles](../sites/README.md).
 
-Phase 1 ships the **scaffold and checks**. When local serve + routing land, the same `agent.yaml` will drive which model answers and which prompt is injected. Build agents carefully now so they keep working later. Design for that runtime: [Conversation runtime](conversation.md).
+Agents already drive `ezra chat` / `ezra serve` (prompt + preferred models). Phase 2 will add smarter domain routing on top of the same `agent.yaml` — design for that: [Conversation runtime](conversation.md).
 
 ## Why use an agent
 
@@ -316,7 +316,7 @@ When opening a PR with a new agent, include why it exists, which models it pins,
 ## Related
 
 - [Models](models.md) - recommend / download
-- [Conversation runtime](conversation.md) - planned sessions / chat / serve (how UIs will bind these agents)
+- [Conversation runtime](conversation.md) - sessions, `ezra chat` / `ezra serve` (how UIs bind these agents)
 - [Configuration](configuration.md) - `ezra.yaml`, env vars
 - [CLI](cli.md) - full command list
 - [agents/README.md](../agents/README.md) - short overview in-tree

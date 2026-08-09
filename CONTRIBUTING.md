@@ -1,6 +1,6 @@
 # Contributing to EZRA
 
-Thanks for helping build **EZRA** - a researcher-first toolkit for downloading, running, and routing free/open LLMs for materials science and chemistry.
+Thanks for helping build **EZRA** — a researcher-first toolkit for downloading free/open LLMs, running personal agents (`chat` / `serve`), parsing documents, staging HPC jobs, and optional OpenClaw / Peekaboo / gog integrations for materials science and chemistry.
 
 This guide walks through forking the repo, setting up a dev environment, coding style, common contribution types, tests, and opening pull requests.
 
@@ -11,6 +11,8 @@ Be respectful, assume good intent, and keep discussion focused on the work. Hara
 ## License
 
 EZRA is **GPL-3.0-or-later**. By contributing, you agree that your contributions are licensed under the same terms. See [LICENSE](LICENSE).
+
+Vendored third-party code under `third_party/` keeps its upstream license (MegaParse is **Apache-2.0**). Do not relicense those trees; keep `LICENSE` / `NOTICE` / `UPSTREAM.txt` when refreshing.
 
 ---
 
@@ -41,6 +43,10 @@ Docs CI **builds** on `develop` and on PRs; the HTML site **deploys** from `main
    git clone https://github.com/YOUR_USER/EZRA.git
    cd EZRA
    ```
+
+   Third-party trees under `third_party/` (OpenClaw, Peekaboo, gogcli, MegaParse)
+   are **full in-tree snapshots** (not submodules). See
+   [`third_party/README.md`](third_party/README.md).
 
 3. Add the upstream remote so you can stay in sync with the canonical repo:
 
@@ -177,7 +183,15 @@ Copy templates from `ezra.yaml.example` / `.env.example`, or run `ezra init-conf
 | `src/ezra/downloader.py` | Hugging Face download / snapshot helpers |
 | `src/ezra/config.py` | Config loading and env overlays |
 | `src/ezra/agents.py` | Personal agent discovery and validation |
+| `src/ezra/conversation/` | Sessions, agent binding, chat backends |
+| `src/ezra/inference/` | Local runtime (llama.cpp / MLX / stub) |
+| `src/ezra/serve/` | OpenAI-compatible HTTP API |
+| `src/ezra/parse/` | Document parsing (basic + MegaParse backend) |
+| `src/ezra/openclaw/` | OpenClaw facade (paths / CLI / status; no auto-start) |
+| `src/ezra/peekaboo/` | Peekaboo facade (macOS capture / MCP) |
+| `src/ezra/gog/` | gogcli facade (Google Workspace CLI / MCP) |
 | `src/ezra/hpc/` | SLURM / SBATCH helpers and site loading |
+| `third_party/` | Full in-tree vendor snapshots (not git submodules) |
 | `scripts/hpc_*.sh` | Example HPC job scripts (honor `EZRA_SITE`) |
 | `sites/` | Per-cluster profiles (`init-site` then edit, commit, push) |
 | `agents/` | Personal agent scaffolds (`agents init` then edit prompt/models) |
@@ -185,7 +199,7 @@ Copy templates from `ezra.yaml.example` / `.env.example`, or run `ezra init-conf
 | `tests/` | Pytest suite (prefer no network) |
 | `TODO.md` | Shared backlog - anyone can add items |
 
-**Module boundaries:** gallery data stays in YAML; download logic in `downloader.py`; config in `config.py`; agents in `agents.py`; CLI commands in `cli.py` should stay thin wrappers around library code.
+**Module boundaries:** gallery data stays in YAML; download logic in `downloader.py`; config in `config.py`; agents in `agents.py`; document parsing in `ezra.parse` (wrap vendored MegaParse — do not import `megaparse` from other EZRA modules); vendor facades stay under `ezra.openclaw` / `ezra.peekaboo` / `ezra.gog`; CLI commands in `cli.py` should stay thin wrappers around library code.
 
 ---
 
@@ -241,7 +255,7 @@ Documented gallery fields (see the header comment in `models.yaml`):
 ### Docs and TODO
 
 - Keep [README.md](README.md) examples and guides under [docs/](docs/README.md) accurate when you change CLI flags or behavior.
-- User-facing how-to (install, models, agents, HPC, config, CLI) lives in `docs/` - update the matching page, not only the README.
+- User-facing how-to (install, models, agents, conversation, parse, openclaw, peekaboo, gog, HPC, config, CLI) lives in `docs/` - update the matching page, not only the README.
 - Shared ideas go in [TODO.md](TODO.md) with priority tags (`P0` / `P1` / `P2` / `Idea`).
 - Avoid em dashes in docs; prefer commas, colons, parentheses, or a plain hyphen.
 
@@ -331,7 +345,7 @@ ezra agents show chem-assistant --prompt   # study the shipped example
 
 Details: [`agents/README.md`](agents/README.md) and [docs/agents.md](docs/agents.md).
 
-Phase 1 is scaffold + gallery checks. When serve/routing land, the same `agent.yaml` + `prompt.md` will drive chat without re-scaffolding.
+Agents already drive `ezra chat` / `ezra serve` via `agent.yaml` + `prompt.md`. Phase 2 adds smarter domain routing on the same scaffolds.
 
 ---
 
@@ -342,11 +356,17 @@ Phase 1 is scaffold + gallery checks. When serve/routing land, the same `agent.y
 - Name tests `test_*.py` / `test_*` functions.
 - After gallery or filter changes, run at least `tests/test_gallery.py`.
 - After agent or site changes, run the matching `tests/test_agents.py` / `tests/test_sites.py` (and `tests/test_sbatch.py` for submit templates).
+- After `third_party/` or vendor-adapter changes (OpenClaw, Peekaboo, gogcli, MegaParse), run the integration smoke suite so each in-tree snapshot still resolves through its `ezra.*` adapter:
+
+```bash
+pytest tests/test_third_party.py tests/test_openclaw.py tests/test_peekaboo.py tests/test_gog.py tests/test_parse.py -q
+```
 
 ```bash
 pytest
 pytest tests/test_gallery.py -q
 pytest tests/test_agents.py tests/test_sites.py -q
+pytest tests/test_third_party.py -q
 ```
 
 ---
@@ -385,6 +405,7 @@ pytest tests/test_agents.py tests/test_sites.py -q
 - [ ] Base branch is `develop` (or `main` only for a release merge)
 - [ ] `pip install -e ".[dev]"` works
 - [ ] `pytest` passes
+- [ ] Third-party vendor integration smoke passes if you touched `third_party/` or adapters (`pytest tests/test_third_party.py -q`)
 - [ ] `ruff check` / `ruff format` clean (or intentional, noted exceptions)
 - [ ] Gallery names unique; new models documented and free/open
 - [ ] No secrets, weights, or `.venv` in the diff
@@ -399,6 +420,6 @@ pytest tests/test_agents.py tests/test_sites.py -q
 - Near-term work and ideas: [TODO.md](TODO.md)
 - Product vision / phases: [README.md](README.md) (Vision section)
 - Bugs and feature proposals: GitHub Issues on the upstream repo
-- Live docs: [GitHub Pages](https://awwal41.github.io/EZRA/) and [Read the Docs](https://ezra.readthedocs.io/)
+- Live docs: [GitHub Pages](https://awwal41.github.io/EZRA/), [Read the Docs](https://ezra.readthedocs.io/), and optional [Vercel](docs/README.md#3-vercel-optional-shareable-url)
 
 If you are unsure where a change belongs, open a short issue or draft PR first - especially for new dependencies, runtime backends, or Phase 2+ routing work.

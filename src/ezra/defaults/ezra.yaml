@@ -29,6 +29,28 @@ router:
     chemistry: 1.3
     materials: 1.3
 
+# Document parsing (ezra.parse / `ezra parse`) — MegaParse under third_party/MegaParse
+parse:
+  backend: auto        # auto | basic | megaparse
+  strategy: auto       # auto | fast | hi_res  (MegaParse)
+
+# macOS screen capture / UI automation (ezra.peekaboo) — third_party/Peekaboo
+peekaboo:
+  enabled: auto        # auto | on | off
+  # cli: /usr/local/bin/peekaboo   # or export EZRA_PEEKABOO_CLI=
+
+# Google Workspace CLI (ezra.gog) — third_party/gogcli (`gog`)
+gog:
+  enabled: auto        # auto | on | off
+  # cli: ""            # or export EZRA_GOG_CLI=
+  # account: you@gmail.com   # or GOG_ACCOUNT / EZRA_GOG_ACCOUNT
+
+# Personal AI Gateway (ezra.openclaw) — third_party/OpenClaw (full in-tree snapshot)
+# EZRA never auto-starts the Gateway; install CLI separately if needed.
+openclaw:
+  enabled: auto        # auto | on | off
+  # cli: ""            # or export EZRA_OPENCLAW_CLI=
+
 hpc:
   enabled: false
   # OpenAI-compatible remote endpoints (P1)

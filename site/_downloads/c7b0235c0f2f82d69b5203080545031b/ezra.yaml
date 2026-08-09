@@ -1,0 +1,79 @@
+# Default EZRA configuration (Phase 1 - local download & gallery + HPC SBATCH)
+#
+# Prefer customizing via:
+#   ezra init-config                  # ~/.ezra/ezra.yaml
+#   ezra agents init <name>           # agents/<name>/ (personal agent; optional commit)
+#   ezra hpc init-site <name>         # sites/<name>/ (HPC; commit & push)
+# Or copy ezra.yaml.example / .env.example at the repo root.
+version: 1
+
+local:
+  backend: auto        # auto | llama | mlx | stub
+  # Overridden by EZRA_MODELS_DIR when set (recommended on HPC shared filesystems)
+  models_dir: ~/.ezra/models
+  prefer_quant: auto   # auto | Q4_K_M | Q5_K_M | Q8_0 | fp16 | bf16
+  max_workers: 2       # parallel model downloads (keep modest on shared HPC)
+  resume: true
+  hf_token_env: HF_TOKEN
+  keep_alive: 5m
+  max_loaded: 2        # concurrent loaded chat models in LocalRuntime
+  n_ctx: 4096
+  n_gpu_layers: -1     # llama.cpp; override with EZRA_N_GPU_LAYERS
+
+router:
+  mode: auto           # auto | local_only | hpc_preferred | manual
+  complexity:
+    simple_threshold: 0.25
+    medium_threshold: 0.55
+  domain_boost:
+    chemistry: 1.3
+    materials: 1.3
+
+# Document parsing (ezra.parse / `ezra parse`) — MegaParse under third_party/MegaParse
+parse:
+  backend: auto        # auto | basic | megaparse
+  strategy: auto       # auto | fast | hi_res  (MegaParse)
+
+# macOS screen capture / UI automation (ezra.peekaboo) — third_party/Peekaboo
+peekaboo:
+  enabled: auto        # auto | on | off
+  # cli: /usr/local/bin/peekaboo   # or export EZRA_PEEKABOO_CLI=
+
+# Google Workspace CLI (ezra.gog) — third_party/gogcli (`gog`)
+gog:
+  enabled: auto        # auto | on | off
+  # cli: ""            # or export EZRA_GOG_CLI=
+  # account: you@gmail.com   # or GOG_ACCOUNT / EZRA_GOG_ACCOUNT
+
+# Personal AI Gateway (ezra.openclaw) — third_party/OpenClaw (full in-tree snapshot)
+# EZRA never auto-starts the Gateway; install CLI separately if needed.
+openclaw:
+  enabled: auto        # auto | on | off
+  # cli: ""            # or export EZRA_OPENCLAW_CLI=
+
+hpc:
+  enabled: false
+  # OpenAI-compatible remote endpoints (P1)
+  endpoints: []
+  # SLURM defaults used by `ezra hpc script` / `ezra hpc submit`
+  slurm:
+    # partition: gpu
+    # account: mylab
+    # qos: normal
+    # constraint: a100
+    download:
+      time: "04:00:00"
+      cpus: 4
+      mem: "8G"
+      gpus: 0
+    serve:
+      time: "08:00:00"
+      cpus: 8
+      mem: "64G"
+      gpus: 1
+      # gres: "gpu:a100:1"   # optional full GRES override
+    interactive:
+      time: "02:00:00"
+      cpus: 4
+      mem: "32G"
+      gpus: 1

@@ -8,11 +8,11 @@
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-0A66C2?logo=github)](https://awwal41.github.io/EZRA/)
 [![Read the Docs](https://img.shields.io/readthedocs/ezra?logo=readthedocs&label=Read%20the%20Docs)](https://ezra.readthedocs.io/)
 
-**Easy Zero-setup Routing Assistant** for local & HPC LLMs - a researcher-first system for downloading, running, and intelligently routing free/open models, purpose-built for multi-purpose applications.
+**Easy Zero-setup Routing Assistant** for local & HPC LLMs — a researcher-first toolkit to download free/open models, run personal agents locally, parse documents into LLM-ready text, and stage the same workflows on SLURM. Optional facades cover OpenClaw, macOS Peekaboo, and Google Workspace (`gog`). Smart domain routing is the Phase 2 target; Phase 1 already ships the local runtime.
 
-> Phase 1 (this repo): curated free-model gallery, hardware-aware recommendations, HPC-friendly downloads, personal agents, and local chat/serve (optional extras).
+> **Phase 1 (now):** curated gallery · hardware-aware `models recommend` · downloads · personal agents · `ezra chat` / `ezra serve` (OpenAI `/v1`) · `ezra parse` (MegaParse) · HPC site profiles / SBATCH · optional OpenClaw, Peekaboo, and gogcli (vendored in-tree).
 
-**Docs:** [GitHub Pages](https://awwal41.github.io/EZRA/) · [Read the Docs](https://ezra.readthedocs.io/) · [Markdown on GitHub](docs/README.md) · [install](docs/install.md) · [models](docs/models.md) · [personal agents](docs/agents.md) · [conversation](docs/conversation.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
+**Docs:** [GitHub Pages](https://awwal41.github.io/EZRA/) · [Read the Docs](https://ezra.readthedocs.io/) · [Markdown on GitHub](docs/README.md) · [install](docs/install.md) · [models](docs/models.md) · [personal agents](docs/agents.md) · [parse](docs/parse.md) · [openclaw](docs/openclaw.md) · [peekaboo](docs/peekaboo.md) · [gog](docs/gog.md) · [conversation](docs/conversation.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
 
 ## Quick start
 
@@ -26,6 +26,8 @@ pip install -e .
 
 # optional: local chat + OpenAI serve
 # pip install -e ".[local,serve]"
+# optional: document parsing (MegaParse for PDF/Office; Python ≥ 3.11)
+# pip install -e ".[parse]"
 
 # optional: local config / env (both gitignored — copy from *.example)
 ezra init-config                  # ~/.ezra/ezra.yaml
@@ -33,6 +35,7 @@ ezra init-config                  # ~/.ezra/ezra.yaml
 
 ezra doctor
 ezra models list
+ezra parse paper.pdf -o paper.md   # after pip install -e ".[parse]" or ".[parse-basic]"
 ```
 
 ### Recommend a model for this machine
@@ -163,13 +166,17 @@ ezra models download NAME [NAME ...]
 ezra models download --all [--tag TAG] [--science] [--max-size N] [--no-gated]
 ezra models info NAME
 ezra models status
-ezra models remove NAME
+ezra models remove NAME [--dry-run]
 ezra agents list
 ezra agents init NAME [--description TEXT] [--force]
 ezra agents show NAME [--prompt]
 ezra agents check NAME
-ezra chat [--agent NAME] [--model NAME] [--backend auto|llama|mlx|stub] [-p TEXT]
+ezra parse PATH [--backend auto|basic|megaparse] [-o PATH]
+ezra chat [--agent NAME] [--model NAME] [--backend auto|llama|mlx|stub] [-p TEXT] [--file PATH]
 ezra serve [--agent NAME] [--model NAME] [--backend …] [--host HOST] [--port N]
+ezra openclaw status|version              # vendored in-tree; never auto-starts Gateway
+ezra peekaboo status|mcp-config|capture   # macOS; in-tree under third_party/Peekaboo
+ezra gog status|mcp-config|run …          # Google Workspace; third_party/gogcli
 ezra hpc templates
 ezra hpc sites
 ezra hpc init-site NAME
@@ -186,18 +193,18 @@ Add a model by appending an entry (name, `repo_id`, format, tags) and reinstall 
 
 | Phase | Focus |
 |-------|--------|
-| **1 - Core Local** (now) | Gallery, recommend-by-hardware, download, agents, HPC staging, local chat/serve |
+| **1 - Core Local** (now) | Gallery, recommend-by-hardware, download, agents, chat/serve, document parse, HPC staging, optional OpenClaw / Peekaboo / gog |
 | **2 - Smart routing + HPC** | Domain classifier, policy engine, remote adapters |
 | **3 - Scientific layer** | Chem/materials prompts, tool-calling, RAG helpers, eval harness |
 | **4 - Lab scale** | Shared configs, plugins, observability |
 
-**One sentence:** EZRA lets materials and chemistry researchers download free LLMs, build personal agents on top of them, run locally, and intelligently route between local models and HPC - without cloud lock-in.
+**One sentence:** EZRA helps materials and chemistry researchers download free LLMs, build personal agents, chat or serve them locally, ingest papers via parse, and run the same stack on HPC — without cloud lock-in; smarter routing comes next.
 
 ## Documentation
 
-**Published HTML:** [https://awwal41.github.io/EZRA/](https://awwal41.github.io/EZRA/) (GitHub Pages) · optional mirror [Read the Docs](https://ezra.readthedocs.io/) after you import the repo there.
+**Published HTML:** [https://awwal41.github.io/EZRA/](https://awwal41.github.io/EZRA/) (GitHub Pages) · optional [Read the Docs](https://ezra.readthedocs.io/) · optional [Vercel](docs/README.md#3-vercel-optional-shareable-url) (works with a private repo) · interim clone-and-open [`site/index.html`](site/index.html).
 
-User guides are Markdown under [`docs/`](docs/) (readable on GitHub). The same tree builds with **Sphinx + MyST + reStructuredText** (API autodoc, search, Furo theme). CI: [`.github/workflows/docs.yml`](.github/workflows/docs.yml) builds on PRs/`develop` and deploys Pages from `main`.
+User guides are Markdown under [`docs/`](docs/) (readable on GitHub). The same tree builds with **Sphinx + MyST + reStructuredText** (API autodoc, search, Furo theme). CI: [`.github/workflows/docs.yml`](.github/workflows/docs.yml) builds on PRs/`develop` and deploys Pages from `main`; [`.github/workflows/docs-vercel.yml`](.github/workflows/docs-vercel.yml) can publish the same HTML to Vercel when secrets are set.
 
 ```bash
 pip install -e ".[docs]"
@@ -214,6 +221,10 @@ How to turn Pages on / link RTD: [docs/README.md](docs/README.md#publish-so-peop
 | [docs/models.md](docs/models.md) | Recommend / list / download / status / remove |
 | [docs/agents.md](docs/agents.md) | Personal agents: init / prompt / preferred models |
 | [docs/conversation.md](docs/conversation.md) | Sessions, `ezra chat` / `ezra serve`, UI adapters |
+| [docs/parse.md](docs/parse.md) | Document parsing (`ezra parse`, MegaParse / basic) |
+| [docs/openclaw.md](docs/openclaw.md) | OpenClaw Gateway facade (vendored; no auto-start) |
+| [docs/peekaboo.md](docs/peekaboo.md) | macOS Peekaboo capture / MCP (vendored) |
+| [docs/gog.md](docs/gog.md) | Google Workspace `gog` CLI / MCP (vendored) |
 | [agents/README.md](agents/README.md) | In-tree agent scaffolds + chem-assistant example |
 | [docs/hpc.md](docs/hpc.md) | Site profiles, scratch, `ezra hpc submit` |
 | [sites/README.md](sites/README.md) | Customize for your cluster, commit & push |
@@ -222,6 +233,9 @@ How to turn Pages on / link RTD: [docs/README.md](docs/README.md#publish-so-peop
 | [docs/api.rst](docs/api.rst) | Python API (Sphinx autodoc) |
 | [docs/index.rst](docs/index.rst) | Sphinx site home |
 | [`.github/workflows/docs.yml`](.github/workflows/docs.yml) | Build + GitHub Pages deploy |
+| [`.github/workflows/docs-vercel.yml`](.github/workflows/docs-vercel.yml) | Build + optional Vercel deploy |
+| [`vercel.json`](vercel.json) | Vercel install/build (Sphinx → static HTML) |
+| [`site/`](site/) | Prebuilt Sphinx HTML (open `site/index.html` until hosting is ready) |
 | [.readthedocs.yaml](.readthedocs.yaml) | Optional Read the Docs build config |
 
 

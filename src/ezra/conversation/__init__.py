@@ -1,7 +1,7 @@
 """Conversation runtime: sessions, agent binding, pluggable chat backends.
 
-Phase 1 of the design in ``docs/conversation.md``: session types + stub backend.
-Wire ``ezra chat`` / ``ezra serve`` once local inference lands.
+Implements the design in ``docs/conversation.md``: session types, agent binding,
+stub / llama / MLX backends, plus ``ezra chat`` and ``ezra serve``.
 """
 
 from __future__ import annotations

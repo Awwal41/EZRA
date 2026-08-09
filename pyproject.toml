@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ezra"
 version = "0.1.0"
-description = "EZRA - Easy Zero-setup Routing Assistant for local & HPC LLMs"
+description = "EZRA - Easy Zero-setup Routing Assistant: local & HPC LLMs, agents, chat/serve, document parse, optional OpenClaw/Peekaboo/gog"
 readme = "README.md"
 license = { text = "GPL-3.0-or-later" }
 requires-python = ">=3.10"
@@ -17,6 +17,9 @@ keywords = [
   "materials-science",
   "huggingface",
   "routing",
+  "agents",
+  "document-parsing",
+  "openai-compatible",
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",
@@ -49,6 +52,34 @@ chat = [
   "llama-cpp-python>=0.2.90",
   "fastapi>=0.110",
   "uvicorn[standard]>=0.27",
+]
+# Lightweight PDF text extract (basic backend); no MegaParse / OCR stack
+parse-basic = ["pypdf>=5.0"]
+# Full MegaParse stack (vendored under third_party/MegaParse). Needs Python ≥ 3.11
+# plus system packages: poppler, tesseract (and libmagic on macOS).
+parse = [
+  "pypdf>=5.0",
+  "pypdfium2>=4.30.0",
+  "pdfplumber>=0.11.0",
+  "pycryptodome>=3.21.0",
+  "backoff>=2.2.1",
+  "psutil>=6.1.0",
+  "numpy<=2.0.0",
+  "python-magic>=0.4.27",
+  "unstructured[all-docs]==0.15.0",
+  "langchain>=0.3,<0.4",
+  "langchain-community>=0.3,<0.4",
+  "langchain-openai>=0.1.21",
+  "langchain-core>=0.3,<0.4",
+  "langchain-anthropic>=0.1.23",
+  "llama-parse>=0.4.0",
+  "pydantic-settings>=2.6.1",
+  "playwright>=1.47.0",
+  "httpx>=0.27.0",
+  "loguru>=0.7.2",
+  "python-dotenv>=1.0.0",
+  "onnxruntime==1.20.0; platform_machine == 'x86_64'",
+  "onnxtr[cpu]>=0.6.0",
 ]
 
 [project.scripts]

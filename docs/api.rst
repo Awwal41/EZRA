@@ -43,6 +43,11 @@ Conversation runtime
    :undoc-members:
    :show-inheritance:
 
+.. automodule:: ezra.conversation.session
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Local inference
 ---------------
 
@@ -51,10 +56,57 @@ Local inference
    :undoc-members:
    :show-inheritance:
 
+.. automodule:: ezra.inference.runtime
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Document parsing
+----------------
+
+.. automodule:: ezra.parse
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: ezra.parse.engine
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Peekaboo (macOS)
+----------------
+
+.. automodule:: ezra.peekaboo
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gogcli (Google Workspace)
+-------------------------
+
+.. automodule:: ezra.gog
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+OpenClaw (Gateway)
+------------------
+
+.. automodule:: ezra.openclaw
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Serve (OpenAI HTTP)
 -------------------
 
 .. automodule:: ezra.serve
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: ezra.serve.app
    :members:
    :undoc-members:
    :show-inheritance:

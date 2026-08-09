@@ -73,6 +73,11 @@ ezra-*-*.err
 # ── Docs (Sphinx) ───────────────────────────────────────────────────────────
 docs/_build/
 docs/api/_autosummary/
+# Prebuilt HTML is committed under site/ for collaborators; keep Sphinx cache out
+site/.doctrees/
+
+# Vercel CLI local link (org/project ids live in GitHub Actions secrets)
+.vercel/
 
 .vscode/
 *.swp
@@ -81,3 +86,9 @@ docs/api/_autosummary/
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# -- Vendored third_party build artifacts (sources stay tracked) ------------
+third_party/**/node_modules/
+third_party/**/.pnpm-store/
+third_party/**/.build/
+third_party/**/DerivedData/
