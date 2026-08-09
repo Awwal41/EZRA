@@ -5,8 +5,9 @@ EZRA needs **Python 3.10+**. No GPU is required to download models; GPUs matter 
 ## Clone and install
 
 ```bash
-git clone https://github.com/Awwal41/EZRA.git
+git clone --recurse-submodules https://github.com/Awwal41/EZRA.git
 cd EZRA
+# already cloned?  git submodule update --init --recursive
 
 python -m venv .venv
 
@@ -23,6 +24,13 @@ pip install -e .
 pip install -e ".[local,serve]"   # GGUF via llama.cpp + FastAPI
 # Apple Silicon non-GGUF (optional):
 # pip install -e ".[mlx]"
+# Document parsing (optional):
+# pip install -e ".[parse-basic]"   # text + simple PDF
+# pip install -e ".[parse]"         # MegaParse (Python ≥ 3.11)
+# macOS screen capture / MCP (optional): brew install steipete/tap/peekaboo
+#   sources: third_party/Peekaboo — see docs/peekaboo.md
+# Google Workspace CLI (optional): brew install openclaw/tap/gogcli
+#   sources: third_party/gogcli — see docs/gog.md
 ```
 
 For development (tests + Ruff):
@@ -41,7 +49,7 @@ ezra models list
 ezra models recommend chemistry
 ```
 
-`ezra doctor` prints the models directory, HF token status, gallery size, CPU/RAM/GPU fit budget, whether llama-cpp / mlx-lm / FastAPI are importable, and whether the models path is writable.
+`ezra doctor` prints the models directory, HF token status, gallery size, CPU/RAM/GPU fit budget, whether llama-cpp / mlx-lm / FastAPI / MegaParse are importable, Peekaboo / gog / OpenClaw submodule status, and whether the models path is writable.
 
 `ezra models recommend` probes this machine and ranks open gallery models that fit (optional keyword). See [Models - Recommend](models.md#recommend-for-this-machine).
 
