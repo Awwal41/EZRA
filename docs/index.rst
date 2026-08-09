@@ -2,8 +2,9 @@ EZRA documentation
 ==================
 
 **Easy Zero-setup Routing Assistant** for local and HPC LLMs: download curated
-free/open models, pick ones that fit your machine, scaffold personal agents, and
-stage jobs on SLURM.
+free/open models, pick ones that fit your machine, run personal agents via
+``ezra chat`` / ``ezra serve``, parse documents for LLM ingestion, stage jobs on
+SLURM, and optionally use vendored OpenClaw, Peekaboo, and gog helpers.
 
 This site is built with `Sphinx <https://www.sphinx-doc.org/>`_ using
 **reStructuredText** (``.rst``) and **MyST Markdown** (``.md``). You can still

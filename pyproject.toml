@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ezra"
 version = "0.1.0"
-description = "EZRA - Easy Zero-setup Routing Assistant for local & HPC LLMs"
+description = "EZRA - Easy Zero-setup Routing Assistant: local & HPC LLMs, agents, chat/serve, document parse, optional OpenClaw/Peekaboo/gog"
 readme = "README.md"
 license = { text = "GPL-3.0-or-later" }
 requires-python = ">=3.10"
@@ -17,6 +17,9 @@ keywords = [
   "materials-science",
   "huggingface",
   "routing",
+  "agents",
+  "document-parsing",
+  "openai-compatible",
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",

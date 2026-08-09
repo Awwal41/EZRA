@@ -1,6 +1,6 @@
 # Contributing to EZRA
 
-Thanks for helping build **EZRA** - a researcher-first toolkit for downloading, running, and routing free/open LLMs for materials science and chemistry.
+Thanks for helping build **EZRA** — a researcher-first toolkit for downloading free/open LLMs, running personal agents (`chat` / `serve`), parsing documents, staging HPC jobs, and optional OpenClaw / Peekaboo / gog integrations for materials science and chemistry.
 
 This guide walks through forking the repo, setting up a dev environment, coding style, common contribution types, tests, and opening pull requests.
 

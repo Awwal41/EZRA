@@ -10,9 +10,9 @@
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-0A66C2?logo=github)](https://awwal41.github.io/EZRA/)
 [![Read the Docs](https://img.shields.io/readthedocs/ezra?logo=readthedocs&label=Read%20the%20Docs)](https://ezra.readthedocs.io/)
 
-**Easy Zero-setup Routing Assistant** for local & HPC LLMs - a researcher-first system for downloading, running, and intelligently routing free/open models, purpose-built for multi-purpose applications.
+**Easy Zero-setup Routing Assistant** for local & HPC LLMs — a researcher-first toolkit to download free/open models, run personal agents locally, parse documents into LLM-ready text, and stage the same workflows on SLURM. Optional facades cover OpenClaw, macOS Peekaboo, and Google Workspace (`gog`). Smart domain routing is the Phase 2 target; Phase 1 already ships the local runtime.
 
-> Phase 1 (this repo): curated free-model gallery, hardware-aware recommendations, HPC-friendly downloads, personal agents, and local chat/serve (optional extras).
+> **Phase 1 (now):** curated gallery · hardware-aware `models recommend` · downloads · personal agents · `ezra chat` / `ezra serve` (OpenAI `/v1`) · `ezra parse` (MegaParse) · HPC site profiles / SBATCH · optional OpenClaw, Peekaboo, and gogcli (vendored in-tree).
 
 **Docs:** [GitHub Pages](https://awwal41.github.io/EZRA/) · [Read the Docs](https://ezra.readthedocs.io/) · [Markdown on GitHub](docs/README.md) · [install](docs/install.md) · [models](docs/models.md) · [personal agents](docs/agents.md) · [parse](docs/parse.md) · [openclaw](docs/openclaw.md) · [peekaboo](docs/peekaboo.md) · [gog](docs/gog.md) · [conversation](docs/conversation.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
 
@@ -195,12 +195,12 @@ Add a model by appending an entry (name, `repo_id`, format, tags) and reinstall 
 
 | Phase | Focus |
 |-------|--------|
-| **1 - Core Local** (now) | Gallery, recommend-by-hardware, download, agents, HPC staging, local chat/serve |
+| **1 - Core Local** (now) | Gallery, recommend-by-hardware, download, agents, chat/serve, document parse, HPC staging, optional OpenClaw / Peekaboo / gog |
 | **2 - Smart routing + HPC** | Domain classifier, policy engine, remote adapters |
 | **3 - Scientific layer** | Chem/materials prompts, tool-calling, RAG helpers, eval harness |
 | **4 - Lab scale** | Shared configs, plugins, observability |
 
-**One sentence:** EZRA lets materials and chemistry researchers download free LLMs, build personal agents on top of them, run locally, and intelligently route between local models and HPC - without cloud lock-in.
+**One sentence:** EZRA helps materials and chemistry researchers download free LLMs, build personal agents, chat or serve them locally, ingest papers via parse, and run the same stack on HPC — without cloud lock-in; smarter routing comes next.
 
 ## Documentation
 
