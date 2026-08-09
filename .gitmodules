@@ -1,0 +1,10 @@
+[submodule "third_party/Peekaboo"]
+	path = third_party/Peekaboo
+	url = https://github.com/openclaw/Peekaboo.git
+[submodule "third_party/gogcli"]
+	path = third_party/gogcli
+	url = https://github.com/openclaw/gogcli.git
+[submodule "third_party/OpenClaw"]
+	path = third_party/OpenClaw
+	url = https://github.com/openclaw/openclaw.git
+	shallow = true
