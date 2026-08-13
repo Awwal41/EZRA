@@ -360,3 +360,1382 @@ models:
     description: Unsloth GGUF of Kimi K2 Instruct 0905 (2-bit XL). Needs ~128GB+ RAM; not a laptop download.
     file_pattern: "*UD-Q2_K_XL*"
     recommended_ram_gb: 128
+
+  # ── Tiny / edge (GGUF) ──────────────────────────────────────────
+  - name: smollm2-135m-instruct
+    repo_id: bartowski/SmolLM2-135M-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 0.135
+    params: 135M
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [tiny, embedded, cpu-only, instruct, draft-model]
+    description: Smallest usable instruct model; best for speculative decoding or smoke tests, not real reasoning.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 1
+
+  - name: gemma-3-270m-it
+    repo_id: unsloth/gemma-3-270m-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 0.27
+    params: 270M
+    license: Gemma
+    gated: false
+    science_tags: [general]
+    tags: [tiny, embedded, cpu-only, instruct]
+    description: Google's ultra-small Gemma 3; surprisingly coherent for classification and routing tasks.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 1
+
+  - name: smollm2-360m-instruct
+    repo_id: bartowski/SmolLM2-360M-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 0.36
+    params: 360M
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [tiny, embedded, cpu-only, instruct]
+    description: Step up from the 135M; still sub-second on CPU. Good for structured extraction.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 2
+
+  - name: qwen2.5-0.5b-instruct
+    repo_id: bartowski/Qwen2.5-0.5B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 0.5
+    params: 0.5B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [tiny, cpu-only, instruct, multilingual]
+    description: Tiny Qwen2.5 with real multilingual coverage; common draft model for larger Qwen targets.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 2
+
+  - name: qwen3-0.6b
+    repo_id: unsloth/Qwen3-0.6B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 0.6
+    params: 0.6B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [tiny, cpu-only, hybrid-reasoning, draft-model]
+    description: Smallest Qwen3 with switchable thinking mode; strong tiny-class baseline.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 2
+
+  - name: qwen3.5-0.8b
+    repo_id: unsloth/Qwen3.5-0.8B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 0.8
+    params: 0.8B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [tiny, cpu-only, instruct, multimodal-capable, 2026]
+    description: Current-generation sub-1B Qwen; best quality-per-byte in the tiny tier.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 2
+
+  - name: gemma-3-1b-it
+    repo_id: ggml-org/gemma-3-1b-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 1.0
+    params: 1B
+    license: Gemma
+    gated: false
+    science_tags: [general]
+    tags: [tiny, cpu-only, instruct, 32k-context]
+    description: Official ggml-org build of Gemma 3 1B; reliable llama.cpp compatibility.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 3
+
+  - name: llama-3.2-1b-instruct
+    repo_id: bartowski/Llama-3.2-1B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 1.24
+    params: 1.24B
+    license: Llama-3.2-Community
+    gated: false
+    science_tags: [general]
+    tags: [tiny, cpu-only, instruct, edge]
+    description: Meta's edge-tier Llama; huge fine-tune ecosystem, 128k context on paper.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 3
+
+  - name: lfm2.5-1.2b-instruct
+    repo_id: LiquidAI/LFM2.5-1.2B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 1.2
+    params: 1.2B
+    license: other
+    gated: false
+    science_tags: [general]
+    tags: [tiny, edge, cpu-only, fast, official-gguf, 2026]
+    description: Liquid's edge-optimized hybrid architecture; unusually fast prefill on CPU. LFM Open License.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 3
+
+  - name: qwen2.5-1.5b-instruct
+    repo_id: bartowski/Qwen2.5-1.5B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 1.5
+    params: 1.5B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [tiny, cpu-only, instruct, multilingual]
+    description: Well-tested small workhorse; still a common baseline for fine-tuning experiments.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 3
+
+  - name: deepseek-r1-distill-qwen-1.5b
+    repo_id: bartowski/DeepSeek-R1-Distill-Qwen-1.5B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 1.5
+    params: 1.5B
+    license: MIT
+    gated: false
+    science_tags: [general, math]
+    tags: [tiny, reasoning, chain-of-thought, math]
+    description: Smallest R1 distill; punches far above its weight on grade-school and competition math.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 3
+
+  - name: qwen3-1.7b
+    repo_id: unsloth/Qwen3-1.7B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 1.7
+    params: 1.7B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [tiny, hybrid-reasoning, instruct]
+    description: Qwen3 1.7B with thinking mode; good ceiling for a fully CPU-bound deployment.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 3
+
+  - name: smollm2-1.7b-instruct
+    repo_id: bartowski/SmolLM2-1.7B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 1.7
+    params: 1.7B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [tiny, cpu-only, instruct, fully-open-data]
+    description: HuggingFace's small model trained on fully documented open data; good for reproducible research.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 3
+
+  - name: qwen3.5-2b
+    repo_id: unsloth/Qwen3.5-2B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 2.0
+    params: 2B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly]
+    tags: [tiny, instruct, multimodal-capable, 2026]
+    description: 2026-generation 2B; the smallest model in this list I'd trust for light domain Q&A.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 3
+
+  - name: gemma-4-e2b-it
+    repo_id: unsloth/gemma-4-E2B-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 2.0
+    params: E2B (effective 2B)
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [tiny, edge, multimodal, matformer, 2026]
+    description: Gemma 4 nano tier; "effective 2B" MatFormer slice with vision and audio input.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 4
+
+  # ── Small / laptop (GGUF) ──────────────────────────────────────────
+  - name: smollm3-3b
+    repo_id: bartowski/HuggingFaceTB_SmolLM3-3B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 3.0
+    params: 3B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [fast, local, hybrid-reasoning, fully-open, multilingual]
+    description: Fully open training recipe and data; dual-mode reasoning. Best choice when provenance matters.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 4
+
+  - name: ministral-3-3b-instruct-2512
+    repo_id: bartowski/mistralai_Ministral-3-3B-Instruct-2512-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 3.0
+    params: 3B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [fast, local, instruct, multilingual, apache, 2026]
+    description: Mistral's current small tier, Apache-2.0 (unlike the older MRL-licensed Ministral 8B). Solid European-language coverage.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 4
+
+  - name: phi-4-mini-instruct
+    repo_id: bartowski/microsoft_Phi-4-mini-instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 3.8
+    params: 3.8B
+    license: MIT
+    gated: false
+    science_tags: [general, math, chemistry-friendly]
+    tags: [fast, local, instruct, reasoning, mit]
+    description: Microsoft's textbook-trained small model; unusually strong at math and structured reasoning for its size.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 5
+
+  - name: granite-4.0-micro
+    repo_id: bartowski/ibm-granite_granite-4.0-micro-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 3.0
+    params: 3B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [fast, local, instruct, enterprise, tool-calling, iso-certified]
+    description: IBM Granite micro; built for enterprise tool-calling and RAG, ISO 42001 certified pipeline.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 4
+
+  - name: gemma-3-4b-it
+    repo_id: ggml-org/gemma-3-4b-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 4.3
+    params: 4.3B
+    license: Gemma
+    gated: false
+    science_tags: [general]
+    tags: [fast, local, instruct, vision, 128k-context]
+    description: Gemma 3 4B with image input; official ggml-org build including the mmproj vision projector.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 5
+
+  - name: qwen3.5-4b
+    repo_id: unsloth/Qwen3.5-4B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 4.0
+    params: 4B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly, math]
+    tags: [fast, local, instruct, multimodal-capable, 2026, recommended]
+    description: Best all-round sub-5B model as of mid-2026. Strong default for laptop-class science Q&A.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 5
+
+  - name: qwen3-4b-instruct-2507
+    repo_id: bartowski/Qwen_Qwen3-4B-Instruct-2507-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 4.0
+    params: 4B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, math]
+    tags: [fast, local, instruct, 256k-context]
+    description: Non-thinking Qwen3 4B refresh with very long context; predictable latency, no reasoning preamble.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 5
+
+  - name: gemma-4-e4b-it
+    repo_id: unsloth/gemma-4-E4B-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 4.0
+    params: E4B (effective 4B)
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [fast, local, multimodal, matformer, apache, 2026, recommended]
+    description: Gemma 4 E4B - Apache-2.0 (Gemma 4 dropped the custom license), any-to-any multimodal, laptop friendly.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 6
+
+  - name: nemotron-3-nano-4b
+    repo_id: lmstudio-community/NVIDIA-Nemotron-3-Nano-4B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 4.0
+    params: 4B
+    license: other
+    gated: false
+    science_tags: [general, science-tuned, math]
+    tags: [fast, local, reasoning, open-data, 2026]
+    description: NVIDIA Nemotron 3 Nano; trained with published science/math datasets. NVIDIA Open Model License.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 5
+
+  - name: qwen3-vl-4b-instruct
+    repo_id: unsloth/Qwen3-VL-4B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 4.0
+    params: 4B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, diagram-reading]
+    tags: [fast, local, vision, multimodal, ocr]
+    description: Small vision-language Qwen; reads charts, spectra plots, and scanned pages. Needs the mmproj file too.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 6
+
+  - name: internscience-agents-a1-4b
+    repo_id: bartowski/InternScience_Agents-A1-4B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 4.0
+    params: 4B
+    license: Apache-2.0
+    gated: false
+    science_tags: [science-tuned, chemistry, biology, physics]
+    tags: [local, agentic, research, 2026]
+    description: Science-agent tuned 4B from InternScience; built for literature and tool-using research loops.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 5
+
+  - name: jamba-reasoning-3b
+    repo_id: bartowski/ai21labs_AI21-Jamba-Reasoning-3B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 3.0
+    params: 3B
+    license: other
+    gated: false
+    science_tags: [general, math]
+    tags: [fast, local, reasoning, hybrid-mamba, long-context]
+    description: Hybrid Mamba/Transformer reasoning model; very cheap long-context inference. Jamba Open Model License.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 4
+
+  # ── Mid-size / quality (GGUF) ──────────────────────────────────────────
+  - name: mistral-7b-instruct-v0.3
+    repo_id: bartowski/Mistral-7B-Instruct-v0.3-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 7.2
+    params: 7.2B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [local, instruct, apache, classic, function-calling]
+    description: Clean Apache-2.0 7B with no usage strings attached; the safe commercial default.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 8
+
+  - name: granite-4.0-h-tiny
+    repo_id: bartowski/ibm-granite_granite-4.0-h-tiny-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 7.0
+    params: 7B-A1B (MoE)
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [local, moe, fast, enterprise, tool-calling, hybrid-mamba]
+    description: 7B total but only ~1B active per token - near-3B speed at 7B quality. Great CPU MoE.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 8
+
+  - name: qwen3-8b
+    repo_id: unsloth/Qwen3-8B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 8.2
+    params: 8.2B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, math, chemistry-friendly]
+    tags: [local, hybrid-reasoning, instruct, multilingual]
+    description: Qwen3 8B with toggleable thinking; the most downloaded general-purpose 8B of its generation.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 8
+
+  - name: deepseek-r1-0528-qwen3-8b
+    repo_id: unsloth/DeepSeek-R1-0528-Qwen3-8B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 8.2
+    params: 8.2B
+    license: MIT
+    gated: false
+    science_tags: [general, math, chemistry-friendly]
+    tags: [local, reasoning, mit, recommended]
+    description: Later R1 distill onto the Qwen3 base - the strongest 8B reasoner in this list.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 8
+
+  - name: hermes-3-llama-3.1-8b
+    repo_id: bartowski/Hermes-3-Llama-3.1-8B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 8.0
+    params: 8B
+    license: Llama-3.1-Community
+    gated: false
+    science_tags: [general]
+    tags: [local, instruct, steerable, function-calling, json-mode]
+    description: Nous Research tune focused on instruction adherence, structured output, and neutral system-prompt following.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 8
+
+  - name: ministral-3-8b-instruct-2512
+    repo_id: unsloth/Ministral-3-8B-Instruct-2512-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 8.0
+    params: 8B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [local, instruct, apache, multilingual, 2026]
+    description: Mistral's 2026 8B under Apache-2.0. Replaces the research-only Ministral-8B-2410.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 8
+
+  - name: qwen3.5-9b
+    repo_id: unsloth/Qwen3.5-9B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 9.0
+    params: 9B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly, math, biology]
+    tags: [local, instruct, multimodal-capable, 2026, recommended]
+    description: Best 16GB-class general model of 2026. This is the one to default to if you have the RAM.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 10
+
+  - name: gemma-2-9b-it
+    repo_id: bartowski/gemma-2-9b-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 9.2
+    params: 9.2B
+    license: Gemma
+    gated: false
+    science_tags: [general]
+    tags: [local, instruct, classic, strong-writing]
+    description: Older Gemma 2; still notable for natural prose quality. 8k context is the main limitation.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 10
+
+  - name: qwen3-vl-8b-instruct
+    repo_id: unsloth/Qwen3-VL-8B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 8.0
+    params: 8B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, diagram-reading, chemistry-friendly]
+    tags: [local, vision, multimodal, ocr, document-parsing]
+    description: Reads figures, tables, structures, and handwriting well. Download the matching mmproj-*.gguf alongside.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 10
+
+  - name: mistral-nemo-instruct-2407
+    repo_id: bartowski/Mistral-Nemo-Instruct-2407-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 12.2
+    params: 12.2B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [local, instruct, apache, 128k-context, multilingual]
+    description: Mistral+NVIDIA 12B, Apache-2.0, 128k context. A long-standing favorite for local assistants and RP.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 12
+
+  - name: gemma-3-12b-it
+    repo_id: unsloth/gemma-3-12b-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 12.2
+    params: 12.2B
+    license: Gemma
+    gated: false
+    science_tags: [general]
+    tags: [local, instruct, vision, 128k-context]
+    description: Gemma 3 12B with vision; the QAT variants (see -qat- repos) give near-BF16 quality at Q4 size.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 12
+
+  - name: gemma-4-12b-it
+    repo_id: unsloth/gemma-4-12b-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 12.0
+    params: 12B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly]
+    tags: [local, multimodal, apache, 2026, recommended]
+    description: Widely cited as the best practical laptop model of 2026. Apache-2.0. QAT builds also available.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 12
+
+  - name: qwen3-14b
+    repo_id: unsloth/Qwen3-14B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 14.8
+    params: 14.8B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, math, chemistry-friendly]
+    tags: [local, hybrid-reasoning, instruct]
+    description: Qwen3 14B; noticeably better than 8B on multi-constraint instructions and long derivations.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 14
+
+  - name: qwen2.5-14b-instruct-gguf
+    repo_id: bartowski/Qwen2.5-14B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 14.8
+    params: 14.8B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly]
+    tags: [local, instruct, well-tested]
+    description: Previous-gen 14B, extremely stable. Good when you want boring, predictable behavior.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 14
+
+  - name: deepseek-r1-distill-qwen-14b
+    repo_id: bartowski/DeepSeek-R1-Distill-Qwen-14B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 14.8
+    params: 14.8B
+    license: MIT
+    gated: false
+    science_tags: [general, math, chemistry-friendly]
+    tags: [local, reasoning, chain-of-thought, mit]
+    description: Sweet spot of the R1 distill family - real reasoning gains without needing a 24GB card.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 14
+
+  - name: phi-4
+    repo_id: bartowski/phi-4-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 14.7
+    params: 14.7B
+    license: MIT
+    gated: false
+    science_tags: [general, math, chemistry-friendly, physics]
+    tags: [local, reasoning, stem, mit]
+    description: Microsoft's STEM-heavy 14B. Punches above its size on quantitative and symbolic problems.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 14
+
+  - name: ministral-3-14b-reasoning-2512
+    repo_id: lmstudio-community/Ministral-3-14B-Reasoning-2512-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 14.0
+    params: 14B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, math]
+    tags: [local, reasoning, apache, 2026]
+    description: Mistral's Apache-2.0 reasoning model at 14B; competitive with much larger thinkers on math.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 14
+
+  - name: hermes-4-14b
+    repo_id: bartowski/NousResearch_Hermes-4-14B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 14.8
+    params: 14.8B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [local, steerable, agentic, function-calling, hybrid-reasoning]
+    description: Nous Hermes 4; strong tool use and very literal system-prompt adherence. Good agent backbone.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 14
+
+  # ── Code specialists (GGUF) ──────────────────────────────────────────
+  - name: qwen2.5-coder-7b-instruct
+    repo_id: bartowski/Qwen2.5-Coder-7B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 7.6
+    params: 7.6B
+    license: Apache-2.0
+    gated: false
+    science_tags: [scientific-computing]
+    tags: [code, local, fim, autocomplete, instruct]
+    description: Fits alongside an IDE on 16GB. Supports fill-in-the-middle for inline completion.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 8
+
+  - name: qwen2.5-coder-14b-instruct
+    repo_id: bartowski/Qwen2.5-Coder-14B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 14.8
+    params: 14.8B
+    license: Apache-2.0
+    gated: false
+    science_tags: [scientific-computing]
+    tags: [code, local, fim, instruct]
+    description: Best code-quality-per-GB in the mid tier; handles multi-file refactors reasonably.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 14
+
+  - name: qwen2.5-coder-32b-instruct
+    repo_id: bartowski/Qwen2.5-Coder-32B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 32.8
+    params: 32.8B
+    license: Apache-2.0
+    gated: false
+    science_tags: [scientific-computing]
+    tags: [code, workstation, fim, instruct]
+    description: The classic "GPT-4-class local coder" of its era. Still very good, needs ~24GB.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 24
+
+  - name: qwen3-coder-30b-a3b-instruct
+    repo_id: unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 30.5
+    params: 30.5B-A3B (MoE)
+    license: Apache-2.0
+    gated: false
+    science_tags: [scientific-computing]
+    tags: [code, moe, fast, agentic, recommended, most-downloaded]
+    description: Most-downloaded GGUF coder on HF. 30B knowledge at ~3B active-param speed - excellent on Apple Silicon.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 24
+
+  - name: qwen3-coder-next
+    repo_id: unsloth/Qwen3-Coder-Next-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 80.0
+    params: ~80B-A3B (MoE)
+    license: Apache-2.0
+    gated: false
+    science_tags: [scientific-computing]
+    tags: [code, moe, agentic, workstation, 2026]
+    description: Qwen's current agentic coding release; long-horizon edit/test loops. Sparse, so it runs faster than its size suggests.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 56
+
+  - name: devstral-small-2-24b-instruct-2512
+    repo_id: unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 24.0
+    params: 24B
+    license: Apache-2.0
+    gated: false
+    science_tags: [scientific-computing]
+    tags: [code, agentic, swe-bench, apache, 2026]
+    description: Mistral's agentic SWE model - tuned for codebase exploration and patch generation, not chat.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 18
+
+  - name: deepseek-coder-v2-lite-instruct
+    repo_id: bartowski/DeepSeek-Coder-V2-Lite-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 15.7
+    params: 15.7B-A2.4B (MoE)
+    license: other
+    gated: false
+    science_tags: [scientific-computing]
+    tags: [code, moe, fast, fim]
+    description: Very fast sparse coder with 338-language coverage. DeepSeek License (commercial use permitted).
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 14
+
+  - name: codestral-22b-v0.1
+    repo_id: lmstudio-community/Codestral-22B-v0.1-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 22.2
+    params: 22.2B
+    license: other
+    gated: false
+    science_tags: [scientific-computing]
+    tags: [code, fim, non-commercial]
+    description: Mistral's dedicated code model. NOTE - MNPL license, non-commercial / no production use.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 16
+
+  # ── Large / workstation (GGUF) ──────────────────────────────────────────
+  - name: gpt-oss-20b
+    repo_id: unsloth/gpt-oss-20b-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 21.0
+    params: 21B-A3.6B (MoE)
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, math, chemistry-friendly]
+    tags: [moe, reasoning, apache, openai, adjustable-effort]
+    description: OpenAI's open-weight release. Configurable reasoning effort, native MXFP4. Genuinely Apache-2.0.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 16
+
+  - name: mistral-small-3.2-24b-instruct-2506
+    repo_id: unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 24.0
+    params: 24B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [local, instruct, vision, apache, function-calling]
+    description: Apache-2.0 24B with vision and reliable tool-calling. Common self-hosted production choice.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 18
+
+  - name: gemma-4-26b-a4b-it
+    repo_id: unsloth/gemma-4-26B-A4B-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 26.0
+    params: 26B-A4B (MoE)
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly]
+    tags: [moe, fast, multimodal, apache, 2026, recommended]
+    description: Gemma 4 sparse mid-tier - 26B quality at ~4B active speed. Best value on a 32GB machine.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 20
+
+  - name: qwen3.6-27b
+    repo_id: unsloth/Qwen3.6-27B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 27.0
+    params: 27B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly, math, biology]
+    tags: [dense, instruct, multimodal-capable, 2026, recommended]
+    description: Newest dense Qwen at time of writing. Top open dense model in the 24-32GB class.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 20
+
+  - name: qwen3.5-27b
+    repo_id: unsloth/Qwen3.5-27B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 27.0
+    params: 27B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly, math]
+    tags: [dense, instruct, 2026]
+    description: Previous Qwen3.5 dense 27B; still excellent and has more community fine-tunes than 3.6.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 20
+
+  - name: gemma-3-27b-it
+    repo_id: unsloth/gemma-3-27b-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 27.4
+    params: 27.4B
+    license: Gemma
+    gated: false
+    science_tags: [general]
+    tags: [dense, instruct, vision, 128k-context]
+    description: Gemma 3 flagship; strong writing and vision. Superseded by Gemma 4 but very well supported.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 20
+
+  - name: qwen3-30b-a3b-instruct-2507
+    repo_id: unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 30.5
+    params: 30.5B-A3B (MoE)
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, math]
+    tags: [moe, fast, instruct, 256k-context]
+    description: Fast sparse generalist. Non-thinking variant - good when you want speed without reasoning tokens.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 22
+
+  - name: nemotron-3-nano-30b-a3b
+    repo_id: unsloth/Nemotron-3-Nano-30B-A3B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 30.0
+    params: 30B-A3B (MoE)
+    license: other
+    gated: false
+    science_tags: [science-tuned, math, general]
+    tags: [moe, reasoning, open-data, 2026]
+    description: NVIDIA's sparse 30B with published pretraining and science datasets. NVIDIA Nemotron Open Model License.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 22
+
+  - name: glm-4.7-flash
+    repo_id: unsloth/GLM-4.7-Flash-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 31.2
+    params: 31.2B (MoE-lite)
+    license: MIT
+    gated: false
+    science_tags: [general, math]
+    tags: [moe, agentic, coding, mit, 2026, recommended]
+    description: Z.ai's GLM 4.7 Flash under a clean MIT license. Strong agentic and coding scores for its size.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 22
+
+  - name: gemma-4-31b-it
+    repo_id: unsloth/gemma-4-31B-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 31.0
+    params: 31B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly]
+    tags: [dense, multimodal, apache, 2026]
+    description: Largest dense Gemma 4. Apache-2.0, any-to-any multimodal, strong instruction following.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 24
+
+  - name: qwen3-32b
+    repo_id: unsloth/Qwen3-32B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 32.8
+    params: 32.8B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, math, chemistry-friendly]
+    tags: [dense, hybrid-reasoning, instruct]
+    description: Dense Qwen3 flagship. Slower than the A3B MoEs but more consistent on hard single-shot tasks.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 24
+
+  - name: qwq-32b
+    repo_id: lmstudio-community/QwQ-32B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 32.5
+    params: 32.5B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, math, physics, chemistry-friendly]
+    tags: [dense, reasoning, chain-of-thought, apache]
+    description: Qwen's dedicated reasoning model. Very long thinking traces; excellent on olympiad-style problems.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 24
+
+  - name: deepseek-r1-distill-qwen-32b
+    repo_id: bartowski/DeepSeek-R1-Distill-Qwen-32B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 32.8
+    params: 32.8B
+    license: MIT
+    gated: false
+    science_tags: [general, math, chemistry-friendly]
+    tags: [dense, reasoning, chain-of-thought, mit]
+    description: Largest widely-used R1 distill that still fits a 24GB card at Q4. Strong math and code reasoning.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 24
+
+  - name: olmo-3.1-32b-think
+    repo_id: bartowski/allenai_Olmo-3.1-32B-Think-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 32.0
+    params: 32B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, math, research]
+    tags: [dense, reasoning, fully-open, reproducible, apache]
+    description: AI2's fully open model - weights, data, and training code all public. The choice for reproducible science.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 24
+
+  - name: seed-oss-36b-instruct
+    repo_id: lmstudio-community/Seed-OSS-36B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 36.0
+    params: 36B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, math]
+    tags: [dense, long-context, apache, thinking-budget]
+    description: ByteDance Seed; 512k context and a controllable thinking-token budget. Apache-2.0.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 26
+
+  - name: qwen3.6-35b-a3b
+    repo_id: unsloth/Qwen3.6-35B-A3B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 35.0
+    params: 35B-A3B (MoE)
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly, math, biology]
+    tags: [moe, fast, agentic, 2026, recommended, most-downloaded]
+    description: The 2026 sweet spot - flagship-adjacent quality at 3B active speed. Best single pick for a 32GB machine.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 26
+
+  - name: qwen3.5-35b-a3b
+    repo_id: unsloth/Qwen3.5-35B-A3B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 35.0
+    params: 35B-A3B (MoE)
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, math, chemistry-friendly]
+    tags: [moe, fast, agentic, 2026]
+    description: Prior Qwen3.5 sparse release; near-identical footprint to 3.6, slightly behind on benchmarks.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 26
+
+  # ── XL / frontier (GGUF) ──────────────────────────────────────────
+  - name: kimi-linear-48b-a3b-instruct
+    repo_id: bartowski/moonshotai_Kimi-Linear-48B-A3B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 48.0
+    params: 48B-A3B (MoE)
+    license: other
+    gated: false
+    science_tags: [general]
+    tags: [moe, long-context, linear-attention, workstation]
+    description: Moonshot's linear-attention hybrid; very cheap long-context KV cache. Modified MIT License.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 36
+
+  - name: llama-3.3-70b-instruct
+    repo_id: unsloth/Llama-3.3-70B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 70.6
+    params: 70.6B
+    license: Llama-3.3-Community
+    gated: false
+    science_tags: [general]
+    tags: [dense, workstation, instruct, huge-ecosystem]
+    description: Meta's dense 70B. Slow but broad and reliable; the reference point most local benchmarks use.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 48
+
+  - name: deepseek-r1-distill-llama-70b
+    repo_id: unsloth/DeepSeek-R1-Distill-Llama-70B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 70.6
+    params: 70.6B
+    license: MIT
+    gated: false
+    science_tags: [general, math, chemistry-friendly, physics]
+    tags: [dense, reasoning, workstation, mit]
+    description: Largest R1 distill. Best reasoning you can get from a dense 70B that still runs on 2x24GB.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 48
+
+  - name: llama-4-scout-17b-16e-instruct
+    repo_id: unsloth/Llama-4-Scout-17B-16E-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 109.0
+    params: 109B-A17B (MoE, 16 experts)
+    license: Llama-4-Community
+    gated: false
+    science_tags: [general, diagram-reading]
+    tags: [moe, multimodal, very-long-context, workstation]
+    description: Meta's Llama 4 Scout - natively multimodal MoE with an extremely long context window.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 72
+
+  - name: qwen3-next-80b-a3b-instruct
+    repo_id: unsloth/Qwen3-Next-80B-A3B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 80.0
+    params: 80B-A3B (MoE)
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, math]
+    tags: [moe, fast, long-context, apache, workstation]
+    description: Highly sparse 80B - only ~3B active, so throughput is closer to a small model on 64GB+ machines.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 56
+
+  - name: gpt-oss-120b
+    repo_id: unsloth/gpt-oss-120b-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 117.0
+    params: 117B-A5.1B (MoE)
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, math, chemistry-friendly, physics]
+    tags: [moe, reasoning, apache, openai, workstation]
+    description: OpenAI's larger open-weight model. Apache-2.0, fits a single 80GB card in native MXFP4.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 72
+
+  - name: mistral-small-4-119b-2603
+    repo_id: unsloth/Mistral-Small-4-119B-2603-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 119.0
+    params: 119B
+    license: Apache-2.0
+    gated: false
+    science_tags: [general]
+    tags: [workstation, apache, multilingual, 2026]
+    description: Mistral's 2026 "Small" (the name is historical). Apache-2.0 at frontier-adjacent scale.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 80
+
+  - name: nemotron-3-super-120b-a12b
+    repo_id: unsloth/NVIDIA-Nemotron-3-Super-120B-A12B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 120.0
+    params: 120B-A12B (latent MoE)
+    license: other
+    gated: false
+    science_tags: [science-tuned, math, general]
+    tags: [moe, reasoning, open-data, workstation, 2026]
+    description: NVIDIA's flagship open release with published training data. Noted for capability-per-FLOP. Nemotron Open Model License.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 80
+
+  - name: qwen3.5-122b-a10b
+    repo_id: unsloth/Qwen3.5-122B-A10B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 122.0
+    params: 122B-A10B (MoE)
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, chemistry-friendly, math, biology]
+    tags: [moe, apache, workstation, 2026, recommended]
+    description: Best Apache-2.0 model that fits a 128GB unified-memory machine at Q4. Excellent all-rounder.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 84
+
+  - name: mistral-medium-3.5-128b
+    repo_id: unsloth/Mistral-Medium-3.5-128B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 128.0
+    params: 128B
+    license: other
+    gated: false
+    science_tags: [general]
+    tags: [workstation, multilingual, 2026]
+    description: Mistral Medium 3.5 open weights. Check the repo card for the exact license terms before commercial use.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 88
+
+  - name: glm-5.2
+    repo_id: unsloth/GLM-5.2-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 358.0
+    params: ~358B (MoE)
+    license: other
+    gated: false
+    science_tags: [general, math]
+    tags: [moe, frontier, agentic, coding, 2026]
+    description: Rated the strongest all-round open-weight model in mid-2026 roundups. Verify license on the repo card.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 220
+
+  - name: minimax-m3
+    repo_id: unsloth/MiniMax-M3-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 230.0
+    params: ~230B (MoE, multimodal)
+    license: other
+    gated: false
+    science_tags: [general, diagram-reading]
+    tags: [moe, frontier, multimodal, agentic, 2026]
+    description: Tops several open-weight leaderboards in 2026. Native multimodal + agentic/coding focus.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 150
+
+  - name: qwen3-235b-a22b
+    repo_id: unsloth/Qwen3-235B-A22B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 235.0
+    params: 235B-A22B (MoE)
+    license: Apache-2.0
+    gated: false
+    science_tags: [general, math, chemistry-friendly]
+    tags: [moe, frontier, apache, hybrid-reasoning]
+    description: Qwen3's flagship MoE under Apache-2.0. The largest genuinely permissive model most people can run.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 150
+
+  - name: kimi-k2.7-code
+    repo_id: unsloth/Kimi-K2.7-Code-GGUF
+    format: gguf
+    quant: Q4_K_XL
+    size_b: 1000.0
+    params: ~1T-A32B (MoE)
+    license: other
+    gated: false
+    science_tags: [scientific-computing]
+    tags: [moe, frontier, code, agentic, 2026]
+    description: Moonshot's trillion-parameter coding agent. Server-class only. Modified MIT License.
+    file_pattern: "*Q4_K_XL*"
+    recommended_ram_gb: 640
+
+  - name: deepseek-v4-flash-0731
+    repo_id: unsloth/DeepSeek-V4-Flash-0731-GGUF
+    format: gguf
+    quant: Q4_K_XL
+    size_b: 304.0
+    params: ~304B (MoE)
+    license: MIT
+    gated: false
+    science_tags: [general, math, chemistry-friendly]
+    tags: [moe, frontier, mit, reasoning, 2026, recommended]
+    description: Current DeepSeek flagship under a plain MIT license - the most permissively licensed frontier model available.
+    file_pattern: "*Q4_K_XL*"
+    recommended_ram_gb: 200
+
+  - name: deepseek-r1
+    repo_id: unsloth/DeepSeek-R1-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 671.0
+    params: 671B-A37B (MoE)
+    license: MIT
+    gated: false
+    science_tags: [general, math, physics, chemistry-friendly]
+    tags: [moe, frontier, reasoning, mit, classic]
+    description: The original R1. Still a landmark reasoning model; 1.58-bit dynamic quants exist for ~140GB setups.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 420
+
+  # ── Domain specialists (GGUF) ──────────────────────────────────────────
+  - name: medgemma-4b-it
+    repo_id: unsloth/medgemma-4b-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 4.3
+    params: 4.3B
+    license: other
+    gated: false
+    science_tags: [medicine, biology, radiology]
+    tags: [domain, medical, vision, local]
+    description: Google's medical Gemma with image support (X-ray, derm, path). Health AI Developer Foundations terms.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 6
+
+  - name: medgemma-1.5-4b-it
+    repo_id: unsloth/medgemma-1.5-4b-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 4.3
+    params: 4.3B
+    license: other
+    gated: false
+    science_tags: [medicine, biology, radiology]
+    tags: [domain, medical, vision, local, 2026]
+    description: Updated MedGemma 1.5; better multimodal clinical reasoning than the original 4B.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 6
+
+  - name: medgemma-27b-text-it
+    repo_id: unsloth/medgemma-27b-text-it-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 27.0
+    params: 27B
+    license: other
+    gated: false
+    science_tags: [medicine, biology]
+    tags: [domain, medical, text-only, workstation]
+    description: Text-only 27B MedGemma; strongest open medical-QA model in this list. Not for clinical use.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 20
+
+  - name: biomistral-7b
+    repo_id: BioMistral/BioMistral-7B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 7.2
+    params: 7.2B
+    license: Apache-2.0
+    gated: false
+    science_tags: [medicine, biology]
+    tags: [domain, medical, official-gguf, apache]
+    description: Mistral-7B continually pretrained on PubMed Central. Official GGUF; files are named ggml-model-*.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 8
+
+  - name: bio-medical-llama-3.1-8b
+    repo_id: mradermacher/Bio-Medical-Llama-3.1-8B-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 8.0
+    params: 8B
+    license: Llama-3.1-Community
+    gated: false
+    science_tags: [medicine, biology]
+    tags: [domain, medical, community-quant]
+    description: Llama-3.1-8B fine-tuned on a curated biomedical instruction set. Good biomedical terminology handling.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 8
+
+  - name: biomed-r1-32b
+    repo_id: mradermacher/BioMed-R1-32B-i1-GGUF
+    format: gguf
+    quant: i1-Q4_K_M
+    size_b: 32.0
+    params: 32B
+    license: Apache-2.0
+    gated: false
+    science_tags: [medicine, biology]
+    tags: [domain, medical, reasoning, imatrix, community-quant]
+    description: Reasoning-tuned biomedical 32B. imatrix quants - the i1- prefix is part of the filename.
+    file_pattern: "*i1-Q4_K_M*"
+    recommended_ram_gb: 24
+
+  - name: biomni-r0-32b-preview
+    repo_id: mradermacher/Biomni-R0-32B-Preview-i1-GGUF
+    format: gguf
+    quant: i1-Q4_K_M
+    size_b: 32.0
+    params: 32B
+    license: Apache-2.0
+    gated: false
+    science_tags: [biology, medicine, research]
+    tags: [domain, biomedical-agent, reasoning, imatrix, community-quant]
+    description: Stanford Biomni biomedical research agent; designed for tool-using experimental planning.
+    file_pattern: "*i1-Q4_K_M*"
+    recommended_ram_gb: 24
+
+  - name: chemllm-7b-chat
+    repo_id: ceafgnigguh123/ChemLLM-7B-Chat-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 7.0
+    params: 7B
+    license: Apache-2.0
+    gated: false
+    science_tags: [chemistry, molecular]
+    tags: [domain, chemistry, community-quant]
+    description: ChemLLM 7B (Shanghai AI Lab) - chemistry dialogue, nomenclature, reaction Q&A. Community quant.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 8
+
+  - name: chemllm-20b-chat-sft
+    repo_id: mradermacher/ChemLLM-20B-Chat-SFT-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 20.0
+    params: 20B
+    license: Apache-2.0
+    gated: false
+    science_tags: [chemistry, molecular]
+    tags: [domain, chemistry, community-quant]
+    description: Larger ChemLLM. Better on multi-step synthesis discussion; a DPO variant also exists.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 16
+
+  - name: chemdfm-v2.0-14b
+    repo_id: mradermacher/ChemDFM-v2.0-14B-i1-GGUF
+    format: gguf
+    quant: i1-Q4_K_M
+    size_b: 14.0
+    params: 14B
+    license: Apache-2.0
+    gated: false
+    science_tags: [chemistry, molecular, materials]
+    tags: [domain, chemistry, imatrix, community-quant, recommended]
+    description: ChemDFM v2.0 - the strongest open chemistry-specific LLM here. Handles SMILES, IUPAC, and reaction prediction.
+    file_pattern: "*i1-Q4_K_M*"
+    recommended_ram_gb: 12
+
+  - name: qwen2.5-math-1.5b-instruct
+    repo_id: bartowski/Qwen2.5-Math-1.5B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 1.5
+    params: 1.5B
+    license: Apache-2.0
+    gated: false
+    science_tags: [math]
+    tags: [domain, math, tiny, cot, tir]
+    description: Tiny math specialist with tool-integrated reasoning. Math only - poor at general chat.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 3
+
+  - name: qwen2.5-math-7b-instruct
+    repo_id: bartowski/Qwen2.5-Math-7B-Instruct-GGUF
+    format: gguf
+    quant: Q4_K_M
+    size_b: 7.6
+    params: 7.6B
+    license: Apache-2.0
+    gated: false
+    science_tags: [math, physics]
+    tags: [domain, math, cot, tir]
+    description: Strong small math solver; pairs well with a Python tool for tool-integrated reasoning.
+    file_pattern: "*Q4_K_M*"
+    recommended_ram_gb: 8
