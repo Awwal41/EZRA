@@ -7,10 +7,32 @@
     log: [],
   };
 
+  const PLACEHOLDERS = {
+    local: "Ask anything…",
+    agent: "Task for this agent…",
+    cline: "Describe a coding task…",
+    openclaw: "Message to hand off…",
+  };
+  const LANE_SUB = {
+    local: "Local model on this machine",
+    agent: "Personal agent, still local",
+    cline: "Hand-off to Cline via ezra serve",
+    openclaw: "Hand-off to OpenClaw",
+  };
+  const WHO = {
+    you: "You",
+    local: "EZRA",
+    agent: "Agent",
+    cline: "Cline",
+    openclaw: "Claw",
+    sys: "Grid",
+  };
+
   const lanesEl = document.getElementById("lanes");
   const logEl = document.getElementById("log");
   const noteEl = document.getElementById("note");
   const pillEl = document.getElementById("pill");
+  const subEl = document.getElementById("sub");
   const modelSel = document.getElementById("model");
   const agentSel = document.getElementById("agent");
   const promptEl = document.getElementById("prompt");
@@ -26,6 +48,20 @@
     vscode.setState(state);
   }
 
+  function canSend() {
+    return !busy && !!(promptEl.value || "").trim();
+  }
+
+  function syncSend() {
+    sendBtn.disabled = !canSend();
+    sendBtn.classList.toggle("busy", busy);
+  }
+
+  function resizePrompt() {
+    promptEl.style.height = "auto";
+    promptEl.style.height = Math.min(Math.max(promptEl.scrollHeight, 44), 160) + "px";
+  }
+
   function append(role, text, lane) {
     const item = { role, text, lane: lane || state.lane };
     state.log.push(item);
@@ -36,17 +72,50 @@
     renderLog();
   }
 
+  function renderEmpty() {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.innerHTML =
+      '<div class="empty-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></div>' +
+      "<h2>What should we work on?</h2>" +
+      "<p>Pick a lane, then ask. Local models stay on this machine.</p>";
+    logEl.appendChild(empty);
+  }
+
   function renderLog() {
     logEl.innerHTML = "";
+    if (!state.log.length && !busy) {
+      renderEmpty();
+      return;
+    }
     for (const item of state.log) {
       const div = document.createElement("div");
-      div.className = "msg " + (item.role === "you" ? "you" : item.lane || "sys");
+      const kind = item.role === "you" ? "you" : item.role === "sys" ? "sys" : item.lane || "sys";
+      div.className = "msg " + kind;
       const who = document.createElement("span");
       who.className = "who";
-      who.textContent = item.role === "you" ? "you" : item.lane || "grid";
+      who.textContent =
+        item.role === "you" ? WHO.you : WHO[item.lane] || item.lane || WHO.sys;
       div.appendChild(who);
       div.appendChild(document.createTextNode(item.text));
       logEl.appendChild(div);
+    }
+    if (busy) {
+      const last = state.log[state.log.length - 1];
+      if (!last || last.role === "you" || last.role === "sys") {
+        const think = document.createElement("div");
+        think.className = "msg thinking " + (state.lane || "local");
+        const who = document.createElement("span");
+        who.className = "who";
+        who.textContent = WHO[state.lane] || "EZRA";
+        const dots = document.createElement("span");
+        dots.className = "dots";
+        dots.setAttribute("aria-label", "Thinking");
+        dots.innerHTML = "<i></i><i></i><i></i>";
+        think.appendChild(who);
+        think.appendChild(dots);
+        logEl.appendChild(think);
+      }
     }
     logEl.scrollTop = logEl.scrollHeight;
   }
@@ -56,7 +125,7 @@
     sel.innerHTML = "";
     const blank = document.createElement("option");
     blank.value = "";
-    blank.textContent = values.length ? "—" : "(none)";
+    blank.textContent = values.length ? "Select…" : "(none)";
     sel.appendChild(blank);
     for (const value of values) {
       const opt = document.createElement("option");
@@ -78,13 +147,19 @@
     const offGrid = state.lane !== "openclaw";
     pillEl.textContent = offGrid ? "off grid" : "hand-off";
     pillEl.className = "pill " + (offGrid ? "off" : "on-grid");
+    if (subEl) {
+      subEl.textContent = LANE_SUB[state.lane] || LANE_SUB.local;
+    }
+    promptEl.placeholder = PLACEHOLDERS[state.lane] || PLACEHOLDERS.local;
     for (const btn of lanesEl.querySelectorAll(".lane")) {
       btn.setAttribute("aria-pressed", btn.dataset.lane === state.lane ? "true" : "false");
     }
     modelWrap.hidden = !(state.lane === "local" || state.lane === "cline");
     agentWrap.hidden = state.lane !== "agent";
     const lane = (probe.lanes && probe.lanes[state.lane]) || {};
-    noteEl.textContent = lane.note || "";
+    const note = lane.note || "";
+    noteEl.textContent = note;
+    noteEl.hidden = !note;
   }
 
   function applyProbe(next) {
@@ -106,9 +181,12 @@
     for (const btn of lanesEl.querySelectorAll(".lane")) {
       const id = btn.dataset.lane;
       const st = btn.querySelector(".lane-state");
+      const ready = laneReady(id);
       if (st) {
-        st.textContent = laneReady(id) ? "ready" : "not ready";
+        st.classList.toggle("ready", ready);
       }
+      const base = btn.dataset.title || btn.title;
+      btn.title = base + (ready ? " · ready" : " · not ready");
     }
     applyLane();
     persist();
@@ -135,8 +213,12 @@
   });
 
   sendBtn.addEventListener("click", send);
+  promptEl.addEventListener("input", () => {
+    resizePrompt();
+    syncSend();
+  });
   promptEl.addEventListener("keydown", (ev) => {
-    if (ev.key === "Enter" && (ev.ctrlKey || ev.metaKey)) {
+    if (ev.key === "Enter" && !ev.shiftKey) {
       ev.preventDefault();
       send();
     }
@@ -151,9 +233,10 @@
       return;
     }
     busy = true;
-    sendBtn.disabled = true;
     append("you", text, state.lane);
     promptEl.value = "";
+    resizePrompt();
+    syncSend();
     vscode.postMessage({
       type: "send",
       lane: state.lane,
@@ -177,18 +260,22 @@
       }
     } else if (msg.type === "done") {
       busy = false;
-      sendBtn.disabled = false;
+      syncSend();
       if (msg.text) {
         append("bot", msg.text, msg.lane || state.lane);
+      } else {
+        renderLog();
       }
     } else if (msg.type === "sys") {
       append("sys", msg.text, "sys");
       busy = false;
-      sendBtn.disabled = false;
+      syncSend();
     }
   });
 
   applyLane();
   renderLog();
+  resizePrompt();
+  syncSend();
   vscode.postMessage({ type: "ready" });
 })();

@@ -8,10 +8,10 @@ const path = require("path");
 const vscode = require("vscode");
 
 const LANES = [
-  { id: "local", label: "Local", heights: [8, 12, 16, 10] },
-  { id: "agent", label: "Agent", heights: [10, 16, 12, 8] },
-  { id: "cline", label: "Cline", heights: [12, 8, 16, 10] },
-  { id: "openclaw", label: "Claw", heights: [8, 10, 12, 16] },
+  { id: "local", label: "Local", title: "EZRA local — gallery model on this machine" },
+  { id: "agent", label: "Agent", title: "Personal agent — agents/<name>/ prompt + models" },
+  { id: "cline", label: "Cline", title: "Cline — terminal hand-off via ezra serve" },
+  { id: "openclaw", label: "Claw", title: "OpenClaw — terminal hand-off" },
 ];
 
 function cfg() {
@@ -163,16 +163,12 @@ function clineRunArgs(probe, model, text) {
 function html(webview, nonce, extUri) {
   const css = webview.asWebviewUri(vscode.Uri.joinPath(extUri, "media", "grid.css"));
   const js = webview.asWebviewUri(vscode.Uri.joinPath(extUri, "media", "grid.js"));
-  const tiles = LANES.map((lane) => {
-    const bars = lane.heights
-      .map((h) => `<span style="height:${h}px"></span>`)
-      .join("");
-    return `<button class="lane" type="button" data-lane="${lane.id}" aria-pressed="false">
-      <div class="cols">${bars}</div>
-      <div class="lane-name">${lane.label}</div>
-      <div class="lane-state">…</div>
-    </button>`;
-  }).join("");
+  const tiles = LANES.map(
+    (lane) => `<button class="lane" type="button" data-lane="${lane.id}" data-title="${lane.title}" aria-pressed="false" title="${lane.title}">
+      <span class="lane-dot lane-state" aria-hidden="true"></span>
+      <span class="lane-name">${lane.label}</span>
+    </button>`
+  ).join("");
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -184,29 +180,45 @@ function html(webview, nonce, extUri) {
 </head>
 <body>
   <div class="wrap">
-    <div class="head">
+    <header class="head">
       <div class="brand">
-        <div class="word">EZRA Grid</div>
-        <div class="sub">Pick a lane. Stay local unless you hand off.</div>
+        <div class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div>
+          <div class="word">EZRA</div>
+          <div class="sub" id="sub">Pick a lane. Stay local unless you hand off.</div>
+        </div>
       </div>
-      <div id="pill" class="pill off">off grid</div>
-    </div>
-    <div id="lanes" class="lanes">${tiles}</div>
-    <div class="bind">
-      <label id="model-wrap">Model
-        <select id="model"></select>
-      </label>
-      <label id="agent-wrap" hidden>Agent
-        <select id="agent"></select>
-      </label>
-      <div id="note" class="note"></div>
-    </div>
-    <div id="log" class="log"></div>
-    <div class="composer">
-      <textarea id="prompt" placeholder="Ctrl+Enter to send on the selected lane"></textarea>
-      <div class="row">
-        <button class="ghost" id="refresh" type="button">Refresh</button>
-        <button class="act" id="send" type="button">Send</button>
+      <div class="head-actions">
+        <button class="icon-btn" id="refresh" type="button" title="Refresh lanes">
+          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+            <path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M13.2 8A5.2 5.2 0 1 1 11.7 4.4M13.2 8V4.2M13.2 8H9.5"/>
+          </svg>
+        </button>
+        <div id="pill" class="pill off">off grid</div>
+      </div>
+    </header>
+    <div id="lanes" class="lanes" role="tablist" aria-label="EZRA lanes">${tiles}</div>
+    <div id="log" class="log" aria-live="polite"></div>
+    <div class="dock">
+      <div id="note" class="note" hidden></div>
+      <div class="composer">
+        <textarea id="prompt" rows="1" placeholder="Ask anything…"></textarea>
+        <div class="composer-bar">
+          <div class="chips">
+            <label id="model-wrap" class="chip" title="Model">
+              <select id="model" aria-label="Model"></select>
+            </label>
+            <label id="agent-wrap" class="chip" hidden title="Agent">
+              <select id="agent" aria-label="Agent"></select>
+            </label>
+          </div>
+          <span class="hint">Enter to send</span>
+          <button class="send" id="send" type="button" title="Send (Enter)" aria-label="Send" disabled>
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+              <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M8 12.5V3.5M4.2 7.2 8 3.5l3.8 3.7"/>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   </div>
