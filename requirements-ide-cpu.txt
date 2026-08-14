@@ -1,0 +1,14 @@
+# EZRA + Grid/chat on a laptop with NO NVIDIA GPU (Windows / Linux).
+# From the EZRA folder, with the venv active:
+#   pip install -r requirements-ide-cpu.txt
+#
+# Uses a pre-built CPU wheel so pip does not compile llama.cpp
+# (compiling from source can take 15+ minutes and often fails on Windows).
+# Which file: requirements/README.md · walkthrough: docs/getting-started.md
+--prefer-binary
+--only-binary=llama-cpp-python
+--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
+-e .
+fastapi>=0.110
+uvicorn[standard]>=0.27
+llama-cpp-python>=0.2.90

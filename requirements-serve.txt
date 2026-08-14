@@ -1,0 +1,6 @@
+# HTTP extras for `ezra serve` (OpenAI /v1). No llama.cpp.
+# After: pip install -e .
+#        pip install -r requirements-serve.txt
+# For chat + Grid, use a requirements-ide-*.txt file instead.
+fastapi>=0.110
+uvicorn[standard]>=0.27

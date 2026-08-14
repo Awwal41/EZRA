@@ -1,0 +1,11 @@
+# Core EZRA libraries (same pins as pyproject.toml).
+# This does not add the `ezra` command by itself.
+# Prefer from the EZRA folder:
+#   pip install -e .
+# Then pick a wheel file (see requirements/README.md):
+#   pip install -r requirements-ide-cpu.txt
+click>=8.1
+huggingface_hub>=0.24
+pyyaml>=6.0
+rich>=13.0
+tqdm>=4.66

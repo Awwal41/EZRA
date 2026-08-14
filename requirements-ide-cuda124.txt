@@ -1,0 +1,13 @@
+# EZRA + Grid/chat on a machine with an NVIDIA GPU (CUDA 12.4).
+# Check: nvidia-smi   (look at "CUDA Version" in the top-right).
+# CUDA 12.5 / 12.6: this file usually still works. CUDA 12.1: use cuda121.
+# Python 3.10–3.12 recommended for CUDA wheels.
+# From the EZRA folder, with the venv active:
+#   pip install -r requirements-ide-cuda124.txt
+--prefer-binary
+--only-binary=llama-cpp-python
+--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu124
+-e .
+fastapi>=0.110
+uvicorn[standard]>=0.27
+llama-cpp-python>=0.2.90

@@ -1,0 +1,13 @@
+# Apple Silicon Mac (M1/M2/M3/M4). Metal llama.cpp wheel + optional MLX.
+# From the EZRA folder, with the venv active:
+#   pip install -r requirements-ide-macos.txt
+# If pip refuses a Metal wheel (unusual Python version), use
+# requirements-ide-cpu.txt instead.
+--prefer-binary
+--only-binary=llama-cpp-python
+--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/metal
+-e .
+fastapi>=0.110
+uvicorn[standard]>=0.27
+llama-cpp-python>=0.2.90
+mlx-lm>=0.19.0
