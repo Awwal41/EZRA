@@ -24,6 +24,13 @@ from ezra.ide.paths import PUBLISHER, extension_folder_name
 from ezra.ide.probe import _cli_argv
 
 
+def test_extension_quotes_windows_cmd_argv_for_cline() -> None:
+    src = (extension_root() / "src" / "extension.js").read_text(encoding="utf-8")
+    assert "function quoteWinCmdArg" in src
+    assert "args.map(quoteWinCmdArg)" in src
+    assert "function clinePromptArg" in src
+
+
 def test_extension_root_points_at_in_tree_sources() -> None:
     root = extension_root()
     assert root is not None

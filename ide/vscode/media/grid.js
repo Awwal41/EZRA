@@ -16,7 +16,7 @@
   const LANE_SUB = {
     local: "Local model on this machine",
     agent: "Personal agent, still local",
-    cline: "Hand-off to Cline via ezra serve",
+    cline: "Cline via ezra serve",
     openclaw: "Hand-off to OpenClaw",
   };
   const WHO = {

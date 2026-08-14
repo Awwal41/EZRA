@@ -10,7 +10,7 @@ const vscode = require("vscode");
 const LANES = [
   { id: "local", label: "Local", title: "EZRA local — gallery model on this machine" },
   { id: "agent", label: "Agent", title: "Personal agent — agents/<name>/ prompt + models" },
-  { id: "cline", label: "Cline", title: "Cline — terminal hand-off via ezra serve" },
+  { id: "cline", label: "Cline", title: "Cline — coding agent via ezra serve" },
   { id: "openclaw", label: "Claw", title: "OpenClaw — terminal hand-off" },
 ];
 
@@ -116,6 +116,72 @@ function runEzra(args, { timeoutMs } = {}) {
   });
 }
 
+function stripAnsi(text) {
+  return String(text)
+    .replace(/\u001b\[[0-9;?]*[ -/]*[@-~]/g, "")
+    .replace(/\u001b\][^\u0007]*(?:\u0007|\u001b\\)/g, "")
+    .replace(/\r/g, "");
+}
+
+function quoteWinCmdArg(value) {
+  return `"${String(value).replace(/"/g, '""')}"`;
+}
+
+function runArgv(argv, { timeoutMs } = {}) {
+  if (!argv.length) {
+    return Promise.reject(new Error("empty command"));
+  }
+  let cmd = argv[0];
+  let args = argv.slice(1);
+  const winCmd = process.platform === "win32" && /\.(cmd|bat)$/i.test(String(cmd));
+  if (winCmd) {
+    // Node's shell:true on Windows concatenates argv unquoted. cmd.exe then
+    // splits on spaces and strips trailing spaces, so Cline sees `hi` instead
+    // of a quoted prompt (and "fix the tests" becomes three tokens).
+    cmd = quoteWinCmdArg(cmd);
+    args = args.map(quoteWinCmdArg);
+  }
+  return new Promise((resolve, reject) => {
+    const child = cp.spawn(cmd, args, {
+      cwd: workspaceFolder(),
+      env: process.env,
+      windowsHide: true,
+      shell: winCmd,
+    });
+    let out = "";
+    let err = "";
+    const timer =
+      timeoutMs &&
+      setTimeout(() => {
+        child.kill();
+        reject(new Error("timed out"));
+      }, timeoutMs);
+    child.stdout.on("data", (d) => {
+      out += d.toString();
+    });
+    child.stderr.on("data", (d) => {
+      err += d.toString();
+    });
+    child.on("error", (e) => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      reject(e);
+    });
+    child.on("close", (code) => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      const text = stripAnsi((out || "") + (err ? (out ? "\n" : "") + err : "")).trim();
+      if (code === 0 || text) {
+        resolve(text);
+      } else {
+        reject(new Error("command failed"));
+      }
+    });
+  });
+}
+
 function parseProbe(text) {
   const start = text.indexOf("{");
   const end = text.lastIndexOf("}");
@@ -169,6 +235,7 @@ function argvFromProbe(lane, probe) {
 function clinePromptArg(text) {
   const prompt = String(text);
   // Cline infers "quoted" from whitespace in the argv token (see promptArgLooksQuoted).
+  // A trailing ASCII space is enough once Windows .cmd args are quoted in runArgv.
   return /\s/.test(prompt) ? prompt : prompt + " ";
 }
 
@@ -310,30 +377,33 @@ class GridViewProvider {
     if (!text.trim()) {
       return;
     }
-    if (lane === "cline" || lane === "openclaw") {
+    if (lane === "cline") {
+      const argv = argvFromProbe("cline", this._probe).concat(
+        clineRunArgs(this._probe, payload.model || cfg().get("model") || "", text)
+      );
+      try {
+        const out = await runArgv(argv, { timeoutMs: 10 * 60 * 1000 });
+        this.post({ type: "done", lane, text: out || "(empty reply)" });
+      } catch (err) {
+        this.post({
+          type: "sys",
+          text: String(err && err.message ? err.message : err),
+        });
+      }
+      return;
+    }
+    if (lane === "openclaw") {
       const argv = argvFromProbe(lane, this._probe);
-      const extra =
-        lane === "cline"
-          ? clineRunArgs(this._probe, payload.model || cfg().get("model") || "", text)
-          : [text];
       const term = vscode.window.createTerminal({
-        name: lane === "cline" ? "EZRA → Cline" : "EZRA → OpenClaw",
+        name: "EZRA → OpenClaw",
         cwd: workspaceFolder(),
       });
       term.show();
-      const line = commandLine(argv.concat(extra));
-      term.sendText(line);
-      const info = (this._probe.lanes && this._probe.lanes.cline) || {};
-      const hint =
-        lane === "cline"
-          ? ` Uses ezra serve at ${info.base_url || "http://127.0.0.1:8000/v1"} (no cloud API key). Start: ezra serve --model <name>. Once: ezra cline use-local --auth.`
-          : "";
+      term.sendText(commandLine(argv.concat([text])));
       this.post({
         type: "done",
         lane,
-        text:
-          `Opened a terminal for ${lane}. EZRA does not auto-start this agent — confirm the command there.` +
-          hint,
+        text: "Opened a terminal for openclaw. EZRA does not auto-start this agent — confirm the command there.",
       });
       return;
     }
