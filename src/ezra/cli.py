@@ -619,7 +619,7 @@ def doctor(ctx: click.Context) -> None:
     parse_status = (
         "[green]ok[/green]"
         if megaparse_available()
-        else "[yellow]basic only[/yellow] (pip install -e '.[parse]' · Python ≥ 3.11)"
+        else "[yellow]basic only[/yellow] (pip install -e '.[parse]' · Python >= 3.11)"
     )
     cli_bin = resolve_cli()
     if not peekaboo_platform_supported():
