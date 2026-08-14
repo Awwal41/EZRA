@@ -40,6 +40,32 @@ def test_resolve_cli_override(monkeypatch, tmp_path: Path) -> None:
     assert resolve_cli() == fake.resolve()
 
 
+def test_resolve_cli_prefers_cmd_over_ps1(monkeypatch, tmp_path: Path) -> None:
+    from ezra.cline.cli import resolve_cli as resolve_cli_impl
+
+    ps1 = tmp_path / "cline.ps1"
+    cmd = tmp_path / "cline.cmd"
+    ps1.write_text("", encoding="utf-8")
+    cmd.write_text("", encoding="utf-8")
+    monkeypatch.delenv("EZRA_CLINE_CLI", raising=False)
+    monkeypatch.setattr("ezra.cline.cli.shutil.which", lambda _name: str(ps1))
+    assert resolve_cli_impl() == cmd.resolve()
+
+
+def test_resolve_cli_npm_global_when_path_empty(monkeypatch, tmp_path: Path) -> None:
+    from ezra.cline.cli import resolve_cli as resolve_cli_impl
+
+    npm = tmp_path / "npm"
+    npm.mkdir()
+    shim = npm / "cline.cmd"
+    shim.write_text("", encoding="utf-8")
+    monkeypatch.delenv("EZRA_CLINE_CLI", raising=False)
+    monkeypatch.setenv("APPDATA", str(tmp_path))
+    monkeypatch.setattr("ezra.cline.cli.shutil.which", lambda _name: None)
+    monkeypatch.setattr("ezra.cline.cli.cline_root", lambda: None)
+    assert resolve_cli_impl() == shim.resolve()
+
+
 def test_config_cline_defaults() -> None:
     cfg = load_config()
     assert cfg.cline_enabled == "auto"

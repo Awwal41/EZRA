@@ -19,6 +19,28 @@ class ClineNotAvailable(RuntimeError):
     """Raised when the Cline CLI cannot be resolved."""
 
 
+def _prefer_cmd_shim(path: Path) -> Path:
+    """Prefer ``cline.cmd`` over ``cline.ps1`` (PowerShell execution policy)."""
+    if path.suffix.lower() == ".ps1":
+        cmd = path.with_suffix(".cmd")
+        if cmd.is_file():
+            return cmd.resolve()
+    return path
+
+
+def _npm_global_cline() -> Path | None:
+    """``%APPDATA%/npm/cline.cmd`` when PATH (e.g. VS Code) omits the npm shims."""
+    appdata = os.environ.get("APPDATA", "").strip()
+    if not appdata:
+        return None
+    npm = Path(appdata) / "npm"
+    for name in ("cline.cmd", "cline.exe", "cline"):
+        candidate = npm / name
+        if candidate.is_file():
+            return candidate.resolve()
+    return None
+
+
 def resolve_cli() -> Path | None:
     """Locate a ``cline`` executable or vendored entrypoint.
 
@@ -26,8 +48,9 @@ def resolve_cli() -> Path | None:
 
     1. ``EZRA_CLINE_CLI`` / config override via env
     2. ``cline`` on ``PATH`` (e.g. ``npm i -g cline``)
-    3. Built ``apps/cli/dist/index.js`` under ``third_party/Cline/``
-    4. Source ``apps/cli/src/index.ts`` (needs Bun)
+    3. ``%APPDATA%/npm/cline.cmd`` when PATH omits npm shims
+    4. Built ``apps/cli/dist/index.js`` under ``third_party/Cline/``
+    5. Source ``apps/cli/src/index.ts`` (needs Bun)
     """
     env = os.environ.get("EZRA_CLINE_CLI", "").strip()
     if env:
@@ -36,7 +59,11 @@ def resolve_cli() -> Path | None:
 
     which = shutil.which("cline")
     if which:
-        return Path(which).resolve()
+        return _prefer_cmd_shim(Path(which).resolve())
+
+    npm_shim = _npm_global_cline()
+    if npm_shim is not None:
+        return npm_shim
 
     root = cline_root()
     if root is None:
