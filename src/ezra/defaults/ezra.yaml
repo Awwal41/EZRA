@@ -57,6 +57,11 @@ cline:
   enabled: auto        # auto | on | off
   # cli: ""            # or export EZRA_CLINE_CLI=
 
+# VS Code / Cursor Grid (ide/vscode) — sideload only, never a marketplace
+# EZRA never auto-installs the extension; run `ezra ide install` yourself.
+ide:
+  enabled: auto        # auto | on | off  (doctor/status only)
+
 hpc:
   enabled: false
   # OpenAI-compatible remote endpoints (P1)

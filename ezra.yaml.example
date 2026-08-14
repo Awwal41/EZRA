@@ -56,6 +56,12 @@ openclaw:
 cline:
   enabled: auto               # auto | on | off
   # cli: ""                   # optional path; or EZRA_CLINE_CLI
+  # Off-grid: ezra cline use-local --auth  (uses ezra serve, no cloud key)
+
+# VS Code / Cursor Grid — see docs/ide.md (sideload only, no marketplace)
+ide:
+  enabled: auto               # auto | on | off
+  # EZRA never auto-installs; run: ezra ide install
 
 hpc:
   enabled: false

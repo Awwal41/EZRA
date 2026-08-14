@@ -74,6 +74,7 @@ class EzraConfig:
     openclaw_cli: str = ""
     cline_enabled: str = "auto"
     cline_cli: str = ""
+    ide_enabled: str = "auto"
     raw: dict[str, Any] = field(default_factory=dict)
 
     @property
@@ -154,6 +155,7 @@ def load_config(path: Path | None = None) -> EzraConfig:
     env_cline = os.environ.get("EZRA_CLINE_CLI", "").strip()
     if env_cline:
         cline_cli = env_cline
+    ide = data.get("ide") or {}
     return EzraConfig(
         models_dir=models_dir,
         prefer_quant=str(local.get("prefer_quant", "auto")),
@@ -175,5 +177,6 @@ def load_config(path: Path | None = None) -> EzraConfig:
         openclaw_cli=openclaw_cli,
         cline_enabled=str(cline.get("enabled", "auto")),
         cline_cli=cline_cli,
+        ide_enabled=str(ide.get("enabled", "auto")),
         raw=data,
     )

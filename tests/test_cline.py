@@ -2,9 +2,14 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
+from click.testing import CliRunner
+
+from ezra.cli import main
 from ezra.cline import cline_pin_info, cline_root, resolve_cli
+from ezra.cline.local import PLACEHOLDER_API_KEY, local_provider_plan, serve_base_url
 from ezra.config import load_config
 
 
@@ -38,3 +43,30 @@ def test_resolve_cli_override(monkeypatch, tmp_path: Path) -> None:
 def test_config_cline_defaults() -> None:
     cfg = load_config()
     assert cfg.cline_enabled == "auto"
+
+
+def test_local_provider_plan_needs_no_cloud_key() -> None:
+    plan = local_provider_plan()
+    assert plan["needs_cloud_key"] is False
+    assert plan["provider"] == "openai-compatible"
+    assert plan["api_key"] == PLACEHOLDER_API_KEY
+    assert plan["base_url"] == serve_base_url()
+    assert plan["base_url"].endswith("/v1")
+    assert "-P" in plan["run_flags"]
+    assert "openai-compatible" in plan["run_flags"]
+
+
+def test_serve_base_url_rewrites_wildcard_bind() -> None:
+    assert serve_base_url("0.0.0.0", 9000) == "http://127.0.0.1:9000/v1"
+
+
+def test_cli_cline_use_local_json() -> None:
+    runner = CliRunner()
+    result = runner.invoke(
+        main, ["cline", "use-local", "--json", "--model", "qwen2.5-7b-instruct"]
+    )
+    assert result.exit_code == 0, result.output
+    payload = json.loads(result.output)
+    assert payload["needs_cloud_key"] is False
+    assert payload["model"] == "qwen2.5-7b-instruct"
+    assert payload["auth_argv"][0] == "auth"

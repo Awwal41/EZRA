@@ -588,6 +588,7 @@ def doctor(ctx: click.Context) -> None:
     from ezra.cline import resolve_cli as resolve_cline_cli
     from ezra.gog import gog_root
     from ezra.gog import resolve_cli as resolve_gog_cli
+    from ezra.ide import extension_root as ide_extension_root
     from ezra.inference.llama_cpp_engine import llama_cpp_available
     from ezra.inference.mlx_engine import mlx_available
     from ezra.openclaw import openclaw_root
@@ -682,12 +683,22 @@ def doctor(ctx: click.Context) -> None:
     console.print(f"gog (Workspace):  {gog_status}")
     console.print(f"OpenClaw:         {openclaw_status}")
     console.print(f"Cline:            {cline_status}")
+    ide_src = ide_extension_root()
+    if ide_src is not None:
+        ide_status = f"[green]ok[/green] ({ide_src})"
+    else:
+        ide_status = (
+            "[yellow]missing[/yellow] "
+            "(restore ide/vscode from the EZRA repo)"
+        )
+    console.print(f"IDE Grid:         {ide_status}")
     console.print(f"Chat backend:     {config.backend}")
     console.print(f"Parse backend:    {config.parse_backend} / {config.parse_strategy}")
     console.print(f"Peekaboo enabled: {config.peekaboo_enabled}")
     console.print(f"gog enabled:      {config.gog_enabled}")
     console.print(f"OpenClaw enabled: {config.openclaw_enabled}")
     console.print(f"Cline enabled:    {config.cline_enabled}")
+    console.print(f"IDE enabled:      {config.ide_enabled}")
     if config.gog_account:
         console.print(f"gog account:      {config.gog_account}")
     console.print(
@@ -705,6 +716,10 @@ def doctor(ctx: click.Context) -> None:
     console.print(
         "Tip: [green]ezra cline status[/green] "
         "(vendored in-tree; EZRA never auto-starts the agent)"
+    )
+    console.print(
+        "Tip: [green]ezra ide install[/green] "
+        "sideloads EZRA Grid into Cursor/VS Code (never a marketplace)"
     )
     try:
         config.models_dir.mkdir(parents=True, exist_ok=True)
@@ -1796,7 +1811,8 @@ def openclaw_version_cmd() -> None:
 def cline_group() -> None:
     """Cline helpers (vendored tree under third_party/Cline).
 
-    Safe by default: status/version only. Does not start an agent session.
+    Safe by default: status/version/use-local only. Does not start an agent
+    session. ``use-local`` points Cline at ezra serve (downloaded models).
     """
 
 
@@ -1845,6 +1861,84 @@ def cline_status_cmd(ctx: click.Context, as_json: bool) -> None:
     console.print("[dim]Auto-start agent: no (by design)[/dim]")
 
 
+@cline_group.command("use-local")
+@click.option("--model", "model_name", default=None, help="Gallery alias already downloaded.")
+@click.option("--host", default=None, help="ezra serve host as Cline sees it (default 127.0.0.1).")
+@click.option("--port", type=int, default=None, help="ezra serve port (default 8000 / EZRA_PORT).")
+@click.option(
+    "--auth",
+    "do_auth",
+    is_flag=True,
+    help="Save Cline openai-compatible settings pointing at ezra serve (no agent start).",
+)
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON.")
+@click.pass_context
+def cline_use_local_cmd(
+    ctx: click.Context,
+    model_name: str | None,
+    host: str | None,
+    port: int | None,
+    do_auth: bool,
+    as_json: bool,
+) -> None:
+    """Point Cline at EZRA downloaded models (no cloud API key).
+
+    Cline still needs *a* model. Instead of Anthropic/OpenRouter, this uses
+    ``ezra serve`` (OpenAI-compatible) over your gallery GGUF.
+    Does not start serve or a Cline agent session.
+    """
+    from ezra.cline import ClineNotAvailable, local_provider_plan, run_cline
+
+    plan = local_provider_plan(
+        model=model_name,
+        host=host,
+        port=port,
+        config=ctx.obj["config"],
+    )
+    if as_json:
+        click.echo(json.dumps(plan, indent=2))
+    else:
+        console.print("Cloud API key:  [green]not required[/green]")
+        console.print(f"Provider:       {plan['provider']}")
+        console.print(f"Base URL:       {plan['base_url']}")
+        console.print(f"Model:          {plan['model'] or '<none downloaded>'}")
+        if plan.get("hint"):
+            console.print(f"[yellow]{plan['hint']}[/yellow]")
+        if plan.get("serve_argv"):
+            serve_line = "ezra " + " ".join(plan["serve_argv"])
+            console.print(f"1. Start serve: [green]{serve_line}[/green]")
+        if plan.get("auth_argv"):
+            auth_line = "cline " + " ".join(plan["auth_argv"])
+            console.print("2. Point Cline: [green]ezra cline use-local --auth[/green]")
+            console.print(f"   (or: {auth_line})")
+        flags = " ".join(plan["run_flags"])
+        console.print(f'3. Run Cline:   [green]cline {flags} "your task"[/green]')
+        console.print("[dim]Auto-start agent: no. --auth only writes Cline provider settings.[/dim]")
+
+    if not do_auth:
+        return
+    auth_argv = plan.get("auth_argv")
+    if not auth_argv:
+        raise click.ClickException(
+            plan.get("hint") or "Download a gallery model before pointing Cline at EZRA."
+        )
+    try:
+        proc = run_cline(*auth_argv, check=False, timeout=60.0)
+    except ClineNotAvailable as exc:
+        raise click.ClickException(str(exc)) from exc
+    text = (proc.stdout or proc.stderr or "").strip()
+    if text:
+        console.print(text)
+    if proc.returncode:
+        raise click.ClickException(
+            "cline auth failed. Install the Cline CLI (`npm i -g cline`) and retry."
+        )
+    console.print(
+        "[green]Cline will use ezra serve "
+        "(placeholder key ezra-local; not a cloud secret).[/green]"
+    )
+
+
 @cline_group.command("version")
 def cline_version_cmd() -> None:
     """Probe ``cline --version`` if a CLI is resolvable."""
@@ -1862,6 +1956,175 @@ def cline_version_cmd() -> None:
     console.print(text)
     if proc.returncode:
         sys.exit(proc.returncode)
+
+
+@main.group("ide")
+def ide_group() -> None:
+    """Sideload EZRA Grid into VS Code / Cursor (never a marketplace).
+
+    Safe by default: status/package/probe only. ``install`` is explicit.
+    """
+
+
+@ide_group.command("status")
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON.")
+@click.pass_context
+def ide_status_cmd(ctx: click.Context, as_json: bool) -> None:
+    """Show extension sources and detected editors (no install)."""
+    from ezra.ide import EXTENSION_ID, discover_ides, extension_root
+    from ezra.ide.pack import extension_version
+
+    config = ctx.obj["config"]
+    src = extension_root()
+    ides = [
+        {
+            "kind": t.kind,
+            "label": t.label,
+            "cli": str(t.cli) if t.cli else None,
+            "extensions_dir": str(t.extensions_dir),
+        }
+        for t in discover_ides("auto")
+    ]
+    payload = {
+        "enabled": config.ide_enabled,
+        "extension_id": EXTENSION_ID,
+        "extension_root": str(src) if src else None,
+        "extension_version": extension_version(src) if src else None,
+        "marketplace": False,
+        "auto_install": False,
+        "ides": ides,
+        "note": "Sideload with ezra ide install. Never published to a marketplace.",
+    }
+    if as_json:
+        click.echo(json.dumps(payload, indent=2))
+        return
+    console.print(f"Enabled:     {payload['enabled']}")
+    console.print(f"Extension:   {payload['extension_id']}")
+    console.print(
+        f"Sources:     {payload['extension_root'] or '<missing — restore ide/vscode>'}"
+    )
+    if payload["extension_version"]:
+        console.print(f"Version:     {payload['extension_version']}")
+    console.print("Marketplace: no (sideload only)")
+    if ides:
+        for item in ides:
+            cli = item["cli"] or "<no CLI — folder copy still works>"
+            console.print(f"{item['label']}:      {cli}")
+            console.print(f"             {item['extensions_dir']}")
+    else:
+        console.print("Editors:     none detected")
+    console.print("[dim]Auto-install: no (by design)[/dim]")
+
+
+@ide_group.command("probe")
+@click.option("--json", "as_json", is_flag=True, default=True, help="Emit JSON (default).")
+@click.pass_context
+def ide_probe_cmd(ctx: click.Context, as_json: bool) -> None:
+    """JSON snapshot of Grid lanes (no Cline / OpenClaw start)."""
+    from ezra.ide import probe_grid
+
+    payload = probe_grid(config=ctx.obj["config"])
+    if as_json:
+        click.echo(json.dumps(payload, indent=2))
+        return
+    lanes = payload.get("lanes") or {}
+    for key, lane in lanes.items():
+        ready = "ready" if lane.get("ready") else "not ready"
+        console.print(f"{key:10} {ready}  {lane.get('note', '')}")
+
+
+@ide_group.command("package")
+@click.option(
+    "-o",
+    "--output",
+    type=click.Path(path_type=Path),
+    default=None,
+    help="VSIX path (default: ide/vscode/dist/ezra-grid-<ver>.vsix).",
+)
+def ide_package_cmd(output: Path | None) -> None:
+    """Zip ide/vscode into a VSIX (stdlib; no vsce / npm / marketplace)."""
+    from ezra.ide import package_vsix
+    from ezra.ide.pack import ExtensionSourceMissing
+
+    try:
+        dest = package_vsix(output)
+    except ExtensionSourceMissing as exc:
+        raise click.ClickException(str(exc)) from exc
+    console.print(f"Wrote [bold]{dest}[/bold]")
+    console.print("[dim]Sideload with: ezra ide install[/dim]")
+
+
+@ide_group.command("install")
+@click.option(
+    "--ide",
+    "ide_kind",
+    type=click.Choice(["auto", "cursor", "code", "code-insiders"], case_sensitive=False),
+    default="auto",
+    show_default=True,
+    help="Which editor(s) to sideload into.",
+)
+@click.option(
+    "--vsix",
+    type=click.Path(path_type=Path, exists=True),
+    default=None,
+    help="Existing VSIX (default: package from ide/vscode).",
+)
+@click.option("--dry-run", is_flag=True, help="Show targets; do not install.")
+@click.option("--no-force", is_flag=True, help="Do not pass --force to the editor CLI.")
+def ide_install_cmd(
+    ide_kind: str,
+    vsix: Path | None,
+    dry_run: bool,
+    no_force: bool,
+) -> None:
+    """Sideload EZRA Grid into Cursor and/or VS Code on this machine."""
+    from ezra.ide import IdeNotFound, install_vsix
+    from ezra.ide.pack import ExtensionSourceMissing
+
+    try:
+        results = install_vsix(
+            vsix,
+            kind=ide_kind.lower(),
+            force=not no_force,
+            dry_run=dry_run,
+        )
+    except (IdeNotFound, ExtensionSourceMissing, FileNotFoundError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    for row in results:
+        label = row.get("label") or row.get("kind")
+        method = row.get("method") or "?"
+        status = row.get("status") or "?"
+        console.print(f"{label}: [bold]{status}[/bold] via {method}")
+        if row.get("destination"):
+            console.print(f"  {row['destination']}")
+        if row.get("output"):
+            console.print(f"  {row['output']}")
+    if not dry_run:
+        console.print("[dim]Reload the editor window, then open the EZRA Grid icon.[/dim]")
+
+
+@ide_group.command("uninstall")
+@click.option(
+    "--ide",
+    "ide_kind",
+    type=click.Choice(["auto", "cursor", "code", "code-insiders"], case_sensitive=False),
+    default="auto",
+    show_default=True,
+)
+@click.option("--dry-run", is_flag=True, help="Show targets; do not remove.")
+def ide_uninstall_cmd(ide_kind: str, dry_run: bool) -> None:
+    """Remove a previous EZRA Grid sideload."""
+    from ezra.ide import IdeNotFound, uninstall_extension
+
+    try:
+        results = uninstall_extension(kind=ide_kind.lower(), dry_run=dry_run)
+    except IdeNotFound as exc:
+        raise click.ClickException(str(exc)) from exc
+    for row in results:
+        label = row.get("label") or row.get("kind")
+        console.print(f"{label}: {row.get('status')}")
+        if row.get("destination"):
+            console.print(f"  {row['destination']}")
 
 
 if __name__ == "__main__":
