@@ -132,15 +132,44 @@ function quoteForShell(value) {
   return `'${String(value).replace(/'/g, `'\\''`)}'`;
 }
 
+function commandLine(argv) {
+  if (!argv.length) {
+    return "";
+  }
+  if (process.platform !== "win32") {
+    return argv.map(quoteForShell).join(" ");
+  }
+  const cmd = String(argv[0]);
+  const rest = argv.slice(1).map(quoteForShell);
+  const isPath = /[\\/]/.test(cmd) || /\.(cmd|bat|ps1|exe|js|mjs|cjs|ts)$/i.test(cmd);
+  if (isPath) {
+    return ["&", quoteForShell(cmd)].concat(rest).join(" ");
+  }
+  return [cmd].concat(rest).join(" ");
+}
+
 function argvFromProbe(lane, probe) {
   const info = probe && probe.lanes && probe.lanes[lane];
   if (info && Array.isArray(info.argv) && info.argv.length) {
     return info.argv;
   }
+  if (lane === "cline") {
+    return process.platform === "win32" ? ["cline.cmd"] : ["cline"];
+  }
   if (info && info.cli) {
-    return [info.cli];
+    const cli = String(info.cli);
+    if (/\.(ts|js|mjs|cjs)$/i.test(cli)) {
+      return [lane];
+    }
+    return [cli];
   }
   return [lane];
+}
+
+function clinePromptArg(text) {
+  const prompt = String(text);
+  // Cline infers "quoted" from whitespace in the argv token (see promptArgLooksQuoted).
+  return /\s/.test(prompt) ? prompt : prompt + " ";
 }
 
 function clineRunArgs(probe, model, text) {
@@ -156,7 +185,7 @@ function clineRunArgs(probe, model, text) {
       flags.push("-m", model);
     }
   }
-  flags.push(text);
+  flags.push(clinePromptArg(text));
   return flags;
 }
 
@@ -292,7 +321,7 @@ class GridViewProvider {
         cwd: workspaceFolder(),
       });
       term.show();
-      const line = argv.concat(extra).map(quoteForShell).join(" ");
+      const line = commandLine(argv.concat(extra));
       term.sendText(line);
       const info = (this._probe.lanes && this._probe.lanes.cline) || {};
       const hint =
