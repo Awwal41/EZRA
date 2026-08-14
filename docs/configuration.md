@@ -75,6 +75,7 @@ Edit `sites/my-cluster/ezra.yaml` and `modules.sh` (search for **EDIT ME**), the
 | `EZRA_GOG_ROOT` / `EZRA_GOG_CLI` | Alternate gogcli tree / `gog` binary (see [gogcli](gog.md)) |
 | `GOG_ACCOUNT` / `EZRA_GOG_ACCOUNT` | Default Google account for `ezra gog` |
 | `EZRA_OPENCLAW_ROOT` / `EZRA_OPENCLAW_CLI` | Alternate OpenClaw tree / CLI (see [OpenClaw](openclaw.md)) |
+| `EZRA_CLINE_ROOT` / `EZRA_CLINE_CLI` | Alternate Cline tree / CLI (see [Cline](cline.md)) |
 
 ## Example `ezra.yaml`
 
@@ -114,6 +115,11 @@ openclaw:
   # cli: ""                # or EZRA_OPENCLAW_CLI
   # EZRA never auto-starts the Gateway
 
+cline:
+  enabled: auto            # reported by doctor/status; does not gate CLI today
+  # cli: ""                # or EZRA_CLINE_CLI
+  # EZRA never auto-starts the agent
+
 # router:                  # reserved for Phase 2 smart routing (kept in yaml)
 #   mode: auto
 
@@ -144,7 +150,7 @@ hpc:
 
 Notes:
 
-- `peekaboo|gog|openclaw.enabled` values show up in `ezra doctor` / `* status`; they do **not** currently block the corresponding CLI commands.
+- `peekaboo|gog|openclaw|cline.enabled` values show up in `ezra doctor` / `* status`; they do **not** currently block the corresponding CLI commands.
 - `router` in packaged defaults is reserved for Phase 2 domain routing (agents may still reference prefs via `agent.yaml`).
 - `local.keep_alive` appears in packaged defaults as a future knob; it is not applied by the loader yet.
 

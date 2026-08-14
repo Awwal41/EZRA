@@ -12,9 +12,9 @@
 
 **Easy Zero-setup Routing Assistant** for local & HPC LLMs — a researcher-first toolkit to download free/open models, run personal agents locally, parse documents into LLM-ready text, and stage the same workflows on SLURM. Optional facades cover OpenClaw, macOS Peekaboo, and Google Workspace (`gog`). Smart domain routing is the Phase 2 target; Phase 1 already ships the local runtime.
 
-> **Phase 1 (now):** curated gallery · hardware-aware `models recommend` · downloads · personal agents · `ezra chat` / `ezra serve` (OpenAI `/v1`) · `ezra parse` (MegaParse) · HPC site profiles / SBATCH · optional OpenClaw, Peekaboo, and gogcli (vendored in-tree).
+> **Phase 1 (now):** curated gallery · hardware-aware `models recommend` · downloads · personal agents · `ezra chat` / `ezra serve` (OpenAI `/v1`) · `ezra parse` (MegaParse) · HPC site profiles / SBATCH · optional OpenClaw, Peekaboo, gogcli, and Cline (vendored in-tree).
 
-**Docs:** [GitHub Pages](https://awwal41.github.io/EZRA/) · [Read the Docs](https://ezra.readthedocs.io/) · [Markdown on GitHub](docs/README.md) · [install](docs/install.md) · [models](docs/models.md) · [personal agents](docs/agents.md) · [parse](docs/parse.md) · [openclaw](docs/openclaw.md) · [peekaboo](docs/peekaboo.md) · [gog](docs/gog.md) · [conversation](docs/conversation.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
+**Docs:** [GitHub Pages](https://awwal41.github.io/EZRA/) · [Read the Docs](https://ezra.readthedocs.io/) · [Markdown on GitHub](docs/README.md) · [install](docs/install.md) · [models](docs/models.md) · [personal agents](docs/agents.md) · [parse](docs/parse.md) · [openclaw](docs/openclaw.md) · [peekaboo](docs/peekaboo.md) · [gog](docs/gog.md) · [cline](docs/cline.md) · [conversation](docs/conversation.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
 
 ## Quick start
 
@@ -179,6 +179,7 @@ ezra serve [--agent NAME] [--model NAME] [--backend …] [--host HOST] [--port N
 ezra openclaw status|version              # vendored in-tree; never auto-starts Gateway
 ezra peekaboo status|mcp-config|capture   # macOS; in-tree under third_party/Peekaboo
 ezra gog status|mcp-config|run …          # Google Workspace; third_party/gogcli
+ezra cline status|version                 # coding agent; third_party/Cline
 ezra hpc templates
 ezra hpc sites
 ezra hpc init-site NAME
@@ -195,7 +196,7 @@ Add a model by appending an entry (name, `repo_id`, format, tags) and reinstall 
 
 | Phase | Focus |
 |-------|--------|
-| **1 - Core Local** (now) | Gallery, recommend-by-hardware, download, agents, chat/serve, document parse, HPC staging, optional OpenClaw / Peekaboo / gog |
+| **1 - Core Local** (now) | Gallery, recommend-by-hardware, download, agents, chat/serve, document parse, HPC staging, optional OpenClaw / Peekaboo / gog / Cline |
 | **2 - Smart routing + HPC** | Domain classifier, policy engine, remote adapters |
 | **3 - Scientific layer** | Chem/materials prompts, tool-calling, RAG helpers, eval harness |
 | **4 - Lab scale** | Shared configs, plugins, observability |
@@ -227,6 +228,7 @@ How to turn Pages on / link RTD: [docs/README.md](docs/README.md#publish-so-peop
 | [docs/openclaw.md](docs/openclaw.md) | OpenClaw Gateway facade (vendored; no auto-start) |
 | [docs/peekaboo.md](docs/peekaboo.md) | macOS Peekaboo capture / MCP (vendored) |
 | [docs/gog.md](docs/gog.md) | Google Workspace `gog` CLI / MCP (vendored) |
+| [docs/cline.md](docs/cline.md) | Cline coding-agent CLI / SDK facade (vendored; no auto-start) |
 | [agents/README.md](agents/README.md) | In-tree agent scaffolds + chem-assistant example |
 | [docs/hpc.md](docs/hpc.md) | Site profiles, scratch, `ezra hpc submit` |
 | [sites/README.md](sites/README.md) | Customize for your cluster, commit & push |

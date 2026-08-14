@@ -70,6 +70,8 @@ def main(ctx: click.Context, config_path: Path | None, models_dir: Path | None) 
         os.environ["GOG_ACCOUNT"] = config.gog_account
     if config.openclaw_cli and not os.environ.get("EZRA_OPENCLAW_CLI"):
         os.environ["EZRA_OPENCLAW_CLI"] = config.openclaw_cli
+    if config.cline_cli and not os.environ.get("EZRA_CLINE_CLI"):
+        os.environ["EZRA_CLINE_CLI"] = config.cline_cli
     ctx.obj["config"] = config
     ctx.obj["gallery"] = ModelGallery()
 
@@ -582,6 +584,8 @@ def doctor(ctx: click.Context) -> None:
         "Tip: [green]ezra agents init my-lab-assistant[/green] "
         "scaffolds a personal agent (prompt + preferred models)"
     )
+    from ezra.cline import cline_root
+    from ezra.cline import resolve_cli as resolve_cline_cli
     from ezra.gog import gog_root
     from ezra.gog import resolve_cli as resolve_gog_cli
     from ezra.inference.llama_cpp_engine import llama_cpp_available
@@ -661,14 +665,29 @@ def doctor(ctx: click.Context) -> None:
             "[yellow]missing[/yellow] "
             "(restore third_party/OpenClaw from the EZRA repo)"
         )
+    cl_bin = resolve_cline_cli()
+    if cl_bin is not None:
+        cline_status = f"[green]ok[/green] ({cl_bin})"
+    elif cline_root() is not None:
+        cline_status = (
+            "[yellow]sources only[/yellow] "
+            "(npm i -g cline or build third_party/Cline)"
+        )
+    else:
+        cline_status = (
+            "[yellow]missing[/yellow] "
+            "(restore third_party/Cline from the EZRA repo)"
+        )
     console.print(f"Peekaboo:         {peekaboo_status}")
     console.print(f"gog (Workspace):  {gog_status}")
     console.print(f"OpenClaw:         {openclaw_status}")
+    console.print(f"Cline:            {cline_status}")
     console.print(f"Chat backend:     {config.backend}")
     console.print(f"Parse backend:    {config.parse_backend} / {config.parse_strategy}")
     console.print(f"Peekaboo enabled: {config.peekaboo_enabled}")
     console.print(f"gog enabled:      {config.gog_enabled}")
     console.print(f"OpenClaw enabled: {config.openclaw_enabled}")
+    console.print(f"Cline enabled:    {config.cline_enabled}")
     if config.gog_account:
         console.print(f"gog account:      {config.gog_account}")
     console.print(
@@ -682,6 +701,10 @@ def doctor(ctx: click.Context) -> None:
     console.print(
         "Tip: [green]ezra openclaw status[/green] "
         "(vendored in-tree; EZRA never auto-starts the Gateway)"
+    )
+    console.print(
+        "Tip: [green]ezra cline status[/green] "
+        "(vendored in-tree; EZRA never auto-starts the agent)"
     )
     try:
         config.models_dir.mkdir(parents=True, exist_ok=True)
@@ -1762,6 +1785,78 @@ def openclaw_version_cmd() -> None:
     try:
         proc = run_openclaw("--version", check=False)
     except OpenClawNotAvailable as exc:
+        raise click.ClickException(str(exc)) from exc
+    text = (proc.stdout or proc.stderr or "").strip() or "<no output>"
+    console.print(text)
+    if proc.returncode:
+        sys.exit(proc.returncode)
+
+
+@main.group("cline")
+def cline_group() -> None:
+    """Cline helpers (vendored tree under third_party/Cline).
+
+    Safe by default: status/version only. Does not start an agent session.
+    """
+
+
+@cline_group.command("status")
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON.")
+@click.pass_context
+def cline_status_cmd(ctx: click.Context, as_json: bool) -> None:
+    """Show Cline vendored-tree / CLI availability (no agent start)."""
+    from ezra.cline import (
+        cline_available,
+        cline_pin_info,
+        cline_root,
+        cline_version,
+        resolve_cli,
+    )
+
+    config = ctx.obj["config"]
+    root = cline_root()
+    cli_bin = resolve_cli()
+    pin = cline_pin_info(root)
+    payload = {
+        "enabled": config.cline_enabled,
+        "available": cline_available(),
+        "root": str(root) if root else None,
+        "cli": str(cli_bin) if cli_bin else None,
+        "cli_override": config.cline_cli or None,
+        "pin": pin,
+        "version_probe": cline_version() if cli_bin else None,
+        "auto_start": False,
+        "note": "EZRA never auto-runs the Cline agent or Kanban",
+    }
+    if as_json:
+        console.print(json.dumps(payload, indent=2))
+        return
+    console.print(f"Enabled:     {payload['enabled']}")
+    console.print(f"Available:   {'yes' if payload['available'] else 'no'}")
+    console.print(
+        f"Vendored:    {payload['root'] or '<missing — restore third_party/Cline from EZRA>'}"
+    )
+    console.print(f"CLI:         {payload['cli'] or '<not found — npm i -g cline>'}")
+    if pin.get("version"):
+        console.print(f"Snapshot:    {pin['version']}")
+    if payload["version_probe"]:
+        console.print(f"CLI version: {payload['version_probe']}")
+    console.print(f"Upstream:    {pin.get('upstream')}")
+    console.print("[dim]Auto-start agent: no (by design)[/dim]")
+
+
+@cline_group.command("version")
+def cline_version_cmd() -> None:
+    """Probe ``cline --version`` if a CLI is resolvable."""
+    from ezra.cline import ClineNotAvailable, cline_version, run_cline
+
+    ver = cline_version()
+    if ver:
+        console.print(ver)
+        return
+    try:
+        proc = run_cline("--version", check=False)
+    except ClineNotAvailable as exc:
         raise click.ClickException(str(exc)) from exc
     text = (proc.stdout or proc.stderr or "").strip() or "<no output>"
     console.print(text)

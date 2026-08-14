@@ -92,3 +92,5 @@ third_party/**/node_modules/
 third_party/**/.pnpm-store/
 third_party/**/.build/
 third_party/**/DerivedData/
+third_party/**/.turbo/
+third_party/**/.bun/

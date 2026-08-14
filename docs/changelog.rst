@@ -18,6 +18,7 @@ listed here as releases land.
 * Peekaboo full in-tree snapshot (``third_party/Peekaboo``) + ``ezra.peekaboo`` (macOS MCP)
 * gogcli full in-tree snapshot (``third_party/gogcli`` @ ``v0.35.0``) + ``ezra.gog``
 * OpenClaw full in-tree snapshot (``third_party/OpenClaw`` @ ``v2026.6.34``) + ``ezra.openclaw`` (no auto-start)
+* Cline full in-tree snapshot (``third_party/Cline`` @ ``afab68f3…``) + ``ezra.cline`` (no auto-start)
 * MegaParse full in-tree library snapshot (``third_party/MegaParse``) + ``ezra.parse``
 * Design note for chat / serve runtime (``docs/conversation.md``)
 * Optional Vercel docs deploy (``vercel.json`` + ``.github/workflows/docs-vercel.yml``)

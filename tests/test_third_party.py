@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import pytest
 
+from ezra.cline import cline_root
 from ezra.gog import gog_root
 from ezra.hpc.sites import repo_root
 from ezra.openclaw import openclaw_root
@@ -19,6 +20,16 @@ _VENDORS: list[tuple[str, tuple[str, ...]]] = [
     ("OpenClaw", ("package.json", "UPSTREAM.txt", "LICENSE", "openclaw.mjs")),
     ("Peekaboo", ("README.md", "UPSTREAM.txt")),
     ("gogcli", ("go.mod", "UPSTREAM.txt", "README.md")),
+    (
+        "Cline",
+        (
+            "package.json",
+            "UPSTREAM.txt",
+            "LICENSE",
+            "apps/cli/src/index.ts",
+            "evals/cline-bench/README.md",
+        ),
+    ),
     (
         "MegaParse",
         (
@@ -52,6 +63,10 @@ def test_adapter_roots_resolve_to_vendored_trees() -> None:
     gg = gog_root()
     assert gg is not None and gg.name == "gogcli"
     assert (gg / "UPSTREAM.txt").is_file()
+
+    cl = cline_root()
+    assert cl is not None and cl.name == "Cline"
+    assert (cl / "UPSTREAM.txt").is_file()
 
     mp_src = _vendor_src()
     assert mp_src.is_dir()

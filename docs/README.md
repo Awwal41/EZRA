@@ -11,6 +11,7 @@ HTML site with **Sphinx** + **MyST** + **reStructuredText**.
 | [Conversation runtime](conversation.md) | Sessions, `ezra chat` / `serve`, OpenAI `/v1` |
 | [Document parsing](parse.md) | MegaParse + basic backends, `ezra parse`, chat `--file` |
 | [OpenClaw](openclaw.md) | Full in-tree snapshot + `ezra.openclaw` (Gateway optional; no auto-start) |
+| [Cline](cline.md) | Full in-tree snapshot + `ezra.cline` (coding agent optional; no auto-start) |
 | [HPC / SLURM](hpc.md) | Site profiles, scratch paths, SBATCH submit |
 | [Site profiles](sites.md) | Customize partition/modules for your cluster ([full notes](../sites/README.md)) |
 | [Configuration](configuration.md) | `ezra.yaml`, env vars, models directory |

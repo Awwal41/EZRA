@@ -1,6 +1,6 @@
 # Contributing to EZRA
 
-Thanks for helping build **EZRA** — a researcher-first toolkit for downloading free/open LLMs, running personal agents (`chat` / `serve`), parsing documents, staging HPC jobs, and optional OpenClaw / Peekaboo / gog integrations for materials science and chemistry.
+Thanks for helping build **EZRA** — a researcher-first toolkit for downloading free/open LLMs, running personal agents (`chat` / `serve`), parsing documents, staging HPC jobs, and optional OpenClaw / Peekaboo / gog / Cline integrations for materials science and chemistry.
 
 This guide walks through forking the repo, setting up a dev environment, coding style, common contribution types, tests, and opening pull requests.
 
@@ -12,7 +12,7 @@ Be respectful, assume good intent, and keep discussion focused on the work. Hara
 
 EZRA is **GPL-3.0-or-later**. By contributing, you agree that your contributions are licensed under the same terms. See [LICENSE](LICENSE).
 
-Vendored third-party code under `third_party/` keeps its upstream license (MegaParse is **Apache-2.0**). Do not relicense those trees; keep `LICENSE` / `NOTICE` / `UPSTREAM.txt` when refreshing.
+Vendored third-party code under `third_party/` keeps its upstream license (MegaParse and Cline are **Apache-2.0**). Do not relicense those trees; keep `LICENSE` / `NOTICE` / `UPSTREAM.txt` when refreshing.
 
 ---
 
@@ -44,7 +44,7 @@ Docs CI **builds** on `develop` and on PRs; the HTML site **deploys** from `main
    cd EZRA
    ```
 
-   Third-party trees under `third_party/` (OpenClaw, Peekaboo, gogcli, MegaParse)
+   Third-party trees under `third_party/` (OpenClaw, Peekaboo, gogcli, MegaParse, Cline)
    are **full in-tree snapshots** (not submodules). See
    [`third_party/README.md`](third_party/README.md).
 
@@ -190,6 +190,7 @@ Copy templates from `ezra.yaml.example` / `.env.example`, or run `ezra init-conf
 | `src/ezra/openclaw/` | OpenClaw facade (paths / CLI / status; no auto-start) |
 | `src/ezra/peekaboo/` | Peekaboo facade (macOS capture / MCP) |
 | `src/ezra/gog/` | gogcli facade (Google Workspace CLI / MCP) |
+| `src/ezra/cline/` | Cline facade (paths / CLI / status; no auto-start) |
 | `src/ezra/hpc/` | SLURM / SBATCH helpers and site loading |
 | `third_party/` | Full in-tree vendor snapshots (not git submodules) |
 | `scripts/hpc_*.sh` | Example HPC job scripts (honor `EZRA_SITE`) |
@@ -199,7 +200,7 @@ Copy templates from `ezra.yaml.example` / `.env.example`, or run `ezra init-conf
 | `tests/` | Pytest suite (prefer no network) |
 | `TODO.md` | Shared backlog - anyone can add items |
 
-**Module boundaries:** gallery data stays in YAML; download logic in `downloader.py`; config in `config.py`; agents in `agents.py`; document parsing in `ezra.parse` (wrap vendored MegaParse — do not import `megaparse` from other EZRA modules); vendor facades stay under `ezra.openclaw` / `ezra.peekaboo` / `ezra.gog`; CLI commands in `cli.py` should stay thin wrappers around library code.
+**Module boundaries:** gallery data stays in YAML; download logic in `downloader.py`; config in `config.py`; agents in `agents.py`; document parsing in `ezra.parse` (wrap vendored MegaParse — do not import `megaparse` from other EZRA modules); vendor facades stay under `ezra.openclaw` / `ezra.peekaboo` / `ezra.gog` / `ezra.cline`; CLI commands in `cli.py` should stay thin wrappers around library code.
 
 ---
 
@@ -356,10 +357,10 @@ Agents already drive `ezra chat` / `ezra serve` via `agent.yaml` + `prompt.md`. 
 - Name tests `test_*.py` / `test_*` functions.
 - After gallery or filter changes, run at least `tests/test_gallery.py`.
 - After agent or site changes, run the matching `tests/test_agents.py` / `tests/test_sites.py` (and `tests/test_sbatch.py` for submit templates).
-- After `third_party/` or vendor-adapter changes (OpenClaw, Peekaboo, gogcli, MegaParse), run the integration smoke suite so each in-tree snapshot still resolves through its `ezra.*` adapter:
+- After `third_party/` or vendor-adapter changes (OpenClaw, Peekaboo, gogcli, MegaParse, Cline), run the integration smoke suite so each in-tree snapshot still resolves through its `ezra.*` adapter:
 
 ```bash
-pytest tests/test_third_party.py tests/test_openclaw.py tests/test_peekaboo.py tests/test_gog.py tests/test_parse.py -q
+pytest tests/test_third_party.py tests/test_openclaw.py tests/test_peekaboo.py tests/test_gog.py tests/test_parse.py tests/test_cline.py -q
 ```
 
 ```bash

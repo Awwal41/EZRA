@@ -4,7 +4,7 @@ EZRA documentation
 **Easy Zero-setup Routing Assistant** for local and HPC LLMs: download curated
 free/open models, pick ones that fit your machine, run personal agents via
 ``ezra chat`` / ``ezra serve``, parse documents for LLM ingestion, stage jobs on
-SLURM, and optionally use vendored OpenClaw, Peekaboo, and gog helpers.
+SLURM, and optionally use vendored OpenClaw, Peekaboo, gog, and Cline helpers.
 
 This site is built with `Sphinx <https://www.sphinx-doc.org/>`_ using
 **reStructuredText** (``.rst``) and **MyST Markdown** (``.md``). You can still
@@ -26,6 +26,7 @@ Quick links
 * :doc:`peekaboo` - macOS Peekaboo screen capture / MCP (vendored)
 * :doc:`gog` - Google Workspace ``gog`` CLI / MCP (vendored)
 * :doc:`openclaw` - OpenClaw Gateway vendored snapshot (optional)
+* :doc:`cline` - Cline coding-agent CLI / SDK vendored snapshot (optional)
 * :doc:`hpc` - site profiles and ``ezra hpc submit``
 * :doc:`cli` - full CLI reference
 * :doc:`api` - Python package reference
@@ -42,6 +43,7 @@ Quick links
    peekaboo
    gog
    openclaw
+   cline
    hpc
    sites
    configuration

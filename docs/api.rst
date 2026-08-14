@@ -98,6 +98,14 @@ OpenClaw (Gateway)
    :undoc-members:
    :show-inheritance:
 
+Cline (coding agent)
+--------------------
+
+.. automodule:: ezra.cline
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Serve (OpenAI HTTP)
 -------------------
 

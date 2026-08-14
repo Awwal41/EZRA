@@ -89,6 +89,17 @@ Status helpers for the vendored [OpenClaw](https://github.com/openclaw/openclaw)
 
 EZRA never auto-runs `onboard` or starts the Gateway.
 
+## `ezra cline`
+
+Status helpers for the vendored [Cline](https://github.com/cline/cline) snapshot. See [Cline](cline.md).
+
+| Command | Description |
+|---------|-------------|
+| `status` | Vendored-tree / CLI availability (`--json`) |
+| `version` | Probe `cline --version` if resolvable |
+
+EZRA never auto-starts a Cline agent session or Kanban.
+
 ## `ezra parse`
 
 Parse a document to LLM-ready text (basic backend for notes/text; MegaParse for PDF/Office). See [Document parsing](parse.md).

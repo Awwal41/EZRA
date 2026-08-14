@@ -51,6 +51,12 @@ openclaw:
   enabled: auto        # auto | on | off
   # cli: ""            # or export EZRA_OPENCLAW_CLI=
 
+# Coding agent CLI / SDK (ezra.cline) — third_party/Cline (full in-tree snapshot)
+# EZRA never auto-starts a Cline agent session; install CLI separately if needed.
+cline:
+  enabled: auto        # auto | on | off
+  # cli: ""            # or export EZRA_CLINE_CLI=
+
 hpc:
   enabled: false
   # OpenAI-compatible remote endpoints (P1)

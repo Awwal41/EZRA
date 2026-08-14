@@ -52,6 +52,11 @@ openclaw:
   enabled: auto               # auto | on | off
   # cli: ""                   # optional path; or EZRA_OPENCLAW_CLI
 
+# Cline coding agent — see docs/cline.md (full in-tree snapshot)
+cline:
+  enabled: auto               # auto | on | off
+  # cli: ""                   # optional path; or EZRA_CLINE_CLI
+
 hpc:
   enabled: false
   endpoints: []
