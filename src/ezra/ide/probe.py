@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -13,17 +14,54 @@ from ezra.ide.pack import extension_version
 from ezra.ide.paths import EXTENSION_ID, extension_root
 
 
-def _cli_argv(cli: Path | None) -> list[str] | None:
-    """Argv the Grid terminal can run (node/bun prefix for JS/TS entries)."""
+_CLINE_SHIMS = {"cline", "cline.cmd", "cline.exe", "cline.ps1", "cline.bat"}
+
+
+def _windows_cline_argv(cli: Path | None = None) -> list[str]:
+    """``cline.cmd`` path so PowerShell does not load the blocked ``cline.ps1``."""
+    candidates: list[Path] = []
+    if cli is not None:
+        if cli.suffix.lower() == ".cmd":
+            candidates.append(cli)
+        candidates.append(cli.with_name("cline.cmd"))
+    appdata = os.environ.get("APPDATA", "").strip()
+    if appdata:
+        candidates.append(Path(appdata) / "npm" / "cline.cmd")
+    for path in candidates:
+        if path.is_file():
+            return [str(path)]
+    return ["cline.cmd"]
+
+
+def _cli_argv(cli: Path | None, *, fallback: str | None = None) -> list[str] | None:
+    """Argv the Grid terminal can run (node/bun prefix for JS/TS entries).
+
+    On Windows, npm shims become the ``.cmd`` path so PowerShell does not try
+    to load ``cline.ps1`` (blocked when script execution is disabled). A
+    vendored ``.ts``/``.js`` entry without Bun/Node uses ``fallback``.
+    """
     if cli is None:
         return None
+    name = cli.name.lower()
+    if name in _CLINE_SHIMS:
+        if os.name == "nt":
+            return _windows_cline_argv(cli)
+        return ["cline"]
     suffix = cli.suffix.lower()
     if suffix == ".ts":
         bun = shutil.which("bun")
-        return [bun, str(cli)] if bun else None
+        if bun:
+            return [bun, str(cli)]
+        if fallback:
+            return _windows_cline_argv() if os.name == "nt" else [fallback]
+        return None
     if suffix in {".js", ".mjs", ".cjs"}:
         node = shutil.which("node")
-        return [node, str(cli)] if node else None
+        if node:
+            return [node, str(cli)]
+        if fallback:
+            return _windows_cline_argv() if os.name == "nt" else [fallback]
+        return None
     return [str(cli)]
 
 
@@ -93,11 +131,12 @@ def probe_grid(*, config: Any = None) -> dict[str, Any]:
             "cline": {
                 "id": "cline",
                 "label": "Cline",
-                "ready": cline_cli is not None and _cli_argv(cline_cli) is not None,
+                "ready": cline_cli is not None
+                and _cli_argv(cline_cli, fallback="cline") is not None,
                 "available": cline_available(),
                 "root": str(cline_root()) if cline_root() else None,
                 "cli": str(cline_cli) if cline_cli else None,
-                "argv": _cli_argv(cline_cli),
+                "argv": _cli_argv(cline_cli, fallback="cline"),
                 "enabled": cfg.cline_enabled,
                 "needs_cloud_key": False,
                 "provider": cline_plan["provider"],

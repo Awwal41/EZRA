@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import zipfile
 from pathlib import Path
 
@@ -20,6 +21,7 @@ from ezra.ide import (
 )
 from ezra.ide.pack import extension_version
 from ezra.ide.paths import PUBLISHER, extension_folder_name
+from ezra.ide.probe import _cli_argv
 
 
 def test_extension_root_points_at_in_tree_sources() -> None:
@@ -55,6 +57,43 @@ def test_package_vsix_is_offline_zip(tmp_path: Path) -> None:
     assert "ezra-grid" in manifest
     types_xml = zipfile.ZipFile(dest).read("[Content_Types].xml").decode("utf-8")
     assert "javascript" in types_xml
+
+
+def test_cli_argv_uses_cmd_shim_on_windows(tmp_path: Path) -> None:
+    shim = tmp_path / "cline.cmd"
+    shim.write_text("", encoding="utf-8")
+    if os.name == "nt":
+        assert _cli_argv(shim) == [str(shim)]
+    else:
+        assert _cli_argv(shim) == ["cline"]
+
+
+def test_cli_argv_prefers_cmd_over_ps1(tmp_path: Path) -> None:
+    ps1 = tmp_path / "cline.ps1"
+    cmd = tmp_path / "cline.cmd"
+    ps1.write_text("", encoding="utf-8")
+    cmd.write_text("", encoding="utf-8")
+    if os.name == "nt":
+        assert _cli_argv(ps1) == [str(cmd)]
+    else:
+        assert _cli_argv(ps1) == ["cline"]
+
+
+def test_cli_argv_ts_without_bun_falls_back_to_cline(monkeypatch, tmp_path: Path) -> None:
+    ts = tmp_path / "index.ts"
+    ts.write_text("", encoding="utf-8")
+    npm = tmp_path / "npm"
+    npm.mkdir()
+    cmd = npm / "cline.cmd"
+    cmd.write_text("", encoding="utf-8")
+    monkeypatch.setattr("ezra.ide.probe.shutil.which", lambda _name: None)
+    monkeypatch.setenv("APPDATA", str(tmp_path))
+    assert _cli_argv(ts) is None
+    got = _cli_argv(ts, fallback="cline")
+    if os.name == "nt":
+        assert got == [str(cmd)]
+    else:
+        assert got == ["cline"]
 
 
 def test_probe_grid_has_lanes_and_never_marketplace() -> None:
