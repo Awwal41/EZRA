@@ -87,7 +87,9 @@ site/.doctrees/
 Thumbs.db
 Desktop.ini
 
-# -- Vendored third_party build artifacts (sources stay tracked) ------------
+# ── IDE extension sideload artifacts ────────────────────────────────────────
+*.vsix
+ide/vscode/dist/
 third_party/**/node_modules/
 third_party/**/.pnpm-store/
 third_party/**/.build/

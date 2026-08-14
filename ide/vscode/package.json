@@ -1,0 +1,120 @@
+{
+  "name": "ezra-grid",
+  "displayName": "EZRA Grid",
+  "description": "Off-grid EZRA switchboard for VS Code and Cursor. Pick a local gallery model, a personal agent, Cline, or OpenClaw — sideload only, never a marketplace.",
+  "version": "0.1.0",
+  "publisher": "ezra-local",
+  "private": true,
+  "license": "GPL-3.0-or-later",
+  "preview": true,
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "ezra",
+    "local llm",
+    "offline",
+    "cline",
+    "openclaw",
+    "hpc"
+  ],
+  "activationEvents": [
+    "onView:ezra.gridView",
+    "onCommand:ezra.grid.focus",
+    "onStartupFinished"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ezra-grid",
+          "title": "EZRA Grid",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "ezra-grid": [
+        {
+          "type": "webview",
+          "id": "ezra.gridView",
+          "name": "Grid",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "ezra.grid.focus",
+        "title": "EZRA: Open Grid",
+        "category": "EZRA"
+      },
+      {
+        "command": "ezra.selectLane",
+        "title": "EZRA: Select Lane",
+        "category": "EZRA"
+      },
+      {
+        "command": "ezra.probeRefresh",
+        "title": "EZRA: Refresh Lanes",
+        "category": "EZRA"
+      },
+      {
+        "command": "ezra.doctor",
+        "title": "EZRA: Doctor",
+        "category": "EZRA"
+      }
+    ],
+    "configuration": {
+      "title": "EZRA Grid",
+      "properties": {
+        "ezra.cliPath": {
+          "type": "string",
+          "default": "",
+          "description": "Absolute path to the ezra executable. Empty = look on PATH, then python -m ezra."
+        },
+        "ezra.pythonPath": {
+          "type": "string",
+          "default": "",
+          "description": "Python used for python -m ezra when ezra is not on PATH."
+        },
+        "ezra.defaultLane": {
+          "type": "string",
+          "enum": [
+            "local",
+            "agent",
+            "cline",
+            "openclaw"
+          ],
+          "default": "local",
+          "description": "Which Grid lane is selected when the view opens."
+        },
+        "ezra.model": {
+          "type": "string",
+          "default": "",
+          "description": "Gallery model alias for the EZRA local lane (e.g. qwen2.5-7b-instruct)."
+        },
+        "ezra.agent": {
+          "type": "string",
+          "default": "",
+          "description": "Personal agent name for the agent lane (e.g. chem-assistant)."
+        },
+        "ezra.backend": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "llama",
+            "mlx",
+            "stub"
+          ],
+          "default": "auto",
+          "description": "ezra chat backend for local / agent lanes."
+        }
+      }
+    }
+  }
+}

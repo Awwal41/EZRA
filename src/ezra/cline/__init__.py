@@ -31,6 +31,7 @@ from ezra.cline.cli import (
     resolve_cli,
     run_cline,
 )
+from ezra.cline.local import local_provider_plan, serve_base_url
 from ezra.cline.paths import cline_pin_info, cline_root
 
 __all__ = [
@@ -39,6 +40,8 @@ __all__ = [
     "cline_pin_info",
     "cline_root",
     "cline_version",
+    "local_provider_plan",
     "resolve_cli",
     "run_cline",
+    "serve_base_url",
 ]
