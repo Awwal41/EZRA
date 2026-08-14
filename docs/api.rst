@@ -106,6 +106,14 @@ Cline (coding agent)
    :undoc-members:
    :show-inheritance:
 
+IDE Grid (VS Code / Cursor)
+---------------------------
+
+.. automodule:: ezra.ide
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Serve (OpenAI HTTP)
 -------------------
 

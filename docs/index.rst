@@ -27,6 +27,8 @@ Quick links
 * :doc:`gog` - Google Workspace ``gog`` CLI / MCP (vendored)
 * :doc:`openclaw` - OpenClaw Gateway vendored snapshot (optional)
 * :doc:`cline` - Cline coding-agent CLI / SDK vendored snapshot (optional)
+* :doc:`cline-local` - Cline + a free EZRA GGUF in VS Code / Cursor
+* :doc:`ide` - EZRA Grid VS Code / Cursor extension (sideload only)
 * :doc:`hpc` - site profiles and ``ezra hpc submit``
 * :doc:`cli` - full CLI reference
 * :doc:`api` - Python package reference
@@ -44,6 +46,8 @@ Quick links
    gog
    openclaw
    cline
+   cline-local
+   ide
    hpc
    sites
    configuration

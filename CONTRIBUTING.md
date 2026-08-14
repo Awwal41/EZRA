@@ -1,6 +1,6 @@
 # Contributing to EZRA
 
-Thanks for helping build **EZRA** — a researcher-first toolkit for downloading free/open LLMs, running personal agents (`chat` / `serve`), parsing documents, staging HPC jobs, and optional OpenClaw / Peekaboo / gog / Cline integrations for materials science and chemistry.
+Thanks for helping build **EZRA** — a researcher-first toolkit for downloading free/open LLMs, running personal agents (`chat` / `serve`), parsing documents, staging HPC jobs, optional OpenClaw / Peekaboo / gog / Cline integrations, and a sideload-only IDE Grid for materials science and chemistry.
 
 This guide walks through forking the repo, setting up a dev environment, coding style, common contribution types, tests, and opening pull requests.
 
@@ -191,6 +191,8 @@ Copy templates from `ezra.yaml.example` / `.env.example`, or run `ezra init-conf
 | `src/ezra/peekaboo/` | Peekaboo facade (macOS capture / MCP) |
 | `src/ezra/gog/` | gogcli facade (Google Workspace CLI / MCP) |
 | `src/ezra/cline/` | Cline facade (paths / CLI / status; no auto-start) |
+| `src/ezra/ide/` | EZRA Grid sideload (VSIX pack / Cursor+VS Code install; no marketplace) |
+| `ide/vscode/` | Grid extension sources (plain JS; `ezra ide package`) |
 | `src/ezra/hpc/` | SLURM / SBATCH helpers and site loading |
 | `third_party/` | Full in-tree vendor snapshots (not git submodules) |
 | `scripts/hpc_*.sh` | Example HPC job scripts (honor `EZRA_SITE`) |

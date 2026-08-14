@@ -97,8 +97,34 @@ Status helpers for the vendored [Cline](https://github.com/cline/cline) snapshot
 |---------|-------------|
 | `status` | Vendored-tree / CLI availability (`--json`) |
 | `version` | Probe `cline --version` if resolvable |
+| `use-local` | Point Cline at `ezra serve` / downloaded GGUFs (no cloud API key) |
 
-EZRA never auto-starts a Cline agent session or Kanban.
+```bash
+ezra cline use-local
+ezra cline use-local --model qwen2.5-7b-instruct --auth
+```
+
+`--auth` only writes Cline’s openai-compatible provider settings. EZRA never
+auto-starts a Cline agent session or Kanban.
+
+## `ezra ide`
+
+Sideload **EZRA Grid** into VS Code or Cursor. Never talks to a marketplace.
+See [IDE Grid](ide.md). Recipe: [Cline + a free EZRA model in VS Code](cline-local.md).
+
+| Command | Description |
+|---------|-------------|
+| `status` | Extension sources + detected editors (`--json`) |
+| `probe` | Lane snapshot for the webview (`--json`; no agent start) |
+| `package` | Zip `ide/vscode` into a `.vsix` (stdlib; no vsce) |
+| `install` | Sideload into Cursor and/or VS Code (`--ide auto\|cursor\|code`, `--dry-run`) |
+| `uninstall` | Remove a previous sideload |
+
+```bash
+ezra ide status
+ezra ide package
+ezra ide install --ide cursor
+```
 
 ## `ezra parse`
 

@@ -125,6 +125,10 @@ base_url = "http://localhost:8000/v1"
 use a gallery alias or `agent:<name>` as the model id. No first-party Gradio app
 is required for MVP.
 
+**VS Code / Cursor:** sideload [EZRA Grid](ide.md) (`ezra ide install`). Local and
+agent lanes call `ezra chat`. The Cline lane uses your downloaded models through
+`ezra serve` (no cloud API key) — cookbook: [Cline + a free EZRA model](cline-local.md).
+
 ---
 
 ## Out of scope (for now)

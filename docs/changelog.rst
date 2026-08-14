@@ -19,6 +19,9 @@ listed here as releases land.
 * gogcli full in-tree snapshot (``third_party/gogcli`` @ ``v0.35.0``) + ``ezra.gog``
 * OpenClaw full in-tree snapshot (``third_party/OpenClaw`` @ ``v2026.6.34``) + ``ezra.openclaw`` (no auto-start)
 * Cline full in-tree snapshot (``third_party/Cline`` @ ``afab68f3…``) + ``ezra.cline`` (no auto-start)
+* EZRA Grid VS Code / Cursor extension (``ide/vscode``) + ``ezra ide package|install`` (sideload only; no marketplace)
+* Cline ``ezra cline use-local`` — openai-compatible provider on ``ezra serve`` (downloaded GGUFs; no cloud API key)
+* Guide: Cline + a free gallery GGUF in VS Code / Cursor (``docs/cline-local.md``)
 * MegaParse full in-tree library snapshot (``third_party/MegaParse``) + ``ezra.parse``
 * Design note for chat / serve runtime (``docs/conversation.md``)
 * Optional Vercel docs deploy (``vercel.json`` + ``.github/workflows/docs-vercel.yml``)

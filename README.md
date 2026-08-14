@@ -10,11 +10,11 @@
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-0A66C2?logo=github)](https://awwal41.github.io/EZRA/)
 [![Read the Docs](https://img.shields.io/readthedocs/ezra?logo=readthedocs&label=Read%20the%20Docs)](https://ezra.readthedocs.io/)
 
-**Easy Zero-setup Routing Assistant** for local & HPC LLMs — a researcher-first toolkit to download free/open models, run personal agents locally, parse documents into LLM-ready text, and stage the same workflows on SLURM. Optional facades cover OpenClaw, macOS Peekaboo, and Google Workspace (`gog`). Smart domain routing is the Phase 2 target; Phase 1 already ships the local runtime.
+**Easy Zero-setup Routing Assistant** for local & HPC LLMs — a researcher-first toolkit to download free/open models, run personal agents locally, parse documents into LLM-ready text, and stage the same workflows on SLURM. Optional facades cover OpenClaw, macOS Peekaboo, Google Workspace (`gog`), and Cline. Sideload **EZRA Grid** into VS Code or Cursor (no marketplace). Smart domain routing is the Phase 2 target; Phase 1 already ships the local runtime.
 
-> **Phase 1 (now):** curated gallery · hardware-aware `models recommend` · downloads · personal agents · `ezra chat` / `ezra serve` (OpenAI `/v1`) · `ezra parse` (MegaParse) · HPC site profiles / SBATCH · optional OpenClaw, Peekaboo, gogcli, and Cline (vendored in-tree).
+> **Phase 1 (now):** curated gallery · hardware-aware `models recommend` · downloads · personal agents · `ezra chat` / `ezra serve` (OpenAI `/v1`) · `ezra parse` (MegaParse) · HPC site profiles / SBATCH · optional OpenClaw, Peekaboo, gogcli, and Cline (vendored in-tree) · **EZRA Grid** IDE extension (sideload only).
 
-**Docs:** [GitHub Pages](https://awwal41.github.io/EZRA/) · [Read the Docs](https://ezra.readthedocs.io/) · [Markdown on GitHub](docs/README.md) · [install](docs/install.md) · [models](docs/models.md) · [personal agents](docs/agents.md) · [parse](docs/parse.md) · [openclaw](docs/openclaw.md) · [peekaboo](docs/peekaboo.md) · [gog](docs/gog.md) · [cline](docs/cline.md) · [conversation](docs/conversation.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
+**Docs:** [GitHub Pages](https://awwal41.github.io/EZRA/) · [Read the Docs](https://ezra.readthedocs.io/) · [Markdown on GitHub](docs/README.md) · [install](docs/install.md) · [models](docs/models.md) · [personal agents](docs/agents.md) · [parse](docs/parse.md) · [openclaw](docs/openclaw.md) · [peekaboo](docs/peekaboo.md) · [gog](docs/gog.md) · [cline](docs/cline.md) · [cline + VS Code](docs/cline-local.md) · [ide](docs/ide.md) · [conversation](docs/conversation.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
 
 ## Quick start
 
@@ -98,6 +98,21 @@ ezra agents check my-lab-assistant   # validate aliases, suggest downloads
 
 Starter example: [`agents/chem-assistant`](agents/chem-assistant/). Private experiments: `ezra agents init local/scratch-bot` (`agents/local/` is gitignored). Details: [docs/agents.md](docs/agents.md) · [agents/README.md](agents/README.md).
 
+### IDE (VS Code / Cursor, no marketplace)
+
+Sideload **EZRA Grid** from this checkout — pick a local model, a personal agent, Cline, or OpenClaw in one sidebar. Nothing is published online. **No cloud API key** for local / agent / Cline-on-EZRA-models.
+
+```bash
+ezra ide install                 # Cursor and/or VS Code on this machine
+ezra ide install --ide cursor
+# then: Reload Window → rising-columns icon
+# Cline without OpenRouter/Anthropic:
+#   ezra serve --model qwen2.5-7b-instruct --host 127.0.0.1
+#   ezra cline use-local --auth
+```
+
+Reload the window and open the rising-columns icon. Step-by-step with a free gallery GGUF: [docs/cline-local.md](docs/cline-local.md). Grid reference: [docs/ide.md](docs/ide.md).
+
 ## HPC (SLURM / SBATCH)
 
 EZRA runs on login nodes or batch jobs with no GUI. **Customize for your cluster** with a site profile (partition, account, `module load`), then commit and push so others on the same HPC benefit - see [`sites/README.md`](sites/README.md) and [docs/hpc.md](docs/hpc.md).
@@ -179,7 +194,8 @@ ezra serve [--agent NAME] [--model NAME] [--backend …] [--host HOST] [--port N
 ezra openclaw status|version              # vendored in-tree; never auto-starts Gateway
 ezra peekaboo status|mcp-config|capture   # macOS; in-tree under third_party/Peekaboo
 ezra gog status|mcp-config|run …          # Google Workspace; third_party/gogcli
-ezra cline status|version                 # coding agent; third_party/Cline
+ezra cline status|version|use-local       # coding agent; use-local = EZRA models, no cloud key
+ezra ide status|package|install           # VS Code / Cursor Grid (sideload; no marketplace)
 ezra hpc templates
 ezra hpc sites
 ezra hpc init-site NAME
@@ -196,7 +212,7 @@ Add a model by appending an entry (name, `repo_id`, format, tags) and reinstall 
 
 | Phase | Focus |
 |-------|--------|
-| **1 - Core Local** (now) | Gallery, recommend-by-hardware, download, agents, chat/serve, document parse, HPC staging, optional OpenClaw / Peekaboo / gog / Cline |
+| **1 - Core Local** (now) | Gallery, recommend-by-hardware, download, agents, chat/serve, document parse, HPC staging, optional OpenClaw / Peekaboo / gog / Cline, sideload IDE Grid |
 | **2 - Smart routing + HPC** | Domain classifier, policy engine, remote adapters |
 | **3 - Scientific layer** | Chem/materials prompts, tool-calling, RAG helpers, eval harness |
 | **4 - Lab scale** | Shared configs, plugins, observability |
@@ -229,6 +245,8 @@ How to turn Pages on / link RTD: [docs/README.md](docs/README.md#publish-so-peop
 | [docs/peekaboo.md](docs/peekaboo.md) | macOS Peekaboo capture / MCP (vendored) |
 | [docs/gog.md](docs/gog.md) | Google Workspace `gog` CLI / MCP (vendored) |
 | [docs/cline.md](docs/cline.md) | Cline coding-agent CLI / SDK facade (vendored; no auto-start) |
+| [docs/cline-local.md](docs/cline-local.md) | Cline + a free EZRA GGUF in VS Code / Cursor |
+| [docs/ide.md](docs/ide.md) | EZRA Grid VS Code / Cursor extension (sideload only) |
 | [agents/README.md](agents/README.md) | In-tree agent scaffolds + chem-assistant example |
 | [docs/hpc.md](docs/hpc.md) | Site profiles, scratch, `ezra hpc submit` |
 | [sites/README.md](sites/README.md) | Customize for your cluster, commit & push |

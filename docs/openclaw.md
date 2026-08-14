@@ -7,7 +7,8 @@ clones keep working even if upstream disappears or stops being open source.
 
 OpenClaw is a multi-channel personal AI assistant / Gateway (TypeScript, Node).
 EZRA wraps it with [`ezra.openclaw`](../src/ezra/openclaw/) so agents and
-`ezra doctor` share one resolution path.
+`ezra doctor` share one resolution path. To use OpenClaw **from the IDE**
+without a marketplace, sideload [EZRA Grid](ide.md) and pick the OpenClaw lane.
 
 **Safety defaults:** EZRA never auto-runs `openclaw onboard`, never installs a
 daemon, and never starts the Gateway for you. The tree is pinned to the release

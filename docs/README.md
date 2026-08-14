@@ -12,6 +12,8 @@ HTML site with **Sphinx** + **MyST** + **reStructuredText**.
 | [Document parsing](parse.md) | MegaParse + basic backends, `ezra parse`, chat `--file` |
 | [OpenClaw](openclaw.md) | Full in-tree snapshot + `ezra.openclaw` (Gateway optional; no auto-start) |
 | [Cline](cline.md) | Full in-tree snapshot + `ezra.cline` (coding agent optional; no auto-start) |
+| [Cline + free model in VS Code](cline-local.md) | Download a gallery GGUF, `ezra serve`, Cline, sideload Grid |
+| [IDE Grid](ide.md) | Sideload VS Code / Cursor extension (no marketplace; Cline / OpenClaw lanes) |
 | [HPC / SLURM](hpc.md) | Site profiles, scratch paths, SBATCH submit |
 | [Site profiles](sites.md) | Customize partition/modules for your cluster ([full notes](../sites/README.md)) |
 | [Configuration](configuration.md) | `ezra.yaml`, env vars, models directory |

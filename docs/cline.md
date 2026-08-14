@@ -7,7 +7,8 @@ clones keep working even if upstream disappears or stops being open source.
 
 Cline is an autonomous coding agent (CLI, SDK, VS Code extension). EZRA wraps
 it with [`ezra.cline`](../src/ezra/cline/) so agents and `ezra doctor` share
-one resolution path.
+one resolution path. To use Cline **from the IDE** without the marketplace,
+sideload [EZRA Grid](ide.md) and pick the Cline lane (`ezra ide install`).
 
 **Safety defaults:** EZRA never auto-runs a Cline agent session, never starts
 Kanban, and never installs IDE extensions for you. The tree is pinned to the
@@ -32,6 +33,33 @@ npm i -g cline
 | `cline.enabled` | `auto` \| `on` \| `off` in `ezra.yaml` (shown by doctor/status; does not gate CLI today) |
 
 Check: `ezra doctor` (Cline line) or `ezra cline status`.
+
+## Off-grid: EZRA models, no cloud API key
+
+Cline normally wants Anthropic, OpenRouter, a Cline account, or similar. **You
+do not have to.** Point Cline at EZRA’s OpenAI-compatible server so it uses
+gallery weights you already downloaded:
+
+```bash
+pip install -e ".[local,serve]"
+ezra models download qwen2.5-7b-instruct
+
+# keep running
+ezra serve --model qwen2.5-7b-instruct --host 127.0.0.1 --port 8000
+
+# once: save Cline provider settings (does not start an agent)
+ezra cline use-local --model qwen2.5-7b-instruct --auth
+```
+
+`ezra-local` is a dummy key string Cline’s `openai-compatible` provider
+requires. EZRA serve does not validate it. Then:
+
+```bash
+cline -P openai-compatible -k ezra-local -m qwen2.5-7b-instruct "your task"
+```
+
+Or pick the **Cline** lane in [EZRA Grid](ide.md). Full recipe (download a free
+GGUF → serve → Cline → VS Code / Cursor): [Cline + a free EZRA model](cline-local.md).
 
 ## Python API
 
@@ -58,6 +86,7 @@ run_cline("--version")  # safe probe
 ezra cline status
 ezra cline status --json
 ezra cline version
+ezra cline use-local [--model NAME] [--auth]
 ```
 
 ## Security notes

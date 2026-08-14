@@ -42,6 +42,7 @@ Track what already landed so we do not re-open finished work.
 - [x] OpenClaw as full in-tree snapshot (`third_party/OpenClaw` @ v2026.6.34) + `ezra.openclaw` facade
 - [x] Peekaboo / gogcli / MegaParse as full in-tree snapshots (no remaining third_party submodules)
 - [x] Cline as full in-tree snapshot (`third_party/Cline` @ `afab68f3…`) + `ezra.cline` facade
+- [x] EZRA Grid VS Code / Cursor extension (`ide/vscode`) + `ezra ide` sideload (no marketplace)
 
 ---
 
@@ -109,7 +110,7 @@ Track what already landed so we do not re-open finished work.
 - [ ] Domain classifier (SMILES/CIF, chem terminology, long-context signals) `P2`
 - [ ] Full policy engine (privacy-first, long-context → HPC, tag matching) `P2`
 - [ ] vLLM / other GPU backends `P2`
-- [ ] Desktop or web UI (gallery + chat + router settings) `P2`
+- [x] Desktop or web UI (gallery + chat + router settings) `P2` — **partial:** sideload IDE Grid (`docs/ide.md`); full lab UI still later
 - [ ] Scientific tool-calling hooks (PubChem, RDKit-style, ASE/pymatgen) `P2`
 - [ ] Domain RAG helpers + lightweight chem/materials eval harness `P2`
 - [ ] Ship / fetch MegaParse DocLayNet ONNX for hi_res layout (currently excluded from git) `P2`

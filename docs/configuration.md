@@ -77,6 +77,8 @@ Edit `sites/my-cluster/ezra.yaml` and `modules.sh` (search for **EDIT ME**), the
 | `EZRA_OPENCLAW_ROOT` / `EZRA_OPENCLAW_CLI` | Alternate OpenClaw tree / CLI (see [OpenClaw](openclaw.md)) |
 | `EZRA_CLINE_ROOT` / `EZRA_CLINE_CLI` | Alternate Cline tree / CLI (see [Cline](cline.md)) |
 
+IDE Grid is sideloaded with `ezra ide install` (no marketplace). See [IDE](ide.md).
+
 ## Example `ezra.yaml`
 
 Start from [`ezra.yaml.example`](../ezra.yaml.example) (`ezra init-config`) or the site template.
@@ -119,6 +121,12 @@ cline:
   enabled: auto            # reported by doctor/status; does not gate CLI today
   # cli: ""                # or EZRA_CLINE_CLI
   # EZRA never auto-starts the agent
+  # Point Cline at ezra serve (downloaded GGUFs, no cloud key):
+  #   ezra cline use-local --auth
+
+ide:
+  enabled: auto            # reported by doctor/status; does not auto-install
+  # ezra ide install       # sideload Grid into Cursor / VS Code
 
 # router:                  # reserved for Phase 2 smart routing (kept in yaml)
 #   mode: auto
@@ -151,6 +159,7 @@ hpc:
 Notes:
 
 - `peekaboo|gog|openclaw|cline.enabled` values show up in `ezra doctor` / `* status`; they do **not** currently block the corresponding CLI commands.
+- `ide.enabled` is the same pattern; it does **not** auto-install the Grid extension.
 - `router` in packaged defaults is reserved for Phase 2 domain routing (agents may still reference prefs via `agent.yaml`).
 - `local.keep_alive` appears in packaged defaults as a future knob; it is not applied by the loader yet.
 
