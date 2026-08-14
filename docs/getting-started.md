@@ -255,6 +255,11 @@ This is **not** Copilot / VS Code Chat. Use **EZRA: Open Grid** only.
 
 ## 7. Optional: Cline (coding agent) on the same model
 
+Skip this section if Grid **Local** chat is enough. Cline is a separate CLI;
+EZRA does not embed it. `npm i -g cline` is only for the **Cline** lane.
+Other ways to get a CLI (Bun, vendored build, `EZRA_CLINE_CLI`):
+[Cline + a free EZRA model](cline-local.md#how-to-get-a-cline-cli-pick-one).
+
 Keep the model local — still no cloud key. Install **Node.js 22+** from
 [nodejs.org](https://nodejs.org/) first if `npm` is not already on your PATH.
 
@@ -290,6 +295,7 @@ Enter to confirm. Full recipe: [Cline + a free EZRA model](cline-local.md).
 | Grid not in the sidebar | Command Palette → **EZRA: Open Grid**; reload the window |
 | Reply never comes | First load is slow; or `ezra.backend` is `stub` (echo only) — set it to `auto` after the wheel install |
 | NVIDIA file installed but no GPU | Uninstall is not required; install `requirements-ide-cpu.txt` on top |
+| `bun is not on PATH` during `ezra cline …` | Optional Cline CLI missing. `npm i -g cline`, or see [CLI options](cline-local.md#how-to-get-a-cline-cli-pick-one). Skip Cline and use Grid **Local** if you only want chat |
 
 ---
 

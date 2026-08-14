@@ -87,7 +87,7 @@ then they run locally.
 |------|----------|----------------|
 | **EZRA local** | No | `ezra chat` on the GGUF you select in the Grid |
 | **Agent** | No | Same, plus `agents/<name>/` system prompt |
-| **Cline** | **No, if you use EZRA models** | Terminal hand-off to Cline, pointed at `ezra serve` |
+| **Cline** | **No, if you use EZRA models** | Terminal hand-off to a **Cline CLI** (not embedded). Skip this lane if you only want chat. |
 | **OpenClaw** | Depends on OpenClaw config | Terminal hand-off; EZRA never starts the Gateway |
 
 Type in the composer, **Ctrl+Enter** (or **Cmd+Enter**) to send. **Refresh**
@@ -131,8 +131,11 @@ cline -P openai-compatible -k ezra-local -m qwen2.5-7b-instruct "your task"
 
 Confirm that line. Cline still asks before editing files / running tools.
 
-Install the Cline CLI if `ezra cline status` shows no binary: `npm i -g cline`
-(Node 22+), or build the vendored tree — [Cline](cline.md).
+A `cline` CLI is required **only** for this lane. Skip it for **Local** /
+**Agent**. If `ezra cline status` has no runnable CLI, pick one of:
+`npm i -g cline` (Node 22+), Bun 1.3+ for the vendored `.ts`, a vendored
+`dist/index.js` build, or `EZRA_CLINE_CLI` — [Cline + free model](cline-local.md#how-to-get-a-cline-cli-pick-one)
+and [Cline](cline.md).
 
 #### OpenClaw
 

@@ -27,13 +27,50 @@ Related: [Getting started](getting-started.md) · [Cline facade](cline.md) ·
 | Piece | Why |
 |-------|-----|
 | EZRA checkout + venv | `ezra` CLI, gallery, serve — [which wheel](getting-started.md#3-install-ezra-and-the-right-wheel) |
-| A **free GGUF** from the gallery | The actual model Cline will call |
+| A **free GGUF** from the gallery | The actual model Cline (or Local chat) will call |
 | `pip install -e ".[local,serve]"` | llama.cpp + OpenAI HTTP (prefer a [wheel file](getting-started.md#3-install-ezra-and-the-right-wheel) on Windows) |
-| Cline CLI (`npm i -g cline`, Node 22+) | Coding agent (vendored sources are already in-tree) |
+| Cline CLI — **Cline lane only** | Coding agent. Skip this if you only want Grid **Local** chat. |
 | VS Code or Cursor | Where Grid lives |
 
 No cloud API key. `HF_TOKEN` is only if you pick a **gated** gallery entry
 (Meta/Google license click-through). The models in this guide are **not gated**.
+
+### Local chat vs the Cline CLI
+
+Grid does **not** embed Cline. The **Cline** lane always opens a terminal and
+runs a `cline` program. `npm i -g cline` is one way to put that program on
+PATH. You are **not** stuck with it for everything else.
+
+| What you use | Needs a `cline` CLI? |
+|--------------|----------------------|
+| Grid **Local** lane | No — `ezra chat` on the GGUF |
+| Grid **Agent** lane | No — same, plus `agents/<name>/` |
+| `ezra serve` / `ezra chat` | No |
+| Grid **Cline** lane (file/shell tools) | **Yes** — some CLI, not necessarily the npm global |
+| Grid **OpenClaw** lane | No Cline; needs an OpenClaw CLI — [OpenClaw](openclaw.md) |
+
+Stay on **Local** if you only want to talk to the model. Use **Cline** when you
+want the coding agent.
+
+### How to get a Cline CLI (pick one)
+
+EZRA looks in this order (`ezra cline status` shows what it found):
+
+1. `EZRA_CLINE_CLI` or `cline.cli` in `ezra.yaml` (absolute path you set)
+2. `cline` on `PATH`
+3. Built `third_party/Cline/apps/cli/dist/index.js` (runs with Node)
+4. Source `third_party/Cline/apps/cli/src/index.ts` (runs with **Bun 1.3+**)
+
+| Option | When to use it |
+|--------|----------------|
+| **Skip Cline** | Chat only: Grid **Local** / **Agent**. Do not run `npm i -g cline`. |
+| **`npm i -g cline`** (Node 22+) | Simplest on Windows. Puts `cline` on PATH. |
+| **Bun 1.3+** | Keep using the vendored TypeScript at `third_party/Cline/…/index.ts`. Install from [bun.sh](https://bun.sh). |
+| **Build the vendored tree** | Produce `dist/index.js` so Node can run it — [Cline README](../third_party/Cline/README.md). |
+| **Point at a binary you already have** | `set EZRA_CLINE_CLI=C:\path\to\cline` (or `cline.cli` in `ezra.yaml`). |
+
+Do **not** install Cline from the VS Marketplace for this flow. Grid is a
+sideload; marketplace Cline is a different extension.
 
 ---
 
@@ -111,6 +148,7 @@ Cline’s default providers want a paid cloud key. Skip them:
 ```bash
 ezra cline status                 # CLI should resolve
 npm i -g cline                    # only if status says CLI missing (Node 22+)
+# other options: Bun, vendored build, or EZRA_CLINE_CLI — see above
 
 ezra cline use-local --model phi-3.5-mini-instruct
 ezra cline use-local --model phi-3.5-mini-instruct --auth
@@ -206,7 +244,9 @@ Reload the editor → Grid → **Cline** lane → send.
 |---------|------------|
 | `ezra serve` missing FastAPI | `pip install -r requirements-serve.txt` |
 | Chat is empty / weights error | `pip install -r requirements-ide-cpu.txt` and `ezra models status` |
-| `ezra cline status` has no CLI | `npm i -g cline` (Node 22+) |
+| `ezra cline status` has no CLI | `npm i -g cline` (Node 22+), or another [CLI option](#how-to-get-a-cline-cli-pick-one) |
+| `Found … index.ts but bun is not on PATH` | Vendored source needs Bun, or install `npm i -g cline` so PATH wins |
+| Port 8000 already in use | Another `ezra serve` (sometimes `--backend stub`) is bound. Stop that process, then start the real serve |
 | Cline asks for Anthropic / OpenRouter | Re-run `ezra cline use-local --auth`; use `-P openai-compatible` |
 | Grid cannot find `ezra` | Set `ezra.pythonPath` or `ezra.cliPath` |
 | No chat / Copilot panel | EZRA is not VS Code Chat. **Ctrl+Shift+P** → **EZRA: Open Grid** |

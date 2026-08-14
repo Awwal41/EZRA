@@ -19,11 +19,25 @@ under `third_party/Cline/evals/cline-bench/` (not a live gitlink).
 
 ## Setup
 
+Cline is **optional**. Grid **Local** / **Agent** and `ezra chat` / `ezra serve`
+do not use it. Only the **Cline** lane (and `ezra cline …` / a shell `cline`
+command) needs a CLI. Full recipe and skip-vs-install table:
+[Cline + a free EZRA model](cline-local.md#local-chat-vs-the-cline-cli).
+
+EZRA resolves a CLI in this order:
+
+1. `EZRA_CLINE_CLI` / `cline.cli`
+2. `cline` on `PATH` (for example `npm i -g cline`)
+3. Built `third_party/Cline/apps/cli/dist/index.js` (Node)
+4. Source `third_party/Cline/apps/cli/src/index.ts` (needs Bun 1.3+)
+
 ```bash
 # Cline sources are already in the EZRA checkout under third_party/Cline/
-# optional: install a global CLI (Node 22+)
-npm i -g cline
-# or build from the vendored tree — see third_party/Cline/README.md (Bun)
+# pick ONE if you want the coding agent:
+npm i -g cline                          # Node 22+ — simplest on Windows
+# bun from https://bun.sh               # runs the vendored .ts entry
+# or build dist/index.js — see third_party/Cline/README.md
+# or: export EZRA_CLINE_CLI=/path/to/cline
 ```
 
 | Variable / config | Meaning |

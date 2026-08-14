@@ -39,7 +39,9 @@ pip install -r requirements-ide-cpu.txt          # no NVIDIA GPU
 #   sources: third_party/Peekaboo — see docs/peekaboo.md
 # Google Workspace CLI (optional): brew install openclaw/tap/gogcli
 #   sources: third_party/gogcli — see docs/gog.md
-# Coding agent CLI (optional): npm i -g cline
+# Coding agent CLI (optional; Cline lane only — skip for Local chat):
+#   npm i -g cline
+#   or Bun 1.3+ / vendored build / EZRA_CLINE_CLI — see docs/cline-local.md
 #   sources: third_party/Cline — see docs/cline.md
 ```
 
