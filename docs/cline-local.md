@@ -17,8 +17,8 @@ Nothing is published to a marketplace. Weights stay on your disk.
                                     (free GGUF you downloaded)
 ```
 
-Related: [Cline facade](cline.md) · [EZRA Grid](ide.md) · [Models](models.md) ·
-[Conversation / serve](conversation.md).
+Related: [Getting started](getting-started.md) · [Cline facade](cline.md) ·
+[EZRA Grid](ide.md) · [Models](models.md) · [Conversation / serve](conversation.md).
 
 ---
 
@@ -26,9 +26,9 @@ Related: [Cline facade](cline.md) · [EZRA Grid](ide.md) · [Models](models.md) 
 
 | Piece | Why |
 |-------|-----|
-| EZRA checkout + venv | `ezra` CLI, gallery, serve |
+| EZRA checkout + venv | `ezra` CLI, gallery, serve — [which wheel](getting-started.md#3-install-ezra-and-the-right-wheel) |
 | A **free GGUF** from the gallery | The actual model Cline will call |
-| `pip install -e ".[local,serve]"` | llama.cpp + OpenAI HTTP |
+| `pip install -e ".[local,serve]"` | llama.cpp + OpenAI HTTP (prefer a [wheel file](getting-started.md#3-install-ezra-and-the-right-wheel) on Windows) |
 | Cline CLI (`npm i -g cline`, Node 22+) | Coding agent (vendored sources are already in-tree) |
 | VS Code or Cursor | Where Grid lives |
 
@@ -81,7 +81,7 @@ Swap the alias in every command below if you pick a different name.
 ## 2. Serve it (keep this terminal open)
 
 ```bash
-pip install -e ".[local,serve]"   # once per venv
+pip install -r requirements-ide-cpu.txt   # once; or cuda124 / macos — see getting-started.md
 
 ezra serve --model phi-3.5-mini-instruct --host 127.0.0.1 --port 8000
 ```
@@ -145,12 +145,20 @@ ezra ide install --ide cursor     # Cursor only
 ezra ide install --ide code       # VS Code only
 ```
 
-Then in the editor:
+Then in **Visual Studio Code** (for `--ide code`) or **Cursor** (for `--ide cursor`):
 
-1. **Developer: Reload Window**
-2. Click the **rising-columns** icon in the activity bar (EZRA Grid)
+1. **Ctrl+Shift+P** → **Developer: Reload Window**
+2. Open the Grid. EZRA is **not** under VS Code Chat / Copilot. Use any of:
+   - **Ctrl+Shift+P** → **EZRA: Open Grid**
+   - Far-left activity bar: **rising-columns** icon (often near the bottom; tooltip **EZRA Grid**)
+   - Status bar: click **EZRA**
+   - **View → Open View…** → `Grid`
 3. If the panel cannot find `ezra`, set **EZRA Grid → `ezra.pythonPath`** to
    your venv Python (Windows example: `C:\Users\you\EZRA\.venv\Scripts\python.exe`)
+
+Plain chat (no Cline): **Local** lane → pick the GGUF → type in the bottom box → **Ctrl+Enter**.
+
+Cline coding agent: keep `ezra serve` running, then follow section 5.
 
 Install details and settings: [EZRA Grid](ide.md).
 
@@ -180,7 +188,7 @@ file/shell tools. Use **Cline** when you want the coding agent.
 
 ```bash
 # venv on, from the EZRA repo root
-pip install -e ".[local,serve]"
+pip install -r requirements-ide-cpu.txt
 ezra models download phi-3.5-mini-instruct
 ezra serve --model phi-3.5-mini-instruct --host 127.0.0.1 --port 8000
 # new terminal:
@@ -196,11 +204,12 @@ Reload the editor → Grid → **Cline** lane → send.
 
 | Symptom | What to do |
 |---------|------------|
-| `ezra serve` missing FastAPI | `pip install -e ".[serve]"` |
-| Chat is empty / weights error | `pip install -e ".[local]"` and `ezra models status` |
+| `ezra serve` missing FastAPI | `pip install -r requirements-serve.txt` |
+| Chat is empty / weights error | `pip install -r requirements-ide-cpu.txt` and `ezra models status` |
 | `ezra cline status` has no CLI | `npm i -g cline` (Node 22+) |
 | Cline asks for Anthropic / OpenRouter | Re-run `ezra cline use-local --auth`; use `-P openai-compatible` |
 | Grid cannot find `ezra` | Set `ezra.pythonPath` or `ezra.cliPath` |
+| No chat / Copilot panel | EZRA is not VS Code Chat. **Ctrl+Shift+P** → **EZRA: Open Grid** |
 | Grid Cline terminal errors on connect | Serve must be up on `127.0.0.1:8000` |
 | Model not in the Grid dropdown | Download it, then **Refresh** in the Grid |
 | Want a different free GGUF | Change `--model` on serve, `use-local`, and the Grid picker |

@@ -7,7 +7,8 @@ EZRA turns an agent profile into multi-turn chat and an OpenAI-compatible HTTP
 surface so labs can connect Gradio, Open WebUI, Cursor, or a custom UI without
 forking EZRA.
 
-See also: [Personal agents](agents.md), [Install](install.md), [CLI](cli.md),
+See also: [Getting started](getting-started.md) (which llama.cpp **wheel**),
+[Personal agents](agents.md), [Install](install.md), [CLI](cli.md),
 [TODO.md](../TODO.md), [API](api.rst).
 
 ---
@@ -30,8 +31,10 @@ Agents stay YAML + Markdown. Conversation is the runtime. Frontends talk HTTP
 ## Install extras
 
 ```bash
-pip install -e ".[local,serve]"   # GGUF + OpenAI HTTP
-pip install -e ".[mlx]"           # Apple Silicon (non-GGUF), optional
+pip install -r requirements-ide-cpu.txt   # GGUF + OpenAI HTTP (Windows/Linux CPU wheel)
+# pip install -r requirements-ide-cuda124.txt
+# pip install -r requirements-ide-macos.txt
+# or, may compile from source: pip install -e ".[local,serve]"
 ```
 
 Local chat needs a **downloaded GGUF** gallery model (`ezra models list --format gguf`).

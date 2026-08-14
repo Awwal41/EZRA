@@ -22,6 +22,7 @@ listed here as releases land.
 * EZRA Grid VS Code / Cursor extension (``ide/vscode``) + ``ezra ide package|install`` (sideload only; no marketplace)
 * Cline ``ezra cline use-local`` — openai-compatible provider on ``ezra serve`` (downloaded GGUFs; no cloud API key)
 * Guide: Cline + a free gallery GGUF in VS Code / Cursor (``docs/cline-local.md``)
+* Beginner walkthrough + llama.cpp wheel files (``docs/getting-started.md``, ``requirements-ide-*.txt``)
 * MegaParse full in-tree library snapshot (``third_party/MegaParse``) + ``ezra.parse``
 * Design note for chat / serve runtime (``docs/conversation.md``)
 * Optional Vercel docs deploy (``vercel.json`` + ``.github/workflows/docs-vercel.yml``)

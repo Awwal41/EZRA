@@ -5,6 +5,7 @@ HTML site with **Sphinx** + **MyST** + **reStructuredText**.
 
 | Guide | When to read it |
 |-------|-----------------|
+| [Getting started](getting-started.md) | **Start here** — install, pick a llama.cpp wheel, download a model, open EZRA Grid |
 | [Installation](install.md) | First-time setup (venv, `pip install`, `ezra doctor`) |
 | [Models](models.md) | Recommend by hardware + keyword, browse, download, status, remove |
 | [Personal agents](agents.md) | Scaffold your own assistant (prompt + preferred models) |
@@ -13,7 +14,7 @@ HTML site with **Sphinx** + **MyST** + **reStructuredText**.
 | [OpenClaw](openclaw.md) | Full in-tree snapshot + `ezra.openclaw` (Gateway optional; no auto-start) |
 | [Cline](cline.md) | Full in-tree snapshot + `ezra.cline` (coding agent optional; no auto-start) |
 | [Cline + free model in VS Code](cline-local.md) | Download a gallery GGUF, `ezra serve`, Cline, sideload Grid |
-| [IDE Grid](ide.md) | Sideload VS Code / Cursor extension (no marketplace; Cline / OpenClaw lanes) |
+| [IDE Grid](ide.md) | Sideload VS Code / Cursor extension; **EZRA: Open Grid** to chat (not Copilot) |
 | [HPC / SLURM](hpc.md) | Site profiles, scratch paths, SBATCH submit |
 | [Site profiles](sites.md) | Customize partition/modules for your cluster ([full notes](../sites/README.md)) |
 | [Configuration](configuration.md) | `ezra.yaml`, env vars, models directory |

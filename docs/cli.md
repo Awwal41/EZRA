@@ -14,7 +14,7 @@ Global options:
 
 ## `ezra doctor`
 
-Environment check: version, models dir, HF token, gallery size, CPU/RAM/GPU fit budget, write test. Mentions `ezra models recommend` for hardware-aware picks.
+Environment check: version, models dir, HF token, gallery size, CPU/RAM/GPU fit budget, write test. Mentions `ezra models recommend` for hardware-aware picks. If `llama-cpp-python` is missing, install a wheel file from [Getting started](getting-started.md) (`pip install -r requirements-ide-cpu.txt`), do not compile from source on Windows.
 
 ## `ezra init-config`
 
@@ -168,7 +168,7 @@ ezra gog run --no-readonly calendar events --today
 
 ## `ezra chat`
 
-Interactive (or one-shot) chat with a gallery model or personal agent. Requires `pip install -e ".[local]"` for real GGUF replies (or `--backend stub` to dry-run).
+Interactive (or one-shot) chat with a gallery model or personal agent. Requires a llama.cpp wheel (`pip install -r requirements-ide-cpu.txt`) for real GGUF replies (or `--backend stub` to dry-run).
 
 | Flag | Meaning |
 |------|---------|

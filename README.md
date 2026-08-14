@@ -14,19 +14,30 @@
 
 > **Phase 1 (now):** curated gallery · hardware-aware `models recommend` · downloads · personal agents · `ezra chat` / `ezra serve` (OpenAI `/v1`) · `ezra parse` (MegaParse) · HPC site profiles / SBATCH · optional OpenClaw, Peekaboo, gogcli, and Cline (vendored in-tree) · **EZRA Grid** IDE extension (sideload only).
 
-**Docs:** [GitHub Pages](https://awwal41.github.io/EZRA/) · [Read the Docs](https://ezra.readthedocs.io/) · [Markdown on GitHub](docs/README.md) · [install](docs/install.md) · [models](docs/models.md) · [personal agents](docs/agents.md) · [parse](docs/parse.md) · [openclaw](docs/openclaw.md) · [peekaboo](docs/peekaboo.md) · [gog](docs/gog.md) · [cline](docs/cline.md) · [cline + VS Code](docs/cline-local.md) · [ide](docs/ide.md) · [conversation](docs/conversation.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
+**Docs:** [GitHub Pages](https://awwal41.github.io/EZRA/) · [Read the Docs](https://ezra.readthedocs.io/) · [Markdown on GitHub](docs/README.md) · [getting started](docs/getting-started.md) · [install](docs/install.md) · [models](docs/models.md) · [personal agents](docs/agents.md) · [parse](docs/parse.md) · [openclaw](docs/openclaw.md) · [peekaboo](docs/peekaboo.md) · [gog](docs/gog.md) · [cline](docs/cline.md) · [cline + VS Code](docs/cline-local.md) · [ide](docs/ide.md) · [conversation](docs/conversation.md) · [HPC / SLURM](docs/hpc.md) · [configuration](docs/configuration.md) · [CLI](docs/cli.md)
 
 ## Quick start
 
+**New to this?** Follow [docs/getting-started.md](docs/getting-started.md) (install Python, pick a llama.cpp **wheel**, download a free model, open EZRA Grid in VS Code). One-file install for most laptops:
+
 ```bash
-# from the repo root
+git clone https://github.com/Awwal41/EZRA.git
+cd EZRA
 python -m venv .venv
 # Windows: .venv\Scripts\activate
-source .venv/bin/activate   # Linux / macOS / HPC
+source .venv/bin/activate
+pip install -U pip
+pip install -r requirements-ide-cpu.txt    # NVIDIA CUDA 12.4: requirements-ide-cuda124.txt
+ezra doctor
+```
 
+Which file to use: [`requirements/README.md`](requirements/README.md).
+
+```bash
+# from the repo root (venv already on)
 pip install -e .
 
-# optional: local chat + OpenAI serve
+# optional: local chat + OpenAI serve (or use requirements-ide-cpu.txt above)
 # pip install -e ".[local,serve]"
 # optional: document parsing (MegaParse for PDF/Office; Python ≥ 3.11)
 # pip install -e ".[parse]"
@@ -104,14 +115,15 @@ Sideload **EZRA Grid** from this checkout — pick a local model, a personal age
 
 ```bash
 ezra ide install                 # Cursor and/or VS Code on this machine
+ezra ide install --ide code      # Visual Studio Code only
 ezra ide install --ide cursor
-# then: Reload Window → rising-columns icon
+# then in that editor: Ctrl+Shift+P → Developer: Reload Window → EZRA: Open Grid
 # Cline without OpenRouter/Anthropic:
 #   ezra serve --model qwen2.5-7b-instruct --host 127.0.0.1
 #   ezra cline use-local --auth
 ```
 
-Reload the window and open the rising-columns icon. Step-by-step with a free gallery GGUF: [docs/cline-local.md](docs/cline-local.md). Grid reference: [docs/ide.md](docs/ide.md).
+Chat is the **EZRA Grid** sidebar, not Copilot Chat. **Ctrl+Shift+P** → **EZRA: Open Grid**, pick **Local**, type, **Ctrl+Enter**. Walkthrough: [docs/ide.md](docs/ide.md). Free GGUF + Cline: [docs/cline-local.md](docs/cline-local.md).
 
 ## HPC (SLURM / SBATCH)
 
@@ -236,6 +248,7 @@ How to turn Pages on / link RTD: [docs/README.md](docs/README.md#publish-so-peop
 
 | Doc | Contents |
 |-----|----------|
+| [docs/getting-started.md](docs/getting-started.md) | Step-by-step: wheels, model, VS Code Grid |
 | [docs/install.md](docs/install.md) | Install, venv, `ezra doctor`, chat extras |
 | [docs/models.md](docs/models.md) | Recommend / list / download / status / remove |
 | [docs/agents.md](docs/agents.md) | Personal agents: init / prompt / preferred models |

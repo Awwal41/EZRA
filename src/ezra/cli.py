@@ -604,7 +604,7 @@ def doctor(ctx: click.Context) -> None:
     llama_status = (
         "[green]ok[/green]"
         if llama_cpp_available()
-        else "[yellow]missing[/yellow] (pip install -e '.[local]')"
+        else "[yellow]missing[/yellow] (pip install -r requirements-ide-cpu.txt — docs/getting-started.md)"
     )
     mlx_status = (
         "[green]ok[/green]"

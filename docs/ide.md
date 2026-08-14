@@ -13,6 +13,9 @@ The extension sources live at [`ide/vscode/`](../ide/vscode/). EZRA packages a
 `.vsix` with the Python stdlib zipper (no `vsce`, no npm) and installs it with
 the editor CLI, or by copying into the extensions folder.
 
+**First time on this computer?** Use [Getting started](getting-started.md)
+(which wheel to install, then these Grid steps).
+
 **Safety defaults:** EZRA never auto-installs the extension, never auto-starts
 Cline, and never starts the OpenClaw Gateway. Cline / OpenClaw only run when
 you select that lane and send.
@@ -25,29 +28,60 @@ From the EZRA checkout, venv active:
 
 ```bash
 ezra ide install                 # Cursor and/or VS Code found on this PC
-# or:  ezra ide install --ide cursor
+ezra ide install --ide code      # Visual Studio Code only
+ezra ide install --ide cursor    # Cursor only
 ```
 
-In the editor: **Developer: Reload Window**. Click the **rising-columns** icon
-in the activity bar (left). That opens **EZRA Grid**.
+`--ide code` installs into **Visual Studio Code**, not Cursor. Open the VS Code
+app to chat there.
 
-If the Grid cannot find `ezra`, set **EZRA Grid → `ezra.pythonPath`** to your
-venv Python (or `ezra.cliPath` to the `ezra` executable).
+### 2. Open the Grid and chat (VS Code)
 
-### 2. Get a local model (once)
+EZRA does **not** add a Copilot / Chat bubble. There is no entry under
+**Chat** or the marketplace. Chat lives in the **EZRA Grid** sidebar.
+
+1. In **Visual Studio Code**, press **Ctrl+Shift+P** (macOS: **Cmd+Shift+P**).
+2. Run **Developer: Reload Window**. Sideloaded extensions only appear after a reload.
+3. Open the Grid with any of these:
+   - **Command Palette → `EZRA: Open Grid`** (most reliable)
+   - Far-left **activity bar**: four **rising columns** (often near the bottom). Hover until the tooltip says **EZRA Grid**
+   - Bottom **status bar**: click **EZRA**
+   - **View → Open View…** → type `Grid`
+   - Right-click an empty spot on the activity bar and enable **EZRA Grid** if it was hidden
+4. Confirm **Extensions** (**Ctrl+Shift+X**) lists **EZRA Grid** as installed. It will not appear in the VS Marketplace search.
+
+In the Grid panel:
+
+1. Click **Local** (plain chat) or **Agent**.
+2. Choose a downloaded model from the **Model** dropdown. If it says `(none)`, download one first (next section) and click **Refresh**.
+3. Type in the box at the bottom (`Ctrl+Enter to send on the selected lane`).
+4. Press **Ctrl+Enter** (macOS: **Cmd+Enter**) or click **Send**. Replies appear in the log above the box.
+
+If the panel says `ezra CLI not found`, set **EZRA Grid → `ezra.pythonPath`** to
+the Python that has EZRA installed:
+
+- venv (Windows): `C:\Users\you\EZRA\.venv\Scripts\python.exe`
+- Anaconda (Windows): `C:\Users\you\AppData\Local\anaconda3\python.exe`
+- or set **`ezra.cliPath`** to the `ezra` executable.
+
+| Looking here | What to use instead |
+|--------------|---------------------|
+| VS Code **Chat** / Copilot | **EZRA: Open Grid** |
+| Cursor (this window) after `--ide code` | Open **Visual Studio Code**, or also run `ezra ide install --ide cursor` |
+| Marketplace “EZRA” search | Sideload only — check **Installed** extensions |
+
+### 3. Get a local model (once)
 
 ```bash
-pip install -e ".[local,serve]"          # GGUF chat + OpenAI HTTP
-ezra models recommend                    # optional: what fits this machine
-ezra models download qwen2.5-7b-instruct # or another gallery GGUF
-ezra models status
+pip install -r requirements-ide-cpu.txt   # or cuda124 / macos — see docs/getting-started.md
+ezra models download qwen2.5-7b-instruct
 ```
 
 No Anthropic / OpenAI / OpenRouter key. Free/open gallery GGUFs download
 without `HF_TOKEN`; gated repos still need a Hugging Face token to *fetch*,
 then they run locally.
 
-### 3. Pick a lane and send
+### 4. Pick a lane and send
 
 | Lane | API key? | What send does |
 |------|----------|----------------|
@@ -118,7 +152,8 @@ ezra ide install --ide code
 ezra ide install --dry-run
 ```
 
-Reload the editor window, then click the EZRA activity-bar icon.
+Reload the editor window, then **EZRA: Open Grid** (or the rising-columns
+activity-bar icon). See [Open the Grid and chat](#2-open-the-grid-and-chat-vs-code).
 
 Hand-install a VSIX:
 

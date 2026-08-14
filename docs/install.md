@@ -2,6 +2,8 @@
 
 EZRA needs **Python 3.10+**. No GPU is required to download models; GPUs matter later for serving.
 
+**Prefer a checklist?** [Getting started](getting-started.md) walks from zero to the VS Code extension and tells you **which wheel file** to install.
+
 ## Clone and install
 
 ```bash
@@ -20,9 +22,15 @@ source .venv/bin/activate
 pip install -U pip
 pip install -e .
 
-# Local chat / OpenAI serve (optional extras)
-pip install -e ".[local,serve]"   # GGUF via llama.cpp + FastAPI
-# Apple Silicon non-GGUF (optional):
+# Chat + Grid (pick ONE wheel file — do not compile llama.cpp from source on Windows)
+pip install -r requirements-ide-cpu.txt          # no NVIDIA GPU
+# pip install -r requirements-ide-cuda124.txt    # NVIDIA, CUDA 12.4 (see nvidia-smi)
+# pip install -r requirements-ide-cuda121.txt    # NVIDIA, CUDA 12.1
+# pip install -r requirements-ide-macos.txt      # Apple Silicon
+
+# Same extras without a wheel file (may compile; often fails on Windows):
+# pip install -e ".[local,serve]"
+# Apple Silicon non-GGUF (optional, also in requirements-ide-macos.txt):
 # pip install -e ".[mlx]"
 # Document parsing (optional):
 # pip install -e ".[parse-basic]"   # text + simple PDF
@@ -35,13 +43,15 @@ pip install -e ".[local,serve]"   # GGUF via llama.cpp + FastAPI
 #   sources: third_party/Cline — see docs/cline.md
 ```
 
+Wheel files live next to `requirements.txt`. Table: [`requirements/README.md`](../requirements/README.md).
+
 For development (tests + Ruff):
 
 ```bash
 pip install -e ".[dev]"
 ```
 
-On Windows, `llama-cpp-python` may need a pre-built wheel or a C++ toolchain; see the [llama-cpp-python](https://github.com/abetlen/llama-cpp-python) docs if `pip install` fails.
+On Windows, **do not** let pip compile `llama-cpp-python` from source. If you see `Building wheel for llama-cpp-python` for more than a minute, Ctrl+C and use `requirements-ide-cpu.txt`. Upstream notes: [llama-cpp-python](https://github.com/abetlen/llama-cpp-python).
 
 ## Verify
 
@@ -96,9 +106,11 @@ See [Configuration](configuration.md) for all env vars and `ezra.yaml`.
 
 ## Next steps
 
+- First-time, including VS Code: [Getting started](getting-started.md)
 - Pick a model for this machine: [Models - Recommend](models.md#recommend-for-this-machine)
 - Download models: [Models](models.md)
 - Personal agents: [Agents](agents.md)
 - Chat / OpenAI serve: [Conversation runtime](conversation.md)
+- VS Code sidebar chat (not Copilot): [EZRA Grid](ide.md#2-open-the-grid-and-chat-vs-code)
 - Parse PDFs / notes for chat: [Document parsing](parse.md)
 - Cluster jobs: [HPC / SLURM](hpc.md)

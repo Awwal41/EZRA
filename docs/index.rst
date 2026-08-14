@@ -18,6 +18,7 @@ read the same guides as plain Markdown on GitHub under ``docs/``.
 Quick links
 -----------
 
+* :doc:`getting-started` - step-by-step from install to the VS Code extension (wheels)
 * :doc:`install` - venv, ``pip install``, ``ezra doctor``
 * :doc:`models` - recommend, list, download, status
 * :doc:`agents` - personal agent scaffolds (prompt + preferred models)
@@ -37,6 +38,7 @@ Quick links
    :maxdepth: 2
    :caption: User guides
 
+   getting-started
    install
    models
    agents
