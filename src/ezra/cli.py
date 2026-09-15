@@ -72,6 +72,10 @@ def main(ctx: click.Context, config_path: Path | None, models_dir: Path | None) 
         os.environ["EZRA_OPENCLAW_CLI"] = config.openclaw_cli
     if config.cline_cli and not os.environ.get("EZRA_CLINE_CLI"):
         os.environ["EZRA_CLINE_CLI"] = config.cline_cli
+    if config.voicebox_url and not os.environ.get("EZRA_VOICEBOX_URL"):
+        os.environ["EZRA_VOICEBOX_URL"] = config.voicebox_url
+    if config.voicebox_client_id and not os.environ.get("EZRA_VOICEBOX_CLIENT_ID"):
+        os.environ["EZRA_VOICEBOX_CLIENT_ID"] = config.voicebox_client_id
     ctx.obj["config"] = config
     ctx.obj["gallery"] = ModelGallery()
 
@@ -600,6 +604,9 @@ def doctor(ctx: click.Context) -> None:
         resolve_cli,
     )
     from ezra.serve import fastapi_available
+    from ezra.voicebox import probe_server as probe_voicebox
+    from ezra.voicebox import resolve_mcp_shim as resolve_voicebox_mcp
+    from ezra.voicebox import voicebox_root
 
     llama_status = (
         "[green]ok[/green]"
@@ -679,10 +686,28 @@ def doctor(ctx: click.Context) -> None:
             "[yellow]missing[/yellow] "
             "(restore third_party/Cline from the EZRA repo)"
         )
+    vb_root = voicebox_root()
+    vb_health = probe_voicebox(timeout=1.0)
+    vb_shim = resolve_voicebox_mcp()
+    if vb_health.get("ok"):
+        voicebox_status = f"[green]running[/green] ({vb_health['url']})"
+    elif vb_shim is not None:
+        voicebox_status = f"[yellow]shim only[/yellow] ({vb_shim})"
+    elif vb_root is not None:
+        voicebox_status = (
+            "[yellow]sources only[/yellow] "
+            "(start Voicebox app or `just dev` in third_party/Voicebox)"
+        )
+    else:
+        voicebox_status = (
+            "[yellow]missing[/yellow] "
+            "(restore third_party/Voicebox from the EZRA repo)"
+        )
     console.print(f"Peekaboo:         {peekaboo_status}")
     console.print(f"gog (Workspace):  {gog_status}")
     console.print(f"OpenClaw:         {openclaw_status}")
     console.print(f"Cline:            {cline_status}")
+    console.print(f"Voicebox:         {voicebox_status}")
     ide_src = ide_extension_root()
     if ide_src is not None:
         ide_status = f"[green]ok[/green] ({ide_src})"
@@ -698,6 +723,7 @@ def doctor(ctx: click.Context) -> None:
     console.print(f"gog enabled:      {config.gog_enabled}")
     console.print(f"OpenClaw enabled: {config.openclaw_enabled}")
     console.print(f"Cline enabled:    {config.cline_enabled}")
+    console.print(f"Voicebox enabled: {config.voicebox_enabled}")
     console.print(f"IDE enabled:      {config.ide_enabled}")
     if config.gog_account:
         console.print(f"gog account:      {config.gog_account}")
@@ -716,6 +742,10 @@ def doctor(ctx: click.Context) -> None:
     console.print(
         "Tip: [green]ezra cline status[/green] "
         "(vendored in-tree; EZRA never auto-starts the agent)"
+    )
+    console.print(
+        "Tip: [green]ezra voicebox status[/green] "
+        "(vendored in-tree; EZRA never auto-starts Voicebox)"
     )
     console.print(
         "Tip: [green]ezra ide install[/green] "
@@ -1956,6 +1986,123 @@ def cline_version_cmd() -> None:
     console.print(text)
     if proc.returncode:
         sys.exit(proc.returncode)
+
+
+@main.group("voicebox")
+def voicebox_group() -> None:
+    """Voicebox helpers (vendored under third_party/Voicebox).
+
+    Safe by default: status / MCP config / health probe only.
+    EZRA never auto-starts the Voicebox app.
+    """
+
+
+@voicebox_group.command("status")
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON.")
+@click.pass_context
+def voicebox_status_cmd(ctx: click.Context, as_json: bool) -> None:
+    """Show Voicebox vendored-tree / MCP / running-server status."""
+    from ezra.voicebox import (
+        base_url,
+        client_id,
+        mcp_url,
+        probe_server,
+        resolve_mcp_shim,
+        voicebox_available,
+        voicebox_pin_info,
+        voicebox_root,
+    )
+
+    config = ctx.obj["config"]
+    root = voicebox_root()
+    pin = voicebox_pin_info(root)
+    health = probe_server(timeout=1.5)
+    shim = resolve_mcp_shim()
+    payload = {
+        "enabled": config.voicebox_enabled,
+        "available": voicebox_available(),
+        "root": str(root) if root else None,
+        "base_url": base_url(),
+        "mcp_url": mcp_url(),
+        "client_id": client_id(),
+        "url_override": config.voicebox_url or None,
+        "mcp_shim": str(shim) if shim else None,
+        "server": health,
+        "pin": pin,
+        "upstream": pin.get("upstream", "https://github.com/jamiepine/voicebox"),
+        "note": "EZRA never auto-starts Voicebox. Start the app yourself, then use MCP.",
+    }
+    if as_json:
+        click.echo(json.dumps(payload, indent=2))
+        return
+    console.print(f"Enabled:     {payload['enabled']}")
+    console.print(
+        f"Vendored:    {payload['root'] or '<missing — restore third_party/Voicebox from EZRA>'}"
+    )
+    if pin.get("version"):
+        console.print(f"Version:     {pin['version']}")
+    if pin.get("snapshot"):
+        console.print(f"Snapshot:    {pin['snapshot']}")
+    console.print(f"Base URL:    {payload['base_url']}")
+    console.print(f"MCP URL:     {payload['mcp_url']}")
+    console.print(f"Client id:   {payload['client_id']}")
+    console.print(f"MCP shim:    {payload['mcp_shim'] or '<not found>'}")
+    if health.get("ok"):
+        console.print(f"Server:      [green]ok[/green] ({health['url']})")
+    else:
+        err = health.get("error") or "not reachable"
+        console.print(f"Server:      [yellow]offline[/yellow] ({err})")
+    console.print("[dim]Auto-start: no (by design)[/dim]")
+
+
+@voicebox_group.command("mcp-config")
+@click.option(
+    "--stdio",
+    is_flag=True,
+    help="Prefer stdio voicebox-mcp shim when available.",
+)
+@click.option(
+    "--client-id",
+    "cid",
+    default=None,
+    help="X-Voicebox-Client-Id / VOICEBOX_CLIENT_ID (default: ezra).",
+)
+def voicebox_mcp_config(stdio: bool, cid: str | None) -> None:
+    """Print a Cursor / Claude MCP snippet for Voicebox."""
+    from ezra.voicebox import mcp_http_config, mcp_stdio_config
+
+    if stdio:
+        snippet = mcp_stdio_config(client=cid)
+        if snippet is None:
+            raise click.ClickException(
+                "voicebox-mcp shim not found. Build it from third_party/Voicebox "
+                "or omit --stdio to use the HTTP MCP URL "
+                "(http://127.0.0.1:17493/mcp)."
+            )
+    else:
+        snippet = mcp_http_config(client=cid)
+    click.echo(json.dumps(snippet, indent=2))
+
+
+@voicebox_group.command("health")
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON.")
+@click.option("--timeout", default=2.0, show_default=True, type=float)
+def voicebox_health_cmd(as_json: bool, timeout: float) -> None:
+    """Probe ``GET /health`` on a running Voicebox backend (never starts it)."""
+    from ezra.voicebox import probe_server
+
+    health = probe_server(timeout=timeout)
+    if as_json:
+        click.echo(json.dumps(health, indent=2))
+    elif health.get("ok"):
+        console.print(f"[green]ok[/green] {health['url']}")
+        if health.get("body") is not None:
+            console.print(health["body"])
+    else:
+        console.print(f"[yellow]offline[/yellow] {health['url']}")
+        if health.get("error"):
+            console.print(health["error"])
+        sys.exit(1)
 
 
 @main.group("ide")

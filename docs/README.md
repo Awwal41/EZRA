@@ -14,6 +14,7 @@ HTML site with **Sphinx** + **MyST** + **reStructuredText**.
 | [OpenClaw](openclaw.md) | Full in-tree snapshot + `ezra.openclaw` (Gateway optional; no auto-start) |
 | [Cline](cline.md) | Full in-tree snapshot + `ezra.cline` (coding agent optional; no auto-start) |
 | [Cline + free model in VS Code](cline-local.md) | Download a gallery GGUF, `ezra serve`, Cline, sideload Grid |
+| [Voicebox](voicebox.md) | Full in-tree snapshot + `ezra.voicebox` (voice MCP optional; no auto-start) |
 | [IDE Grid](ide.md) | Sideload VS Code / Cursor extension; **EZRA: Open Grid** to chat (not Copilot) |
 | [HPC / SLURM](hpc.md) | Site profiles, scratch paths, SBATCH submit |
 | [Site profiles](sites.md) | Customize partition/modules for your cluster ([full notes](../sites/README.md)) |

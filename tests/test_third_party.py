@@ -15,6 +15,7 @@ from ezra.hpc.sites import repo_root
 from ezra.openclaw import openclaw_root
 from ezra.parse.backends.megaparse import _vendor_src
 from ezra.peekaboo import peekaboo_root
+from ezra.voicebox import voicebox_root
 
 _VENDORS: list[tuple[str, tuple[str, ...]]] = [
     ("OpenClaw", ("package.json", "UPSTREAM.txt", "LICENSE", "openclaw.mjs")),
@@ -37,6 +38,15 @@ _VENDORS: list[tuple[str, tuple[str, ...]]] = [
             "LICENSE",
             "src/megaparse/__init__.py",
             "src/megaparse_sdk/__init__.py",
+        ),
+    ),
+    (
+        "Voicebox",
+        (
+            "package.json",
+            "UPSTREAM.txt",
+            "LICENSE",
+            "backend/main.py",
         ),
     ),
 ]
@@ -67,6 +77,10 @@ def test_adapter_roots_resolve_to_vendored_trees() -> None:
     cl = cline_root()
     assert cl is not None and cl.name == "Cline"
     assert (cl / "UPSTREAM.txt").is_file()
+
+    vb = voicebox_root()
+    assert vb is not None and vb.name == "Voicebox"
+    assert (vb / "UPSTREAM.txt").is_file()
 
     mp_src = _vendor_src()
     assert mp_src.is_dir()

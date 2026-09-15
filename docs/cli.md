@@ -107,6 +107,25 @@ ezra cline use-local --model qwen2.5-7b-instruct --auth
 `--auth` only writes Cline’s openai-compatible provider settings. EZRA never
 auto-starts a Cline agent session or Kanban.
 
+## `ezra voicebox`
+
+Status / MCP helpers for the vendored [Voicebox](https://github.com/jamiepine/voicebox)
+snapshot. See [Voicebox](voicebox.md).
+
+| Command | Description |
+|---------|-------------|
+| `status` | Vendored-tree / MCP URL / running-server probe (`--json`) |
+| `mcp-config` | Print Cursor/Claude MCP snippet (`--client-id`, `--stdio`) |
+| `health` | Probe `GET /health` (never starts the app) |
+
+```bash
+ezra voicebox status
+ezra voicebox mcp-config --client-id cursor
+ezra voicebox health
+```
+
+EZRA never auto-starts Voicebox or downloads TTS/STT models.
+
 ## `ezra ide`
 
 Sideload **EZRA Grid** into VS Code or Cursor. Never talks to a marketplace.

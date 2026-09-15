@@ -57,6 +57,13 @@ cline:
   enabled: auto        # auto | on | off
   # cli: ""            # or export EZRA_CLINE_CLI=
 
+# AI voice studio (ezra.voicebox) — third_party/Voicebox (full in-tree snapshot)
+# EZRA never auto-starts Voicebox; start the app yourself for MCP / REST.
+voicebox:
+  enabled: auto        # auto | on | off
+  # url: http://127.0.0.1:17493   # or export EZRA_VOICEBOX_URL=
+  # client_id: ezra               # or export EZRA_VOICEBOX_CLIENT_ID=
+
 # VS Code / Cursor Grid (ide/vscode) — sideload only, never a marketplace
 # EZRA never auto-installs the extension; run `ezra ide install` yourself.
 ide:

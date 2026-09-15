@@ -4,7 +4,7 @@ EZRA documentation
 **Easy Zero-setup Routing Assistant** for local and HPC LLMs: download curated
 free/open models, pick ones that fit your machine, run personal agents via
 ``ezra chat`` / ``ezra serve``, parse documents for LLM ingestion, stage jobs on
-SLURM, and optionally use vendored OpenClaw, Peekaboo, gog, and Cline helpers.
+SLURM, and optionally use vendored OpenClaw, Peekaboo, gog, Cline, and Voicebox helpers.
 
 This site is built with `Sphinx <https://www.sphinx-doc.org/>`_ using
 **reStructuredText** (``.rst``) and **MyST Markdown** (``.md``). You can still
@@ -29,6 +29,7 @@ Quick links
 * :doc:`openclaw` - OpenClaw Gateway vendored snapshot (optional)
 * :doc:`cline` - Cline coding-agent CLI / SDK vendored snapshot (optional)
 * :doc:`cline-local` - Cline + a free EZRA GGUF in VS Code / Cursor
+* :doc:`voicebox` - Voicebox AI voice studio / MCP (vendored)
 * :doc:`ide` - EZRA Grid VS Code / Cursor extension (sideload only)
 * :doc:`hpc` - site profiles and ``ezra hpc submit``
 * :doc:`cli` - full CLI reference
@@ -49,6 +50,7 @@ Quick links
    openclaw
    cline
    cline-local
+   voicebox
    ide
    hpc
    sites

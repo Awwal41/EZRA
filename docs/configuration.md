@@ -76,6 +76,8 @@ Edit `sites/my-cluster/ezra.yaml` and `modules.sh` (search for **EDIT ME**), the
 | `GOG_ACCOUNT` / `EZRA_GOG_ACCOUNT` | Default Google account for `ezra gog` |
 | `EZRA_OPENCLAW_ROOT` / `EZRA_OPENCLAW_CLI` | Alternate OpenClaw tree / CLI (see [OpenClaw](openclaw.md)) |
 | `EZRA_CLINE_ROOT` / `EZRA_CLINE_CLI` | Alternate Cline tree / CLI (see [Cline](cline.md)) |
+| `EZRA_VOICEBOX_ROOT` / `EZRA_VOICEBOX_URL` | Alternate Voicebox tree / base URL (see [Voicebox](voicebox.md)) |
+| `EZRA_VOICEBOX_CLIENT_ID` / `EZRA_VOICEBOX_MCP` | MCP client id / `voicebox-mcp` shim path |
 
 IDE Grid is sideloaded with `ezra ide install` (no marketplace). See [IDE](ide.md).
 
@@ -124,6 +126,12 @@ cline:
   # Point Cline at ezra serve (downloaded GGUFs, no cloud key):
   #   ezra cline use-local --auth
 
+voicebox:
+  enabled: auto            # reported by doctor/status; does not start the app
+  # url: http://127.0.0.1:17493   # or EZRA_VOICEBOX_URL
+  # client_id: ezra               # or EZRA_VOICEBOX_CLIENT_ID
+  # EZRA never auto-starts Voicebox
+
 ide:
   enabled: auto            # reported by doctor/status; does not auto-install
   # ezra ide install       # sideload Grid into Cursor / VS Code
@@ -158,7 +166,7 @@ hpc:
 
 Notes:
 
-- `peekaboo|gog|openclaw|cline.enabled` values show up in `ezra doctor` / `* status`; they do **not** currently block the corresponding CLI commands.
+- `peekaboo|gog|openclaw|cline|voicebox.enabled` values show up in `ezra doctor` / `* status`; they do **not** currently block the corresponding CLI commands.
 - `ide.enabled` is the same pattern; it does **not** auto-install the Grid extension.
 - `router` in packaged defaults is reserved for Phase 2 domain routing (agents may still reference prefs via `agent.yaml`).
 - `local.keep_alive` appears in packaged defaults as a future knob; it is not applied by the loader yet.

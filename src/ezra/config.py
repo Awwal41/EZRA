@@ -74,6 +74,9 @@ class EzraConfig:
     openclaw_cli: str = ""
     cline_enabled: str = "auto"
     cline_cli: str = ""
+    voicebox_enabled: str = "auto"
+    voicebox_url: str = ""
+    voicebox_client_id: str = ""
     ide_enabled: str = "auto"
     raw: dict[str, Any] = field(default_factory=dict)
 
@@ -155,6 +158,15 @@ def load_config(path: Path | None = None) -> EzraConfig:
     env_cline = os.environ.get("EZRA_CLINE_CLI", "").strip()
     if env_cline:
         cline_cli = env_cline
+    voicebox = data.get("voicebox") or {}
+    voicebox_url = str(voicebox.get("url", "") or "").strip()
+    env_vb_url = os.environ.get("EZRA_VOICEBOX_URL", "").strip()
+    if env_vb_url:
+        voicebox_url = env_vb_url
+    voicebox_client_id = str(voicebox.get("client_id", "") or "").strip()
+    env_vb_cid = os.environ.get("EZRA_VOICEBOX_CLIENT_ID", "").strip()
+    if env_vb_cid:
+        voicebox_client_id = env_vb_cid
     ide = data.get("ide") or {}
     return EzraConfig(
         models_dir=models_dir,
@@ -177,6 +189,9 @@ def load_config(path: Path | None = None) -> EzraConfig:
         openclaw_cli=openclaw_cli,
         cline_enabled=str(cline.get("enabled", "auto")),
         cline_cli=cline_cli,
+        voicebox_enabled=str(voicebox.get("enabled", "auto")),
+        voicebox_url=voicebox_url,
+        voicebox_client_id=voicebox_client_id,
         ide_enabled=str(ide.get("enabled", "auto")),
         raw=data,
     )

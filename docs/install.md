@@ -9,7 +9,7 @@ EZRA needs **Python 3.10+**. No GPU is required to download models; GPUs matter 
 ```bash
 git clone https://github.com/Awwal41/EZRA.git
 cd EZRA
-# third_party/* vendors (OpenClaw, Peekaboo, gogcli, MegaParse, Cline) are in-tree
+# third_party/* vendors (OpenClaw, Peekaboo, gogcli, MegaParse, Cline, Voicebox) are in-tree
 
 python -m venv .venv
 
@@ -43,6 +43,9 @@ pip install -r requirements-ide-cpu.txt          # no NVIDIA GPU
 #   npm i -g cline
 #   or Bun 1.3+ / vendored build / EZRA_CLINE_CLI — see docs/cline-local.md
 #   sources: third_party/Cline — see docs/cline.md
+# Voicebox AI voice studio / MCP (optional): start the app yourself
+#   sources: third_party/Voicebox — see docs/voicebox.md
+#   ezra voicebox mcp-config
 ```
 
 Wheel files live next to `requirements.txt`. Table: [`requirements/README.md`](../requirements/README.md).
@@ -63,7 +66,7 @@ ezra models list
 ezra models recommend chemistry
 ```
 
-`ezra doctor` prints the models directory, HF token status, gallery size, CPU/RAM/GPU fit budget, whether llama-cpp / mlx-lm / FastAPI / MegaParse are importable, Peekaboo / gog / OpenClaw / Cline (vendored) status, and whether the models path is writable.
+`ezra doctor` prints the models directory, HF token status, gallery size, CPU/RAM/GPU fit budget, whether llama-cpp / mlx-lm / FastAPI / MegaParse are importable, Peekaboo / gog / OpenClaw / Cline / Voicebox (vendored) status, and whether the models path is writable.
 
 `ezra models recommend` probes this machine and ranks open gallery models that fit (optional keyword). See [Models - Recommend](models.md#recommend-for-this-machine).
 

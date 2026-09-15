@@ -106,6 +106,14 @@ Cline (coding agent)
    :undoc-members:
    :show-inheritance:
 
+Voicebox (AI voice studio)
+--------------------------
+
+.. automodule:: ezra.voicebox
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 IDE Grid (VS Code / Cursor)
 ---------------------------
 

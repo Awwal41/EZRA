@@ -58,6 +58,12 @@ cline:
   # cli: ""                   # optional path; or EZRA_CLINE_CLI
   # Off-grid: ezra cline use-local --auth  (uses ezra serve, no cloud key)
 
+# Voicebox AI voice studio — see docs/voicebox.md (full in-tree snapshot)
+voicebox:
+  enabled: auto               # auto | on | off
+  # url: http://127.0.0.1:17493   # or EZRA_VOICEBOX_URL
+  # client_id: ezra               # or EZRA_VOICEBOX_CLIENT_ID
+
 # VS Code / Cursor Grid — see docs/ide.md (sideload only, no marketplace)
 ide:
   enabled: auto               # auto | on | off
