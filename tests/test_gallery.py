@@ -21,9 +21,9 @@ def test_gallery_loads_and_has_unique_names() -> None:
 
 def test_gallery_get_prefix() -> None:
     gallery = load_gallery()
-    # unique substring
-    spec = gallery.get("chemllm")
-    assert spec.name == "chemllm-7b"
+    # unique substring (chemllm is no longer unique after ChemLLM GGUF aliases)
+    spec = gallery.get("chembert")
+    assert spec.name == "chembert-uncased"
 
 
 def test_gallery_filter_science() -> None:
