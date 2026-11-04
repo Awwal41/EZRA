@@ -66,13 +66,13 @@ def test_config_parse_defaults() -> None:
 
 
 def test_megaparse_vendored_tree_present() -> None:
-    """MegaParse sources must ship in-tree (same contract as OpenClaw/Peekaboo/gog)."""
+    """Fetched MegaParse sources expose the layout ``ezra.parse`` imports from."""
     from ezra.hpc.sites import repo_root
     from ezra.parse.backends.megaparse import _vendor_src
 
     root = repo_root() / "third_party" / "MegaParse"
-    assert root.is_dir()
-    assert (root / "UPSTREAM.txt").is_file()
+    if not (root / "UPSTREAM.txt").is_file():
+        pytest.skip("third_party/MegaParse not fetched — run scripts/fetch_third_party.py")
     assert (root / "LICENSE").is_file()
     assert (root / "src" / "megaparse" / "__init__.py").is_file()
     assert (root / "src" / "megaparse_sdk" / "__init__.py").is_file()

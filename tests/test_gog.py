@@ -4,10 +4,15 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from ezra.config import load_config
 from ezra.gog import gog_root, mcp_launch_command, resolve_cli
 
 
+@pytest.mark.skipif(
+    gog_root() is None, reason="third_party/gogcli not fetched — run scripts/fetch_third_party.py"
+)
 def test_gog_root_points_at_vendored_tree() -> None:
     root = gog_root()
     assert root is not None

@@ -5,6 +5,8 @@ from __future__ import annotations
 import platform
 from pathlib import Path
 
+import pytest
+
 from ezra.config import load_config
 from ezra.peekaboo import (
     mcp_launch_command,
@@ -14,6 +16,10 @@ from ezra.peekaboo import (
 )
 
 
+@pytest.mark.skipif(
+    peekaboo_root() is None,
+    reason="third_party/Peekaboo not fetched — run scripts/fetch_third_party.py",
+)
 def test_peekaboo_root_points_at_vendored_tree() -> None:
     root = peekaboo_root()
     assert root is not None

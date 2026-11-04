@@ -4,10 +4,18 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from ezra.config import load_config
 from ezra.openclaw import openclaw_pin_info, openclaw_root, resolve_cli
 
+needs_vendor = pytest.mark.skipif(
+    openclaw_root() is None,
+    reason="third_party/OpenClaw not fetched — run scripts/fetch_third_party.py",
+)
 
+
+@needs_vendor
 def test_openclaw_root_points_at_vendored_tree() -> None:
     root = openclaw_root()
     assert root is not None
@@ -18,6 +26,7 @@ def test_openclaw_root_points_at_vendored_tree() -> None:
     assert (root / "UPSTREAM.txt").is_file()
 
 
+@needs_vendor
 def test_pin_info_has_version() -> None:
     info = openclaw_pin_info()
     assert info["upstream"].endswith("/openclaw")

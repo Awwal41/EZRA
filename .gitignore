@@ -90,6 +90,10 @@ Desktop.ini
 # ── IDE extension sideload artifacts ────────────────────────────────────────
 *.vsix
 ide/vscode/dist/
+
+# ── third_party/ is downloaded by scripts/fetch_third_party.py ──────────────
+third_party/*
+!third_party/README.md
 third_party/**/node_modules/
 third_party/**/.pnpm-store/
 third_party/**/.build/

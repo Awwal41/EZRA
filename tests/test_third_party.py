@@ -1,8 +1,9 @@
-"""Smoke tests: vendored third_party trees wire into EZRA adapters.
+"""Smoke tests: third_party trees wire into EZRA adapters.
 
 These checks do not run upstream CLIs, Gateways, or MegaParse OCR — they
-assert that each in-tree snapshot is present and that adapter path helpers
-resolve to it (integration wiring).
+assert that each downloaded tree is present and that adapter path helpers
+resolve to it (integration wiring). Run ``python scripts/fetch_third_party.py``
+first; tests for vendors that have not been fetched are skipped.
 """
 
 from __future__ import annotations
@@ -52,16 +53,25 @@ _VENDORS: list[tuple[str, tuple[str, ...]]] = [
 ]
 
 
+def _fetched(name: str) -> bool:
+    return (repo_root() / "third_party" / name / "UPSTREAM.txt").is_file()
+
+
 @pytest.mark.parametrize("name,markers", _VENDORS)
 def test_vendored_tree_present(name: str, markers: tuple[str, ...]) -> None:
+    if not _fetched(name):
+        pytest.skip(f"third_party/{name} not fetched — run scripts/fetch_third_party.py")
     root = repo_root() / "third_party" / name
-    assert root.is_dir(), f"missing third_party/{name} — restore the in-tree snapshot"
     for rel in markers:
         path = root / rel
         assert path.exists(), f"missing third_party/{name}/{rel}"
 
 
 def test_adapter_roots_resolve_to_vendored_trees() -> None:
+    missing = [name for name, _ in _VENDORS if not _fetched(name)]
+    if missing:
+        pytest.skip(f"third_party not fetched: {', '.join(missing)}")
+
     oc = openclaw_root()
     assert oc is not None and oc.name == "OpenClaw"
     assert (oc / "UPSTREAM.txt").is_file()

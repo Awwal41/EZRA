@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from ezra.config import load_config
 from ezra.voicebox import (
     base_url,
@@ -16,7 +18,13 @@ from ezra.voicebox import (
     voicebox_root,
 )
 
+needs_vendor = pytest.mark.skipif(
+    voicebox_root() is None,
+    reason="third_party/Voicebox not fetched — run scripts/fetch_third_party.py",
+)
 
+
+@needs_vendor
 def test_voicebox_root_points_at_vendored_tree() -> None:
     root = voicebox_root()
     assert root is not None
@@ -27,6 +35,7 @@ def test_voicebox_root_points_at_vendored_tree() -> None:
     assert voicebox_available()
 
 
+@needs_vendor
 def test_voicebox_pin_info() -> None:
     info = voicebox_pin_info()
     assert info["upstream"] == "https://github.com/jamiepine/voicebox"

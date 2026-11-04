@@ -9,7 +9,8 @@ EZRA needs **Python 3.10+**. No GPU is required to download models; GPUs matter 
 ```bash
 git clone https://github.com/Awwal41/EZRA.git
 cd EZRA
-# third_party/* vendors (OpenClaw, Peekaboo, gogcli, MegaParse, Cline, Voicebox) are in-tree
+# optional: download third-party integrations (OpenClaw, Peekaboo, gogcli, MegaParse, Cline, Voicebox)
+python scripts/fetch_third_party.py
 
 python -m venv .venv
 

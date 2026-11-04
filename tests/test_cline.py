@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
 from click.testing import CliRunner
 
 from ezra.cli import main
@@ -12,7 +13,12 @@ from ezra.cline import cline_pin_info, cline_root, resolve_cli
 from ezra.cline.local import PLACEHOLDER_API_KEY, local_provider_plan, serve_base_url
 from ezra.config import load_config
 
+needs_vendor = pytest.mark.skipif(
+    cline_root() is None, reason="third_party/Cline not fetched — run scripts/fetch_third_party.py"
+)
 
+
+@needs_vendor
 def test_cline_root_points_at_vendored_tree() -> None:
     root = cline_root()
     assert root is not None
@@ -26,6 +32,7 @@ def test_cline_root_points_at_vendored_tree() -> None:
     assert (root / "evals" / "cline-bench" / "README.md").is_file()
 
 
+@needs_vendor
 def test_pin_info_has_version() -> None:
     info = cline_pin_info()
     assert info["upstream"].endswith("/cline")

@@ -95,3 +95,6 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 ezra = ["gallery/*.yaml", "defaults/*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

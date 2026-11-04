@@ -12,7 +12,7 @@ Be respectful, assume good intent, and keep discussion focused on the work. Hara
 
 EZRA is **GPL-3.0-or-later**. By contributing, you agree that your contributions are licensed under the same terms. See [LICENSE](LICENSE).
 
-Vendored third-party code under `third_party/` keeps its upstream license (MegaParse and Cline are **Apache-2.0**). Do not relicense those trees; keep `LICENSE` / `NOTICE` / `UPSTREAM.txt` when refreshing.
+Third-party code fetched into `third_party/` keeps its upstream license (MegaParse and Cline are **Apache-2.0**). Do not relicense those trees.
 
 ---
 
@@ -44,8 +44,9 @@ Docs CI **builds** on `develop` and on PRs; the HTML site **deploys** from `main
    cd EZRA
    ```
 
-   Third-party trees under `third_party/` (OpenClaw, Peekaboo, gogcli, MegaParse, Cline)
-   are **full in-tree snapshots** (not submodules). See
+   Third-party trees under `third_party/` (OpenClaw, Peekaboo, gogcli, MegaParse, Cline,
+   Voicebox) are not stored in the repo; download them at pinned versions with
+   `python scripts/fetch_third_party.py`. See
    [`third_party/README.md`](third_party/README.md).
 
 3. Add the upstream remote so you can stay in sync with the canonical repo:
@@ -194,7 +195,7 @@ Copy templates from `ezra.yaml.example` / `.env.example`, or run `ezra init-conf
 | `src/ezra/ide/` | EZRA Grid sideload (VSIX pack / Cursor+VS Code install; no marketplace) |
 | `ide/vscode/` | Grid extension sources (plain JS; `ezra ide package`) |
 | `src/ezra/hpc/` | SLURM / SBATCH helpers and site loading |
-| `third_party/` | Full in-tree vendor snapshots (not git submodules) |
+| `third_party/` | Third-party integrations, downloaded by `scripts/fetch_third_party.py` (git-ignored) |
 | `scripts/hpc_*.sh` | Example HPC job scripts (honor `EZRA_SITE`) |
 | `sites/` | Per-cluster profiles (`init-site` then edit, commit, push) |
 | `agents/` | Personal agent scaffolds (`agents init` then edit prompt/models) |
@@ -359,7 +360,7 @@ Agents already drive `ezra chat` / `ezra serve` via `agent.yaml` + `prompt.md`. 
 - Name tests `test_*.py` / `test_*` functions.
 - After gallery or filter changes, run at least `tests/test_gallery.py`.
 - After agent or site changes, run the matching `tests/test_agents.py` / `tests/test_sites.py` (and `tests/test_sbatch.py` for submit templates).
-- After `third_party/` or vendor-adapter changes (OpenClaw, Peekaboo, gogcli, MegaParse, Cline), run the integration smoke suite so each in-tree snapshot still resolves through its `ezra.*` adapter:
+- After `third_party/` or vendor-adapter changes (OpenClaw, Peekaboo, gogcli, MegaParse, Cline), fetch the trees (`python scripts/fetch_third_party.py`) and run the integration smoke suite so each one still resolves through its `ezra.*` adapter:
 
 ```bash
 pytest tests/test_third_party.py tests/test_openclaw.py tests/test_peekaboo.py tests/test_gog.py tests/test_parse.py tests/test_cline.py -q
